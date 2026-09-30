@@ -2,7 +2,7 @@
  "portfolio": "SPECTRUM",
  "inception": "2026-08-31",
  "capital": 2600000.0,
- "cash_units": 39.48277414372153,
+ "cash_units": 8.3956561253266,
  "ranking": true,
  "created": "2026-09-04T03:09:06.855126+05:30",
  "version": 2,
@@ -36,22 +36,22 @@
    "entry_date": "2026-08-31",
    "entry": 9445.0,
    "qty": 11,
-   "qty_open": 11,
+   "qty_open": 0,
    "stop": 8028.25,
    "target": 12278.5,
    "scaled": false,
    "score": 51.64182136390918,
    "rank": 2,
-   "status": "open",
-   "exit_date": null,
-   "exit_price": null,
-   "reason": null,
-   "realised": 0.0,
+   "status": "closed",
+   "exit_date": "2026-09-30",
+   "exit_price": 8028.25,
+   "reason": "SL Hit",
+   "realised": -15823.237893297499,
    "scale_date": null,
    "scale_price": null,
    "buy_value": 103895.0,
    "buy_costs": 123.58621935,
-   "sell_costs": 0.0
+   "sell_costs": 115.4016739475
   },
   {
    "id": "PTCIL-0003",
@@ -397,6 +397,190 @@
    "buy_value": 103983.99703979492,
    "buy_costs": 123.69208399874725,
    "sell_costs": 0.0
+  },
+  {
+   "id": "ADANIPORTS-0018",
+   "symbol": "ADANIPORTS",
+   "entry_date": "2026-09-30",
+   "entry": 1798.300048828125,
+   "qty": 55,
+   "qty_open": 55,
+   "stop": 1528.5550415039063,
+   "target": 2337.7900634765624,
+   "scaled": false,
+   "score": 36.303438342962465,
+   "rank": 1,
+   "status": "open",
+   "exit_date": null,
+   "exit_price": null,
+   "reason": null,
+   "realised": 0.0,
+   "scale_date": null,
+   "scale_price": null,
+   "buy_value": 98906.50268554688,
+   "buy_costs": 117.65225213953856,
+   "sell_costs": 0.0
+  },
+  {
+   "id": "TEGA-0019",
+   "symbol": "TEGA",
+   "entry_date": "2026-09-30",
+   "entry": 2106.699951171875,
+   "qty": 47,
+   "qty_open": 47,
+   "stop": 1790.6949584960937,
+   "target": 2738.7099365234376,
+   "scaled": false,
+   "score": 25.494573041112893,
+   "rank": 2,
+   "status": "open",
+   "exit_date": null,
+   "exit_price": null,
+   "reason": null,
+   "realised": 0.0,
+   "scale_date": null,
+   "scale_price": null,
+   "buy_value": 99014.89770507812,
+   "buy_costs": 117.78119126712157,
+   "sell_costs": 0.0
+  },
+  {
+   "id": "ACE-0020",
+   "symbol": "ACE",
+   "entry_date": "2026-09-30",
+   "entry": 1232.0,
+   "qty": 80,
+   "qty_open": 80,
+   "stop": 1047.2,
+   "target": 1601.6000000000001,
+   "scaled": false,
+   "score": 20.121528162827833,
+   "rank": 3,
+   "status": "open",
+   "exit_date": null,
+   "exit_price": null,
+   "reason": null,
+   "realised": 0.0,
+   "scale_date": null,
+   "scale_price": null,
+   "buy_value": 98560.0,
+   "buy_costs": 117.24007679999998,
+   "sell_costs": 0.0
+  },
+  {
+   "id": "CASTROLIND-0021",
+   "symbol": "CASTROLIND",
+   "entry_date": "2026-09-30",
+   "entry": 200.52000427246094,
+   "qty": 495,
+   "qty_open": 495,
+   "stop": 170.4420036315918,
+   "target": 260.6760055541992,
+   "scaled": false,
+   "score": 14.640547898472676,
+   "rank": 4,
+   "status": "open",
+   "exit_date": null,
+   "exit_price": null,
+   "reason": null,
+   "realised": 0.0,
+   "scale_date": null,
+   "scale_price": null,
+   "buy_value": 99257.40211486816,
+   "buy_costs": 118.06965753769911,
+   "sell_costs": 0.0
+  },
+  {
+   "id": "CARBORUNIV-0022",
+   "symbol": "CARBORUNIV",
+   "entry_date": "2026-09-30",
+   "entry": 1252.5,
+   "qty": 79,
+   "qty_open": 79,
+   "stop": 1064.625,
+   "target": 1628.25,
+   "scaled": false,
+   "score": 12.338896451231324,
+   "rank": 5,
+   "status": "open",
+   "exit_date": null,
+   "exit_price": null,
+   "reason": null,
+   "realised": 0.0,
+   "scale_date": null,
+   "scale_price": null,
+   "buy_value": 98947.5,
+   "buy_costs": 117.70101967499998,
+   "sell_costs": 0.0
+  },
+  {
+   "id": "JYOTICNC-0023",
+   "symbol": "JYOTICNC",
+   "entry_date": "2026-09-30",
+   "entry": 1039.8499755859375,
+   "qty": 95,
+   "qty_open": 95,
+   "stop": 883.8724792480468,
+   "target": 1351.8049682617188,
+   "scaled": false,
+   "score": 8.86420537336433,
+   "rank": 6,
+   "status": "open",
+   "exit_date": null,
+   "exit_price": null,
+   "reason": null,
+   "realised": 0.0,
+   "scale_date": null,
+   "scale_price": null,
+   "buy_value": 98785.74768066406,
+   "buy_costs": 117.50861043858032,
+   "sell_costs": 0.0
+  },
+  {
+   "id": "TBOTEK-0024",
+   "symbol": "TBOTEK",
+   "entry_date": "2026-09-30",
+   "entry": 1685.199951171875,
+   "qty": 58,
+   "qty_open": 58,
+   "stop": 1432.4199584960936,
+   "target": 2190.759936523438,
+   "scaled": false,
+   "score": 8.355183857076762,
+   "rank": 7,
+   "status": "open",
+   "exit_date": null,
+   "exit_price": null,
+   "reason": null,
+   "realised": 0.0,
+   "scale_date": null,
+   "scale_price": null,
+   "buy_value": 97741.59716796875,
+   "buy_costs": 116.26656207921386,
+   "sell_costs": 0.0
+  },
+  {
+   "id": "INDGN-0025",
+   "symbol": "INDGN",
+   "entry_date": "2026-09-30",
+   "entry": 590.75,
+   "qty": 168,
+   "qty_open": 168,
+   "stop": 502.1375,
+   "target": 767.975,
+   "scaled": false,
+   "score": 3.951014302298895,
+   "rank": 8,
+   "status": "open",
+   "exit_date": null,
+   "exit_price": null,
+   "reason": null,
+   "realised": 0.0,
+   "scale_date": null,
+   "scale_price": null,
+   "buy_value": 99246.0,
+   "buy_costs": 118.05609437999998,
+   "sell_costs": 0.0
   }
  ],
  "events": [
@@ -543,134 +727,212 @@
    "price": 1593.75,
    "qty": 55,
    "note": "SL Hit"
+  },
+  {
+   "date": "2026-09-30",
+   "type": "SELL",
+   "symbol": "POLYCAB",
+   "price": 8028.25,
+   "qty": 11,
+   "note": "SL Hit"
+  },
+  {
+   "date": "2026-09-30",
+   "type": "BUY",
+   "symbol": "ADANIPORTS",
+   "price": 1798.3,
+   "qty": 55,
+   "note": "stop 1528.56 target 2337.79"
+  },
+  {
+   "date": "2026-09-30",
+   "type": "BUY",
+   "symbol": "TEGA",
+   "price": 2106.7,
+   "qty": 47,
+   "note": "stop 1790.69 target 2738.71"
+  },
+  {
+   "date": "2026-09-30",
+   "type": "BUY",
+   "symbol": "ACE",
+   "price": 1232.0,
+   "qty": 80,
+   "note": "stop 1047.20 target 1601.60"
+  },
+  {
+   "date": "2026-09-30",
+   "type": "BUY",
+   "symbol": "CASTROLIND",
+   "price": 200.52,
+   "qty": 495,
+   "note": "stop 170.44 target 260.68"
+  },
+  {
+   "date": "2026-09-30",
+   "type": "BUY",
+   "symbol": "CARBORUNIV",
+   "price": 1252.5,
+   "qty": 79,
+   "note": "stop 1064.62 target 1628.25"
+  },
+  {
+   "date": "2026-09-30",
+   "type": "BUY",
+   "symbol": "JYOTICNC",
+   "price": 1039.85,
+   "qty": 95,
+   "note": "stop 883.87 target 1351.80"
+  },
+  {
+   "date": "2026-09-30",
+   "type": "BUY",
+   "symbol": "TBOTEK",
+   "price": 1685.2,
+   "qty": 58,
+   "note": "stop 1432.42 target 2190.76"
+  },
+  {
+   "date": "2026-09-30",
+   "type": "BUY",
+   "symbol": "INDGN",
+   "price": 590.75,
+   "qty": 168,
+   "note": "stop 502.14 target 767.98"
   }
  ],
  "history": {
   "2026-08-31": {
-   "nav": 2584041.95,
+   "nav": 2582698.61,
    "bench": 23450.349609375,
    "cash": 950761.01,
-   "inv": 1633280.94
+   "inv": 1631937.6
   },
   "2026-09-01": {
-   "nav": 2580272.16,
+   "nav": 2578942.6,
    "bench": 23339.900390625,
    "cash": 949789.75,
-   "inv": 1630482.41
+   "inv": 1629152.85
   },
   "2026-09-02": {
-   "nav": 2559575.37,
+   "nav": 2558221.69,
    "bench": 23222.80078125,
    "cash": 944208.8,
-   "inv": 1615366.57
+   "inv": 1614012.89
   },
   "2026-09-04": {
-   "nav": 2569072.32,
+   "nav": 2567716.58,
    "bench": 23254.150390625,
    "cash": 943547.46,
-   "inv": 1625524.86
+   "inv": 1624169.12
   },
   "2026-09-03": {
-   "nav": 2580643.45,
+   "nav": 2579286.33,
    "bench": 23254.05078125,
    "cash": 942590.0,
-   "inv": 1638053.45
+   "inv": 1636696.33
   },
   "2026-09-07": {
-   "nav": 2567795.03,
+   "nav": 2566500.6,
    "bench": 23156.19921875,
    "cash": 938866.82,
-   "inv": 1628928.2
+   "inv": 1627633.77
   },
   "2026-09-08": {
-   "nav": 2564626.26,
+   "nav": 2563344.23,
    "bench": 23106.099609375,
    "cash": 933179.3,
-   "inv": 1631446.96
+   "inv": 1630164.93
   },
   "2026-09-09": {
-   "nav": 2538475.12,
+   "nav": 2537191.02,
    "bench": 22958.75,
    "cash": 925140.62,
-   "inv": 1613334.5
+   "inv": 1612050.4
   },
   "2026-09-10": {
-   "nav": 2533790.6,
+   "nav": 2532524.76,
    "bench": 22952.349609375,
    "cash": 926968.71,
-   "inv": 1606821.9
+   "inv": 1605556.06
   },
   "2026-09-11": {
-   "nav": 2527307.24,
+   "nav": 2526074.12,
    "bench": 22866.5,
    "cash": 923821.88,
-   "inv": 1603485.36
+   "inv": 1602252.23
   },
   "2026-09-15": {
-   "nav": 2465384.06,
+   "nav": 2464192.28,
    "bench": 22477.44921875,
    "cash": 912786.45,
-   "inv": 1552597.61
+   "inv": 1551405.83
   },
   "2026-09-16": {
-   "nav": 2468471.29,
+   "nav": 2467275.72,
    "bench": 22532.0,
    "cash": 916695.24,
-   "inv": 1551776.05
+   "inv": 1550580.48
   },
   "2026-09-17": {
-   "nav": 2491508.41,
+   "nav": 2490302.77,
    "bench": 22654.650390625,
    "cash": 918787.83,
-   "inv": 1572720.58
+   "inv": 1571514.94
   },
   "2026-09-18": {
-   "nav": 2523787.03,
+   "nav": 2522565.41,
    "bench": 22840.55078125,
    "cash": 921780.65,
-   "inv": 1602006.38
+   "inv": 1600784.76
   },
   "2026-09-21": {
-   "nav": 2531136.71,
+   "nav": 2529915.3,
    "bench": 22860.05078125,
    "cash": 924461.55,
-   "inv": 1606675.16
+   "inv": 1605453.75
   },
   "2026-09-22": {
-   "nav": 2539608.12,
+   "nav": 2538409.38,
    "bench": 22794.19921875,
    "cash": 921093.64,
-   "inv": 1618514.48
+   "inv": 1617315.74
   },
   "2026-09-23": {
-   "nav": 2563060.99,
+   "nav": 2561783.5,
    "bench": 22935.099609375,
    "cash": 925744.74,
-   "inv": 1637316.25
+   "inv": 1636038.76
   },
   "2026-09-24": {
-   "nav": 2530792.36,
+   "nav": 2529524.79,
    "bench": 22552.599609375,
    "cash": 910595.15,
-   "inv": 1620197.21
+   "inv": 1618929.64
   },
   "2026-09-25": {
-   "nav": 2545817.8,
+   "nav": 2544543.34,
    "bench": 22603.5,
    "cash": 913651.14,
-   "inv": 1632166.66
+   "inv": 1630892.21
   },
   "2026-09-28": {
-   "nav": 2496792.98,
+   "nav": 2495524.04,
    "bench": 22232.150390625,
    "cash": 899427.47,
-   "inv": 1597365.52
+   "inv": 1596096.57
   },
   "2026-09-29": {
-   "nav": 2488108.87,
+   "nav": 2486856.33,
    "bench": 22101.0,
    "cash": 896898.56,
-   "inv": 1591210.31
+   "inv": 1589957.76
+  },
+  "2026-09-30": {
+   "nav": 2483326.39,
+   "bench": 22072.099609375,
+   "cash": 189913.51,
+   "inv": 2293412.88
   }
  },
  "signals_by_month": {
@@ -981,10 +1243,156 @@
     "qty": 485,
     "position_id": "PPLPHARMA-0017"
    }
+  ],
+  "2026-09": [
+   {
+    "symbol": "ADANIPORTS",
+    "name": "Adani Ports and Special Economic Zone Ltd.",
+    "close": 1798.300048828125,
+    "score": 36.303438342962465,
+    "wr": -15.313118030335577,
+    "ema5": 1697.9319244541828,
+    "ema15": 1564.082515897493,
+    "ema50": 1245.6999948760642,
+    "date": "2026-09-30",
+    "rank": 1,
+    "size": 99370.67,
+    "stop": 1528.56,
+    "target": 2337.79,
+    "status": "Taken",
+    "qty": 55,
+    "position_id": "ADANIPORTS-0018"
+   },
+   {
+    "symbol": "TEGA",
+    "name": "Tega Industries Ltd.",
+    "close": 2106.699951171875,
+    "score": 25.494573041112893,
+    "wr": -12.563457010041917,
+    "ema5": 1785.9143740788159,
+    "ema15": 1729.6529134040697,
+    "ema50": 1423.100880620342,
+    "date": "2026-09-30",
+    "rank": 2,
+    "size": 99370.67,
+    "stop": 1790.69,
+    "target": 2738.71,
+    "status": "Taken",
+    "qty": 47,
+    "position_id": "TEGA-0019"
+   },
+   {
+    "symbol": "ACE",
+    "name": "Action Construction Equipment Ltd.",
+    "close": 1232.0,
+    "score": 20.121528162827833,
+    "wr": -6.866743047429711,
+    "ema5": 1090.1943540218922,
+    "ema15": 1040.987566387325,
+    "ema50": 907.5761611558135,
+    "date": "2026-09-30",
+    "rank": 3,
+    "size": 99370.67,
+    "stop": 1047.2,
+    "target": 1601.6,
+    "status": "Taken",
+    "qty": 80,
+    "position_id": "ACE-0020"
+   },
+   {
+    "symbol": "CASTROLIND",
+    "name": "Castrol India Ltd.",
+    "close": 200.52000427246094,
+    "score": 14.640547898472676,
+    "wr": -17.17220206668899,
+    "ema5": 186.9341828748225,
+    "ema15": 182.75527246601828,
+    "ema50": 163.06113875203573,
+    "date": "2026-09-30",
+    "rank": 4,
+    "size": 99370.67,
+    "stop": 170.44,
+    "target": 260.68,
+    "status": "Taken",
+    "qty": 495,
+    "position_id": "CASTROLIND-0021"
+   },
+   {
+    "symbol": "CARBORUNIV",
+    "name": "Carborundum Universal Ltd.",
+    "close": 1252.5,
+    "score": 12.338896451231324,
+    "wr": -18.317764864222198,
+    "ema5": 1118.3279547984823,
+    "ema15": 1033.4543571724912,
+    "ema50": 995.4948732151486,
+    "date": "2026-09-30",
+    "rank": 5,
+    "size": 99370.67,
+    "stop": 1064.62,
+    "target": 1628.25,
+    "status": "Taken",
+    "qty": 79,
+    "position_id": "CARBORUNIV-0022"
+   },
+   {
+    "symbol": "JYOTICNC",
+    "name": "Jyoti CNC Automation Ltd.",
+    "close": 1039.8499755859375,
+    "score": 8.86420537336433,
+    "wr": -17.08746618575293,
+    "ema5": 909.0441261482663,
+    "ema15": 885.5454484895384,
+    "ema50": 835.0257304782394,
+    "date": "2026-09-30",
+    "rank": 6,
+    "size": 99370.67,
+    "stop": 883.87,
+    "target": 1351.8,
+    "status": "Taken",
+    "qty": 95,
+    "position_id": "JYOTICNC-0023"
+   },
+   {
+    "symbol": "TBOTEK",
+    "name": "TBO Tek Ltd.",
+    "close": 1685.199951171875,
+    "score": 8.355183857076762,
+    "wr": -10.465434370719626,
+    "ema5": 1567.0413454713005,
+    "ema15": 1463.8692861957422,
+    "ema50": 1446.2080074897642,
+    "date": "2026-09-30",
+    "rank": 7,
+    "size": 99370.67,
+    "stop": 1432.42,
+    "target": 2190.76,
+    "status": "Taken",
+    "qty": 58,
+    "position_id": "TBOTEK-0024"
+   },
+   {
+    "symbol": "INDGN",
+    "name": "Indegene Ltd.",
+    "close": 590.75,
+    "score": 3.951014302298895,
+    "wr": -16.875394787772212,
+    "ema5": 559.312419144087,
+    "ema15": 538.9909302681763,
+    "ema50": 538.0538351627395,
+    "date": "2026-09-30",
+    "rank": 8,
+    "size": 99370.67,
+    "stop": 502.14,
+    "target": 767.98,
+    "status": "Taken",
+    "qty": 168,
+    "position_id": "INDGN-0025"
+   }
   ]
  },
- "last_processed_date": "2026-09-29",
- "last_signal_month": "2026-08",
- "seq": 17,
- "last_run": "2026-09-29T18:21:06.655227+05:30"
+ "last_processed_date": "2026-09-30",
+ "last_signal_month": "2026-09",
+ "seq": 25,
+ "last_run": "2026-09-30T15:36:05.072323+05:30"
 }
