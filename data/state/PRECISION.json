@@ -2,7 +2,7 @@
  "portfolio": "PRECISION",
  "inception": "2026-08-31",
  "capital": 2600000.0,
- "cash_units": 49.44567631368645,
+ "cash_units": 51.04149620449862,
  "ranking": true,
  "created": "2026-09-04T03:09:06.855126+05:30",
  "version": 2,
@@ -703,22 +703,22 @@
    "entry_date": "2026-08-31",
    "entry": 1875.0,
    "qty": 37,
-   "qty_open": 37,
+   "qty_open": 0,
    "stop": 1593.75,
    "target": 2437.5,
    "scaled": false,
    "score": 19.644165298664802,
    "rank": 1,
-   "status": "open",
-   "exit_date": null,
-   "exit_price": null,
-   "reason": null,
-   "realised": 0.0,
+   "status": "closed",
+   "exit_date": "2026-10-06",
+   "exit_price": 984.0,
+   "reason": "Stop (gap)",
+   "realised": -33110.97085199,
    "scale_date": null,
    "scale_price": null,
    "buy_value": 69375.0,
    "buy_costs": 82.52364374999999,
-   "sell_costs": 0.0
+   "sell_costs": 61.44720824
   }
  ],
  "events": [
@@ -1169,6 +1169,14 @@
    "price": 1875.0,
    "qty": 37,
    "note": "stop 1593.75 target 2437.50"
+  },
+  {
+   "date": "2026-10-06",
+   "type": "SELL",
+   "symbol": "POLICYBZR",
+   "price": 984.0,
+   "qty": 37,
+   "note": "Stop (gap)"
   }
  ],
  "history": {
@@ -1315,33 +1323,20 @@
    "bench": 21755.30078125,
    "cash": 1115284.31,
    "inv": 532769.64
+  },
+  "2026-10-06": {
+   "nav": 1667751.0,
+   "bench": 21979.44921875,
+   "cash": 1162526.2,
+   "inv": 505224.8
   }
  },
  "signals_by_month": {
-  "2026-08": [
-   {
-    "symbol": "POLICYBZR",
-    "name": "PB Fintech Ltd.",
-    "close": 1875.0,
-    "score": 19.644165298664802,
-    "wr": -16.229508196721312,
-    "ema5": 1708.3020355184203,
-    "ema15": 1667.5532861972547,
-    "ema50": 1427.8189256066335,
-    "date": "2026-08-31",
-    "rank": 1,
-    "size": 71025.74,
-    "stop": 1593.75,
-    "target": 2437.5,
-    "status": "Taken",
-    "qty": 37,
-    "position_id": "POLICYBZR-0031"
-   }
-  ],
+  "2026-08": [],
   "2026-09": []
  },
- "last_processed_date": "2026-10-05",
+ "last_processed_date": "2026-10-06",
  "last_signal_month": "2026-09",
  "seq": 31,
- "last_run": "2026-10-05T16:55:20.949067+05:30"
+ "last_run": "2026-10-06T16:26:49.211234+05:30"
 }
