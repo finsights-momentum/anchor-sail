@@ -79,7 +79,7 @@ nav.pages .sep{width:1px;background:var(--border-2);margin:6px 6px}
 .switch button.on{background:linear-gradient(135deg,var(--teal),var(--cyan));color:#04121a}
 :root[data-theme="light"] .switch button.on{color:#ffffff}
 .switch button small{display:block;font-weight:500;letter-spacing:0;font-size:11px;opacity:.85}
-.pos{color:var(--green)} .neg{color:var(--rose)} .mut{color:var(--text-3)}
+.pos{color:var(--green)} .neg{color:var(--rose)} .mut{color:var(--text-3)} td.strong{font-weight:800}
 section{margin-top:26px}
 .sec-h{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 10px}
 .sec-h .num{width:28px;height:28px;border-radius:8px;background:var(--teal-bg);color:var(--teal);font-weight:800;display:grid;place-items:center;font-size:13px;box-shadow:0 0 0 1px rgba(45,212,191,.35) inset}
@@ -171,6 +171,35 @@ footer{margin-top:34px;color:var(--text-3);font-size:12px;border-top:1px solid v
 .bar .track i{position:absolute;left:0;top:0;bottom:0;border-radius:6px}
 .bar .val{text-align:right;font-variant-numeric:tabular-nums;font-weight:700;color:var(--strong)}
 @media (max-width:700px){.bar{grid-template-columns:120px 1fr 60px}}
+
+/* comparison / analytics additions */
+:root{--good-rgb:52,211,153; --bad-rgb:251,113,133; --hm-alpha:.78}
+:root[data-theme="light"]{--good-rgb:21,128,61; --bad-rgb:220,38,38; --hm-alpha:.55}
+.pagehead{margin:16px 0 4px}
+.pagehead h2{margin:0 0 4px;font-size:24px;letter-spacing:-.01em;color:var(--strong)}
+.pagehead .tag2{font-size:12.5px;color:var(--text-2)}
+.badges{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.sbadge{font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--surface-3);padding:3px 10px;border-radius:999px}
+:root[data-theme="dark"] .sbadge, :root:not([data-theme="light"]) .sbadge{color:#06101c}
+.sbadge:not([style]){color:var(--text-2)!important;border:1px solid var(--border-2)}
+.controls .lbl{display:block;font-size:10.5px;color:var(--text-3);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}
+select{font:inherit;padding:9px 34px 9px 12px;border:1px solid var(--border-2);border-radius:10px;background:var(--surface) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8'><path d='M1 1l5 5 5-5' fill='none' stroke='%239fb0cc' stroke-width='1.6'/></svg>") no-repeat right 12px center;color:var(--text);font-weight:700;min-width:260px;appearance:none;cursor:pointer}
+select:focus{outline:none;border-color:var(--teal)}
+i.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px;vertical-align:middle}
+tr.best td{background:var(--good-bg)} tr.bench td{background:var(--warn-bg)} tr.sel td{background:var(--teal-bg)} tr.sel td:first-child{box-shadow:inset 3px 0 0 var(--teal)}
+.tblwrap.nomax{max-height:none}
+td.best{color:var(--green);font-weight:800} td.bench, th.bench{background:var(--warn-bg)}
+table.metrics th small{display:block;font-weight:500;font-size:10px;letter-spacing:0;text-transform:none;color:var(--text-3)}
+table.metrics td:first-child{color:var(--text-2);font-weight:600}
+.hmwrap{max-height:none;padding:10px 12px}
+table.hm{border-collapse:separate;border-spacing:3px;font-size:11px;width:100%}
+table.hm th{position:static;background:var(--surface-2);color:var(--text-2);padding:5px 6px;text-align:center;border-radius:5px;font-size:10px;cursor:default}
+table.hm td{padding:6px 5px;text-align:center;border-radius:5px;border:none;min-width:40px;font-weight:600;color:var(--strong)}
+table.hm td.y{background:var(--surface-3);font-weight:800;color:var(--text)}
+table.hm td.e{background:var(--surface-2);opacity:.5}
+.scard::before{background:var(--accent, linear-gradient(90deg,var(--teal),var(--cyan),var(--pink)))}
+.scard .m{grid-template-columns:repeat(3,1fr)}
+.scard .m b{font-size:15px}
 </style>
 </head>
 <body>
@@ -178,7 +207,7 @@ footer{margin-top:34px;color:var(--text-3);font-size:12px;border-top:1px solid v
   <header>
     <div class="brand">
       <div class="logo">FIN</div>
-      <h1>FINSIGHTS <em>by Himanshu Arora</em><small>live strategy dashboard · six model portfolios · live books and 2016→today backtests</small></h1>
+      <h1>FINSIGHTS <em>by Himanshu Arora</em><small>live strategy dashboard · six model portfolios · live books, realised &amp; unrealised P&amp;L, 2016→today backtests</small></h1>
     </div>
     <div class="meta" id="meta"></div>
     <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
@@ -314,94 +343,315 @@ function secHead(n, title, desc){ return el('div', {class:'sec-h'}, el('span',{c
 const kpi = (v, k, d, c) => el('div', {class:'kpi'}, el('div',{class:'v '+(c||'')},v), el('div',{class:'k'},k), d? el('div',{class:'d'},d):null);
 const signCol = v => v==null ? '' : v>0 ? 'green' : v<0 ? 'rose' : '';
 
-// =============================================================== OVERVIEW
+// =============================================================== ANALYTICS (month-end basis, computed in the browser from each book's history)
+const SCOL = {CORE:'var(--s1)', PRECISION:'var(--s4)', FRONTIER:'var(--s6)', SPECTRUM:'var(--s5)', S1:'var(--s2)', S4PLUS:'var(--s7)'};
+const BENCH2_COL = 'var(--s3)', OWNB_COL = 'var(--text-3)';
+const OV = {metric:'cagr', uni:null};
+const MN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const rets = a => a.map((v,i)=> i===0 || v==null || a[i-1]==null || !a[i-1] ? null : v/a[i-1]-1);
+const rolling = (a,k) => a.map((v,i)=> i<k || v==null || a[i-k]==null || !a[i-k] ? null : v/a[i-k]-1);
+const drawdown = a => { let pk=-Infinity; return a.map(v=>{ if(v==null) return null; pk=Math.max(pk,v); return (v/pk-1)*100; }); };
+const mean = xs => xs.length? xs.reduce((s,x)=>s+x,0)/xs.length : null;
+const stdev = xs => { if(xs.length<2) return null; const m=mean(xs); return Math.sqrt(xs.reduce((s,x)=>s+(x-m)*(x-m),0)/(xs.length-1)); };
+// collapse a daily/monthly history into one point per calendar month (the last available session of that month)
+function monthly(H){
+  const by = new Map();
+  for(const h of H){ if(h.nav==null) continue; by.set(h.date.slice(0,7), h); }
+  const ym = [...by.keys()].sort();
+  return {ym, dates: ym.map(k=>by.get(k).date), nav: ym.map(k=>by.get(k).nav), bench: ym.map(k=>by.get(k).bench ?? null), bench2: ym.map(k=>by.get(k).bench2 ?? null),
+          n: ym.map(k=>by.get(k).n ?? null), exposure: ym.map(k=>by.get(k).exposure_pct ?? null)};
+}
+const rebase = (arr, to=100) => { const b = arr.find(v=>v!=null); return arr.map(v=> (v==null||!b)? null : v/b*to); };
+function yearsBetween(d0, d1){ return (new Date(d1) - new Date(d0)) / (365.25*864e5); }
+// return-series statistics for one series (and optionally against a benchmark series)
+function stats(dates, nav, bench){
+  const out = {};
+  const first = nav.findIndex(v=>v!=null), last = nav.length-1;
+  if(first<0 || last<=first) return out;
+  const yrs = yearsBetween(dates[first], dates[last]);
+  out.years = yrs; out.total_return = (nav[last]/nav[first]-1)*100;
+  out.cagr = yrs>0 ? (Math.pow(nav[last]/nav[first], 1/yrs)-1)*100 : null;
+  const dd = drawdown(nav); out.mdd = Math.min(...dd.filter(v=>v!=null));
+  out.calmar = (out.cagr!=null && out.mdd<0) ? out.cagr/Math.abs(out.mdd) : null;
+  const r = rets(nav); const rs = r.filter(v=>v!=null);
+  const sd = stdev(rs); out.vol = sd!=null? sd*Math.sqrt(12)*100 : null; out.sharpe = (sd? mean(rs)/sd*Math.sqrt(12) : null);
+  out.pos_months = rs.length? rs.filter(v=>v>0).length/rs.length*100 : null; out.months = rs.length;
+  out.best_month = rs.length? Math.max(...rs)*100 : null; out.worst_month = rs.length? Math.min(...rs)*100 : null;
+  if(bench){
+    const rb = rets(bench); const up=[], upb=[], dn=[], dnb=[];
+    r.forEach((v,i)=>{ const b=rb[i]; if(v==null||b==null) return; if(b>0){ up.push(v); upb.push(b); } else if(b<0){ dn.push(v); dnb.push(b); } });
+    out.up_capture = upb.length && mean(upb) ? mean(up)/mean(upb)*100 : null;
+    out.down_capture = dnb.length && mean(dnb) ? mean(dn)/mean(dnb)*100 : null;
+    const bs = stats(dates, bench); out.bench = bs; out.excess_cagr = (out.cagr!=null && bs.cagr!=null)? out.cagr-bs.cagr : null;
+  }
+  return out;
+}
+// metric catalogue for the comparison page: key, label, unit, better ('high' | 'low'), source ('stat' = month-end analytics, 'eng' = engine trade stats), benchmark applicable
+const METS = [
+  ['cagr','CAGR','%','high','stat',true], ['total_return','Total return','%','high','stat',true], ['mdd','Max drawdown','%','high','stat',true],
+  ['calmar','Calmar','x','high','stat',true], ['sharpe','Sharpe','x','high','stat',true], ['vol','Volatility (ann.)','%','low','stat',true],
+  ['up_capture','Up capture','%','high','stat',false], ['down_capture','Down capture','%','low','stat',false],
+  ['excess_cagr','Excess vs '+'__B2__','%','high','stat',false], ['excess_own','Excess vs own benchmark','%','high','eng',false], ['own_bench_cagr','Own benchmark CAGR','%','high','eng',false],
+  ['pos_months','Positive months','%','high','stat',true], ['best_month','Best month','%','high','stat',true], ['worst_month','Worst month','%','high','stat',true],
+  ['win_rate','Win rate','%','high','eng',false], ['profit_factor','Profit factor','x','high','eng',false], ['avg_hold','Avg holding (months)','mo','high','eng',false], ['trades','Closed positions','#','high','eng',false],
+  ['realised','Realised P&L','₹','high','eng',false], ['unrealised','Unrealised P&L','₹','high','eng',false], ['final_value','Final value','₹','high','eng',false]];
+const MET = Object.fromEntries(METS.map(m=>[m[0], {label:m[1], unit:m[2], better:m[3], src:m[4], bench:m[5]}]));
+function fmtM(v, key){ if(v==null || Number.isNaN(v)) return '—'; const u=MET[key].unit;
+  if(u==='%') return (key==='excess_cagr'||key==='excess_own') ? fPct(v) : v.toFixed(2)+'%';
+  if(u==='x') return v.toFixed(2)+'×'; if(u==='mo') return v.toFixed(1); if(u==='#') return inr.format(Math.round(v)); if(u==='₹') return fR(v); return fN(v); }
+// one comparable record per backtest book
+function btRecord(key, name, alias, color, capital, benchName, H, eng){
+  const m = monthly(H); const S = stats(m.dates, m.nav, m.bench2); const own = stats(m.dates, m.nav, m.bench);
+  return {key, name, alias, color, capital, benchName, m, S,
+    vals: {cagr:S.cagr, total_return:S.total_return, mdd:S.mdd, calmar:S.calmar, sharpe:S.sharpe, vol:S.vol, up_capture:S.up_capture, down_capture:S.down_capture,
+      excess_cagr:S.excess_cagr, excess_own:own.excess_cagr, own_bench_cagr: own.bench? own.bench.cagr:null, pos_months:S.pos_months, best_month:S.best_month, worst_month:S.worst_month,
+      win_rate:eng.win_rate, profit_factor:eng.profit_factor, avg_hold:eng.avg_hold, trades:eng.trades, realised:eng.realised, unrealised:eng.unrealised, final_value:eng.final_value}};
+}
+function unrealisedOf(list){ return list.reduce((s,h)=> s + (h.unrealised||0), 0); }
+function momEng(B){ const m=B.metrics; return {win_rate:m.win_rate_pct, profit_factor:m.profit_factor, avg_hold:m.avg_holding_months, trades:m.closed_trades, realised:m.realised_pnl, unrealised:unrealisedOf(B.holdings), final_value:m.final_value}; }
+function asEng(B){ const m=B.metrics; return {win_rate:m.win_rate_pct, profit_factor:m.profit_factor, avg_hold:m.avg_holding_months, trades:m.total_trades, realised:m.realised_pnl, unrealised:m.unrealised_pnl, final_value:m.final_value}; }
+// the comparison set: four Anchor & Sail books + the two momentum books on the selected universe
+function comparisonSet(){
+  const D=DATA, uni = OV.uni && D.momentum.strategies.S1.universes[OV.uni] ? OV.uni : D.momentum.default_universe; OV.uni = uni;
+  const recs=[];
+  for(const [k,P] of Object.entries(D.portfolios)) if(P.backtest) recs.push(btRecord(k, P.display, k, SCOL[k], P.backtest.capital, P.benchmark, P.backtest.history, asEng(P.backtest)));
+  for(const [k,Sx] of Object.entries(D.momentum.strategies)){ const U=Sx.universes[uni]; recs.push(btRecord(k, Sx.name, `${Sx.code} · ${U.universe_label}`, SCOL[k], D.momentum.capital, U.benchmark, U.backtest.history, momEng(U.backtest))); }
+  // common yardstick as its own record (month-end, from the longest history)
+  const ref = recs.reduce((a,b)=> a.m.ym.length>=b.m.ym.length? a:b);
+  const bm = monthly(ref.m.dates.map((d,i)=>({date:d, nav:ref.m.bench2[i]}))); const BS = stats(bm.dates, bm.nav);
+  const bench = {key:'B2', name:D.bench2_short, color:BENCH2_COL, m:bm, S:BS, vals:{cagr:BS.cagr, total_return:BS.total_return, mdd:BS.mdd, calmar:BS.calmar, sharpe:BS.sharpe, vol:BS.vol, pos_months:BS.pos_months, best_month:BS.best_month, worst_month:BS.worst_month}};
+  return {recs, bench, uni};
+}
+
+// ---------------------------------------------------------------- heat-map tables (theme-aware colours read from CSS variables)
+function heatColor(v, amax){
+  if(v==null || Number.isNaN(v)) return 'transparent';
+  const cs = getComputedStyle(document.documentElement); const rgb = cs.getPropertyValue(v>=0?'--good-rgb':'--bad-rgb').trim() || (v>=0?'52,211,153':'251,113,133');
+  const maxA = parseFloat(cs.getPropertyValue('--hm-alpha')) || .8; const t = Math.min(1, Math.abs(v)/(amax||1));
+  return `rgba(${rgb},${(0.08 + t*(maxA-0.08)).toFixed(3)})`;
+}
+function heatMonthly(ym, vals, {yearCol=true}={}){
+  const grid={}; let amax=0.01;
+  ym.forEach((k,i)=>{ const v=vals[i]; if(v==null) return; const [y,mo]=k.split('-').map(Number); (grid[y]=grid[y]||{})[mo]=v*100; amax=Math.max(amax, Math.abs(v*100)); });
+  const years=Object.keys(grid).sort(); const cap = Math.min(amax, 15);
+  const t = el('table',{class:'hm'}); const th = el('tr',{}, el('th',{},'Year'), ...MN.map(x=>el('th',{},x)), yearCol? el('th',{},'Year'):null); t.append(el('thead',{},th));
+  const tb = el('tbody');
+  for(const y of years){ const tr=el('tr',{}, el('td',{class:'y'}, y)); let acc=1, any=false;
+    for(let mo=1;mo<=12;mo++){ const v=grid[y][mo]; if(v==null){ tr.append(el('td',{class:'e'})); continue; } acc*=(1+v/100); any=true; tr.append(el('td',{style:`background:${heatColor(v,cap)}`, title:`${MN[mo-1]} ${y}: ${fPct(v)}`}, v.toFixed(1))); }
+    if(yearCol) tr.append(el('td',{class:'y '+cls(any?acc-1:null)}, any? ((acc-1)*100).toFixed(1) : ''));
+    tb.append(tr); }
+  t.append(tb); return el('div',{class:'card'}, el('div',{class:'tblwrap hmwrap nomax'}, t));
+}
+function heatQuarterly(ym, vals){
+  const grid={}; ym.forEach((k,i)=>{ const v=vals[i]; if(v==null) return; const [y,mo]=k.split('-').map(Number); const q=Math.floor((mo-1)/3)+1; grid[y]=grid[y]||{}; grid[y][q]=(grid[y][q]??1)*(1+v); });
+  const years=Object.keys(grid).sort(); let amax=0.01; years.forEach(y=>{ for(let q=1;q<=4;q++) if(grid[y][q]!=null) amax=Math.max(amax, Math.abs((grid[y][q]-1)*100)); }); const cap=Math.min(amax, 30);
+  const t = el('table',{class:'hm'}); t.append(el('thead',{}, el('tr',{}, el('th',{},'Year'), el('th',{},'Q1'), el('th',{},'Q2'), el('th',{},'Q3'), el('th',{},'Q4'))));
+  const tb=el('tbody'); for(const y of years){ const tr=el('tr',{}, el('td',{class:'y'}, y)); for(let q=1;q<=4;q++){ const g=grid[y][q]; if(g==null){ tr.append(el('td',{class:'e'})); continue; } const p=(g-1)*100; tr.append(el('td',{style:`background:${heatColor(p,cap)}`}, p.toFixed(1))); } tb.append(tr); }
+  t.append(tb); return el('div',{class:'card'}, el('div',{class:'tblwrap hmwrap nomax'}, t));
+}
+
+// ---------------------------------------------------------------- bar + bubble charts (SVG, theme colours via CSS variables)
+const svgNS = (t, a={}) => { const e=document.createElementNS('http://www.w3.org/2000/svg', t); for(const [k,v] of Object.entries(a)) e.setAttribute(k,v); return e; };
+function barChart({title, sub, items, fmt, height=300}){
+  const card = el('div',{class:'chart'}); card.append(el('div',{class:'t'}, el('b',{}, title), sub? el('span',{class:'mut', style:'font-size:12px'}, sub):null));
+  const vals = items.map(i=>i.value).filter(v=>v!=null); if(!vals.length){ card.append(el('div',{class:'empty'},'No data.')); return card; }
+  const W=760, Hh=height, pl=58, pr=14, pt=26, pb=58; let lo=Math.min(0,...vals), hi=Math.max(0,...vals); const pad=(hi-lo)*0.12||1; hi+=pad; if(lo<0) lo-=pad;
+  const raw=(hi-lo)/4, mag=Math.pow(10, Math.floor(Math.log10(raw))), step=[1,2,2.5,5,10].map(m=>m*mag).find(st=>st>=raw); lo=Math.floor(lo/step)*step; hi=Math.ceil(hi/step)*step;
+  const y = v => pt + (Hh-pt-pb)*(1-(v-lo)/(hi-lo)); const n=items.length; const slot=(W-pl-pr)/n, bw=Math.min(64, slot*0.62);
+  const svg = svgNS('svg',{viewBox:`0 0 ${W} ${Hh}`});
+  for(let v=lo; v<=hi+1e-9; v+=step){ svg.append(svgNS('line',{x1:pl,x2:W-pr,y1:y(v),y2:y(v),stroke:'var(--border)'})); const t=svgNS('text',{x:pl-8,y:y(v)+4,'text-anchor':'end',fill:'var(--text-3)','font-size':11}); t.textContent=fmt(v); svg.append(t); }
+  svg.append(svgNS('line',{x1:pl,x2:W-pr,y1:y(0),y2:y(0),stroke:'var(--border-2)'}));
+  items.forEach((it,i)=>{ const cx = pl + slot*(i+0.5); if(it.value!=null){ const y0=y(0), y1=y(it.value); const r=svgNS('rect',{x:cx-bw/2, y:Math.min(y0,y1), width:bw, height:Math.max(1,Math.abs(y0-y1)), rx:6, fill:it.color, opacity: it.bench? .85:1}); if(it.bench) r.setAttribute('stroke-dasharray','0'); svg.append(r);
+      const v=svgNS('text',{x:cx, y: it.value>=0? y1-6 : y1+14, 'text-anchor':'middle', fill:'var(--strong)', 'font-size':12, 'font-weight':700}); v.textContent=fmt(it.value); svg.append(v); }
+    const words = it.label.split(' '); const lines=[]; let cur=''; for(const w of words){ if((cur+' '+w).trim().length>14 && cur){ lines.push(cur); cur=w; } else cur=(cur+' '+w).trim(); } if(cur) lines.push(cur);
+    lines.slice(0,2).forEach((ln,li)=>{ const t=svgNS('text',{x:cx, y:Hh-pb+18+li*13, 'text-anchor':'middle', fill:'var(--text-2)','font-size':11}); t.textContent=ln+(li===1&&lines.length>2?'…':''); svg.append(t); }); });
+  card.append(svg); return card;
+}
+function bubbleChart({title, sub, points, xLabel, yLabel, fmtX, fmtY, height=330}){
+  const card = el('div',{class:'chart'}); card.append(el('div',{class:'t'}, el('b',{}, title), sub? el('span',{class:'mut', style:'font-size:12px'}, sub):null));
+  const pts = points.filter(p=>p.x!=null && p.y!=null); if(pts.length<1){ card.append(el('div',{class:'empty'},'No data.')); return card; }
+  const W=760, Hh=height, pl=58, pr=24, pt=20, pb=44;
+  let xlo=Math.min(...pts.map(p=>p.x)), xhi=Math.max(...pts.map(p=>p.x)), ylo=Math.min(0,...pts.map(p=>p.y)), yhi=Math.max(...pts.map(p=>p.y));
+  const xp=(xhi-xlo)*0.18||1, yp=(yhi-ylo)*0.15||1; xlo-=xp; xhi+=xp; ylo-= (ylo<0? yp:0); yhi+=yp;
+  const x = v => pl + (W-pl-pr)*(v-xlo)/(xhi-xlo), y = v => pt + (Hh-pt-pb)*(1-(v-ylo)/(yhi-ylo));
+  const svg = svgNS('svg',{viewBox:`0 0 ${W} ${Hh}`});
+  for(let k=0;k<=4;k++){ const v=ylo+(yhi-ylo)*k/4; svg.append(svgNS('line',{x1:pl,x2:W-pr,y1:y(v),y2:y(v),stroke:'var(--border)'})); const t=svgNS('text',{x:pl-8,y:y(v)+4,'text-anchor':'end',fill:'var(--text-3)','font-size':11}); t.textContent=fmtY(v); svg.append(t);
+    const vx=xlo+(xhi-xlo)*k/4; svg.append(svgNS('line',{y1:pt,y2:Hh-pb,x1:x(vx),x2:x(vx),stroke:'var(--border)'})); const tx=svgNS('text',{x:x(vx),y:Hh-pb+16,'text-anchor':'middle',fill:'var(--text-3)','font-size':11}); tx.textContent=fmtX(vx); svg.append(tx); }
+  const xl=svgNS('text',{x:(pl+W-pr)/2,y:Hh-6,'text-anchor':'middle',fill:'var(--text-2)','font-size':11.5}); xl.textContent=xLabel; svg.append(xl);
+  const yl=svgNS('text',{x:14,y:(pt+Hh-pb)/2,'text-anchor':'middle',fill:'var(--text-2)','font-size':11.5,transform:`rotate(-90 14 ${(pt+Hh-pb)/2})`}); yl.textContent=yLabel; svg.append(yl);
+  const rmax = Math.max(...pts.map(p=>p.r||0), 0.01);
+  pts.forEach((p,i)=>{ const r = 9 + 22*Math.sqrt(Math.max(0,p.r||0)/rmax); svg.append(svgNS('circle',{cx:x(p.x),cy:y(p.y),r, fill:p.color, 'fill-opacity':.28, stroke:p.color,'stroke-width':2}));
+    const below = i%2===1; const t=svgNS('text',{x:x(p.x), y: below? y(p.y)+r+13 : y(p.y)-r-5, 'text-anchor':'middle', fill:'var(--strong)','font-size':11.5,'font-weight':700}); t.textContent=p.label; svg.append(t); });
+  const tt=$('#tt'); svg.addEventListener('mousemove', ev=>{ const rct=svg.getBoundingClientRect(); const fx=(ev.clientX-rct.left)/rct.width*W, fy=(ev.clientY-rct.top)/rct.height*Hh; let best=null, bd=1e9; pts.forEach(p=>{ const d=Math.hypot(x(p.x)-fx, y(p.y)-fy); if(d<bd){bd=d; best=p;} });
+    if(best && bd<40){ tt.innerHTML=`<b>${best.label}</b><br>${yLabel}: ${fmtY(best.y)}<br>${xLabel}: ${fmtX(best.x)}<br>Calmar: ${best.r!=null? best.r.toFixed(2)+'×':'—'}`; tt.style.display='block'; tt.style.left=(ev.pageX+14)+'px'; tt.style.top=(ev.pageY-10)+'px'; } else tt.style.display='none'; });
+  svg.addEventListener('mouseleave', ()=>{ tt.style.display='none'; });
+  card.append(svg); return card;
+}
+// strategy badge row + page title (reference layout)
+function pageHead(title, tag, badges){ const h = el('div',{class:'pagehead'}); if(badges && badges.length) h.append(el('div',{class:'badges'}, ...badges.map(b=>el('span',{class:'sbadge', style:b.color? `background:${b.color}`:null}, b.text)))); h.append(el('h2',{}, title), el('div',{class:'tag2'}, tag)); return h; }
+function tradeTable(ts, title, emptyMsg){
+  const card = el('div',{class:'card'}); if(!ts.length){ card.append(el('div',{class:'empty'}, emptyMsg||'No closed positions yet.')); return card; }
+  const t = el('table'); t.append(el('thead',{}, el('tr',{}, el('th',{class:'l'},'Stock'), el('th',{},'Entry'), el('th',{},'Exit'), el('th',{},'Months'), el('th',{},'P&L %'), el('th',{},'Net ₹'), el('th',{class:'l'},'Exit reason'))));
+  const tb = el('tbody'); for(const r of ts){ const tr=el('tr'); tr.append(el('td',{class:'sym', title:r.name||''}, r.symbol), td(r.entry_date), td(r.exit_date||'—'), td(r.months ?? '—'), pctCell(r.pnl_pct), td(fR(r.net), cls(r.net)), td(r.reason||'—','l')); tb.append(tr); } t.append(tb);
+  card.append(el('div',{class:'tblwrap'}, t)); return card;
+}
+const normAS = t => ({symbol:t.symbol, name:t.name, entry_date:t.entry_date, exit_date:t.exit_date, months:t.months, pnl_pct:t.pnl_pct, net:t.realised, reason:t.reason});
+const normMom = t => ({symbol:t.symbol, name:t.name, entry_date:t.entry_date, exit_date:t.exit_date, months:t.months, pnl_pct:t.return_pct, net:t.net_pnl, reason:t.reason});
+
+// shared backtest analytics block (sections 1–6) used by both engines
+function btAnalytics(M, ctx){
+  const {name, color, capital, benchName, H, eng, trades, mddDaily, interest, charges, start, asOf, extraKpis=[]} = ctx;
+  const m = monthly(H), S = stats(m.dates, m.nav, m.bench), S2 = stats(m.dates, m.nav, m.bench2);
+  const s1 = el('section'); s1.append(secHead('1','Key metrics', `${start} → ${asOf} · month-end basis for return/risk statistics · trade statistics from the ledger`));
+  const kp = el('div',{class:'kpis'});
+  kp.append(kpi(fPct(S.cagr,false),'CAGR',`${S.years? S.years.toFixed(1):'—'} years`,'amber'), kpi(fPct(S.excess_cagr),`Excess vs ${benchName}`, S.bench? `${benchName} CAGR ${fPct(S.bench.cagr,false)}`:'', signCol(S.excess_cagr)),
+    kpi(fPct(S2.excess_cagr),`Excess vs ${DATA.bench2_short}`, S2.bench? `${DATA.bench2_short} CAGR ${fPct(S2.bench.cagr,false)}`:'', signCol(S2.excess_cagr)),
+    kpi(fPct(S.mdd,false),'Max drawdown', mddDaily!=null? `month-end · daily ${fPct(mddDaily,false)}`:'month-end NAV','rose'), kpi(fN(S.calmar)+'×','Calmar','CAGR ÷ max drawdown',''), kpi(fN(S.sharpe)+'×','Sharpe','monthly returns, rf = 0',''),
+    kpi(fPct(S.vol,false),'Volatility','annualised, monthly returns',''), kpi(fPct(S.up_capture,false),'Up capture',`vs ${benchName}`,'green'), kpi(fPct(S.down_capture,false),'Down capture',`vs ${benchName} (lower is better)`,'cyan'),
+    kpi(fPct(eng.win_rate,false),'Win rate',`${eng.wins} of ${eng.trades} closed`,'green'), kpi(fN(eng.profit_factor)+'×','Profit factor','gross profit ÷ gross loss',''), kpi(eng.avg_hold!=null? eng.avg_hold.toFixed(1)+' mo':'—','Avg holding','closed positions',''),
+    kpi(fR(eng.realised),'Realised P&L','closed positions, net of charges', signCol(eng.realised)), kpi(fR(eng.unrealised),'Unrealised P&L','open positions at today\'s prices', signCol(eng.unrealised)),
+    kpi(fR(eng.final_value),'Final value',`on ₹${inr.format(capital)} · ${fPct(S.total_return,false)}`,'teal'), kpi(fR(charges),'Charges paid', interest!=null? `interest earned ${fR(interest)}`:'STT, txn, stamp, SEBI, GST, DP','amber'),
+    kpi(fPct(S.pos_months,false),'Positive months',`best ${fPct(S.best_month)} · worst ${fPct(S.worst_month)}`,''), ...extraKpis);
+  s1.append(kp); M.append(s1);
+  const s2 = el('section'); s2.append(secHead('2','Growth and drawdown', `₹${inr.format(capital)} from ${start}; benchmarks rebased to the same starting capital`));
+  const two = el('div',{class:'two'});
+  two.append(lineChart({title:`Growth vs ${benchName} and ${DATA.bench2_short} (log scale)`, dates:m.dates, series:[{name, color, values:m.nav}, {name:benchName, color:OWNB_COL, values:rebase(m.bench, m.nav[0])}, {name:DATA.bench2_short, color:BENCH2_COL, values:rebase(m.bench2, m.nav[0])}], fmt:v=>lakh(v), base:capital, area:true, minPts:2, height:330, log:true}),
+    lineChart({title:'Drawdown (underwater, month-end %)', dates:m.dates, series:[{name, color, values:drawdown(m.nav)}, {name:benchName, color:OWNB_COL, values:drawdown(m.bench)}], fmt:v=>v.toFixed(1)+'%', area:true, base:0, minPts:2, height:330, padTop:false}));
+  s2.append(two);
+  const two2 = el('div',{class:'two', style:'margin-top:12px'});
+  two2.append(lineChart({title:'Rolling 12-month return (%)', dates:m.dates, series:[{name, color, values:rolling(m.nav,12).map(v=>v==null?null:v*100)}, {name:benchName, color:OWNB_COL, values:rolling(m.bench,12).map(v=>v==null?null:v*100)}], fmt:v=>v.toFixed(0)+'%', base:0, minPts:13, height:260}), ctx.rightChart(m));
+  s2.append(two2); M.append(s2);
+  const s3 = el('section'); s3.append(secHead('3','Monthly returns heat-map (%)', 'month-end to month-end, net of charges · right-hand column = calendar year'));
+  s3.append(heatMonthly(m.ym, rets(m.nav))); M.append(s3);
+  const s4 = el('section'); s4.append(secHead('4','Quarterly returns and monthly out-performance', `quarterly compounding of the monthly figures · out-performance = ${name} monthly return − ${benchName} monthly return`));
+  const two3 = el('div',{class:'two'}); const rb = rets(m.bench); const opp = rets(m.nav).map((v,i)=> (v==null||rb[i]==null)? null : v-rb[i]);
+  two3.append(el('div',{}, el('h3',{style:'margin-top:0'},'Quarterly returns (%)'), heatQuarterly(m.ym, rets(m.nav))), el('div',{}, el('h3',{style:'margin-top:0'},`Monthly out-performance vs ${benchName} (%)`), heatMonthly(m.ym, opp, {yearCol:false})));
+  s4.append(two3); M.append(s4);
+  const s5 = el('section'); s5.append(secHead('5','Top and weakest trades', `by net return on the position · ${trades.length} closed positions`));
+  const sorted = trades.filter(t=>t.pnl_pct!=null).slice().sort((a,b)=>b.pnl_pct-a.pnl_pct);
+  const two4 = el('div',{class:'two'}); two4.append(el('div',{}, el('h3',{style:'margin-top:0'},'Top 10 trades'), tradeTable(sorted.slice(0,10))), el('div',{}, el('h3',{style:'margin-top:0'},'Weakest 10 trades'), tradeTable(sorted.slice(-10).reverse())));
+  s5.append(two4); M.append(s5);
+  return {m, S, S2};
+}
+
+// =============================================================== OVERVIEW (summary page)
+function liveRows(){
+  const D=DATA, rows=[];
+  for(const [k,P] of Object.entries(D.portfolios)){ const pf=P.performance;
+    rows.push({key:k, type:'anchor', name:P.display, alias:k, color:SCOL[k], engine:'Anchor & Sail', universe:P.universe_label, benchmark:P.benchmark, inception:P.inception, capital:P.capital,
+      nav:pf.nav, return_pct:pf.return_pct, bench_return_pct:pf.bench_return_pct, bench2_return_pct:pf.bench2_return_pct, realised:pf.realised, unrealised:pf.unrealised, max_dd_pct:pf.max_dd_pct,
+      positions:pf.open_positions, slots:pf.slots, today:`${P.exits.filter(e=>e.today).length} exit${P.exits.filter(e=>e.today).length===1?'':'s'} today`, H:P.history, open:()=>go(k,'live'), openBt:()=>go(k,'bt'),
+      bt:P.backtest? {cagr:P.backtest.metrics.cagr_pct, trades:P.backtest.metrics.total_trades}:null}); }
+  for(const [k,Sx] of Object.entries(D.momentum.strategies)) for(const [uk,U] of Object.entries(Sx.universes)){ const pf=U.live.performance;
+    rows.push({key:`${k}:${uk}`, type:'momentum', name:Sx.name, alias:`${Sx.code} · ${U.universe_label}` + (uk===D.momentum.default_universe?' · default':''), color:SCOL[k], engine:Sx.style, universe:U.universe_label, benchmark:U.benchmark, inception:U.live.inception, capital:D.momentum.capital,
+      nav:pf.nav, return_pct:pf.return_pct, bench_return_pct:pf.bench_return_pct, bench2_return_pct:pf.bench2_return_pct, realised:pf.realised, unrealised:unrealisedOf(U.live.holdings), max_dd_pct:pf.max_dd_pct,
+      positions:pf.holdings, slots:D.momentum.rules.hold, today:`exposure ${pf.exposure_pct??'—'}%`, H:U.live.history, open:()=>go(k,uk,'live'), openBt:()=>go(k,uk,'bt'), uni:uk, bt:{cagr:U.backtest.metrics.cagr_pct, trades:U.backtest.metrics.closed_trades}}); }
+  return rows;
+}
 function renderOverview(M){
   M.replaceChildren();
-  const D = DATA, rows = D.summary;
+  const D = DATA; const cmp = comparisonSet(); const rows = liveRows();
+  // alerts
   const alerts = [];
   for(const [k,P] of Object.entries(D.portfolios)){
-    for(const e of P.exits.filter(e=>e.today)) alerts.push({strategy:P.display, text:`${e.type==='EXIT'?'Exit':'Scale-out'} ${e.symbol} — ${e.reason}`, kind:'exit', key:k});
+    for(const e of P.exits.filter(e=>e.today)) alerts.push({strategy:P.display, text:`${e.type==='EXIT'?'Exit':'Scale-out'} ${e.symbol} — ${e.reason}`, kind:'exit', href:`#${k}/live`});
     const near = P.open_positions.filter(p=>p.to_stop_pct!=null && p.to_stop_pct<=3);
-    if(near.length) alerts.push({strategy:P.display, text:`${near.length} holding${near.length>1?'s':''} within 3% of stop: ${near.slice(0,4).map(p=>p.symbol).join(', ')}${near.length>4?'…':''}`, kind:'warn', key:k});
+    if(near.length) alerts.push({strategy:P.display, text:`${near.length} holding${near.length>1?'s':''} within 3% of stop: ${near.slice(0,4).map(p=>p.symbol).join(', ')}${near.length>4?'…':''}`, kind:'warn', href:`#${k}/live`});
   }
   for(const [k,Sx] of Object.entries(D.momentum.strategies)){
-    const U = Sx.universes[D.momentum.default_universe]; const lr = U.live.last_rebalance;
-    if(lr && lr.date >= D.data_date.slice(0,8)+'01') alerts.push({strategy:`${Sx.name} · ${U.universe_label}`, text:`Rebalanced ${lr.date}: ${lr.orders.filter(o=>o.side==='BUY').length} buys, ${lr.orders.filter(o=>o.side==='SELL').length} sells · exposure ${lr.exposure_pct}%`, kind:'info', key:k});
-    if(U.live.regime && U.live.regime.nifty_vs_200dma_pct!=null && U.live.regime.nifty_vs_200dma_pct<0 && k==='S4PLUS') alerts.push({strategy:Sx.name, text:`Nifty is ${fPct(U.live.regime.nifty_vs_200dma_pct)} vs its 200-DMA — de-risk regime (50% exposure) at the next rebalance`, kind:'warn', key:k});
+    const U = Sx.universes[cmp.uni]; const lr = U.live.last_rebalance;
+    if(lr && lr.date >= D.data_date.slice(0,8)+'01') alerts.push({strategy:`${Sx.name} · ${U.universe_label}`, text:`Rebalanced ${lr.date}: ${lr.orders.filter(o=>o.side==='BUY').length} buys, ${lr.orders.filter(o=>o.side==='SELL').length} sells · exposure ${lr.exposure_pct}%`, kind:'info', href:`#${k}/${cmp.uni}/live`});
+    if(k==='S4PLUS' && U.live.regime && U.live.regime.nifty_vs_200dma_pct!=null && U.live.regime.nifty_vs_200dma_pct<0) alerts.push({strategy:Sx.name, text:`Nifty is ${fPct(U.live.regime.nifty_vs_200dma_pct)} vs its 200-DMA — de-risk regime (50% exposure) at the next rebalance`, kind:'warn', href:`#${k}/${cmp.uni}/live`});
   }
+  const nextReb = Object.values(D.momentum.strategies)[0].universes[cmp.uni].live.next_rebalance;
+  M.append(pageHead('Strategy comparison', `Six model portfolios · four Anchor & Sail books and two momentum books · live since inception, backtested from January 2016 · common yardstick: ${D.bench2_short}`));
   const hero = el('div',{class:'ov-hero'},
-    el('div',{class:'ov-title'}, el('h2',{}, 'Six model portfolios, two engines, one page.'),
-      el('p',{}, `Four Anchor & Sail books (monthly Williams %R + EMA trend, daily stop monitoring) and two monthly-rebalanced momentum books across Nifty 100 / 200 / 500. Every strategy is run live from its inception date and re-backtested from January 2016 on every build, against its own index and against the ${D.bench2_short} as a common yardstick.`),
-      el('div',{class:'row'}, el('span',{}, 'Strategies ', el('b',{}, Object.keys(D.portfolios).length + Object.keys(D.momentum.strategies).length)), el('span',{}, 'Live books ', el('b',{}, rows.length)),
-        el('span',{}, 'Signal month ', el('b',{}, D.completed_month)), el('span',{}, 'Next momentum rebalance ', el('b',{}, Object.values(D.momentum.strategies)[0].universes[D.momentum.default_universe].live.next_rebalance)),
-        el('span',{}, 'Data ', el('b',{}, D.data_date)))),
+    el('div',{class:'ov-title'}, el('h2',{}, 'All strategies, one page.'),
+      el('p',{}, `Every book is run live from its inception date and re-backtested from January 2016 on every build, against its own index and against the ${D.bench2_short}. Click any card, bar or row to open the strategy's page.`),
+      el('div',{class:'row'}, el('span',{}, 'Live books ', el('b',{}, rows.length)), el('span',{}, 'Signal month ', el('b',{}, D.completed_month)), el('span',{}, 'Next momentum rebalance ', el('b',{}, nextReb)), el('span',{}, 'Data ', el('b',{}, D.data_date)))),
     el('div',{class:'alerts'}, el('h4',{}, `Today's alerts · ${alerts.length}`),
-      ...(alerts.length? alerts.slice(0,8).map(a=>el('div',{class:'a'}, el('span',{}, el('span',{class:'tag '+(a.kind==='exit'?'exit':a.kind==='warn'?'scale':'cyan')}, a.kind.toUpperCase()), ' ', el('b',{}, a.strategy), ' — ', a.text), el('a',{href:'#'+a.key+'/live'}, 'open'))) : [el('div',{class:'empty'}, 'No stop, target or rebalance event today. Open books are within normal ranges.')])));
+      ...(alerts.length? alerts.slice(0,8).map(a=>el('div',{class:'a'}, el('span',{}, el('span',{class:'tag '+(a.kind==='exit'?'exit':a.kind==='warn'?'scale':'cyan')}, a.kind.toUpperCase()), ' ', el('b',{}, a.strategy), ' — ', a.text), el('a',{href:a.href}, 'open'))) : [el('div',{class:'empty'}, 'No stop, target or rebalance event today. Open books are within normal ranges.')])));
   M.append(hero);
 
-  // strategy cards
-  const s1 = el('section'); s1.append(secHead('1','Strategies at a glance', 'click a card to open its page'));
+  // 1 — cards
+  const s1 = el('section'); s1.append(secHead('1','Strategies at a glance', 'live return, realised and unrealised P&L, backtest CAGR — click a card to open its page'));
   const cards = el('div',{class:'gridcards'});
-  for(const r of rows.filter(r=>r.type==='anchor' || r.default)){
-    const key = r.type==='anchor'? r.key : r.key.split(':')[0];
-    cards.append(el('div',{class:'scard', onclick:()=> r.type==='anchor'? go(key,'live') : go(key, r.key.split(':')[1], 'live')},
-      el('div',{class:'n'}, r.name, el('small',{}, r.alias)), el('div',{class:'u'}, `${r.engine} · ${r.universe} · ₹${lakh(r.capital).slice(1)} · vs ${r.benchmark}`),
+  for(const r of rows.filter(r=>r.type==='anchor' || r.uni===cmp.uni)){
+    cards.append(el('div',{class:'scard', style:`--accent:${r.color}`, onclick:r.open},
+      el('div',{class:'n'}, r.name, el('small',{}, r.alias.replace(' · default',''))), el('div',{class:'u'}, `${r.engine} · ${r.universe} · ${lakh(r.capital)} · vs ${r.benchmark}`),
       el('div',{class:'m'},
-        el('div',{}, el('b',{class:cls(r.live.return_pct)}, fPct(r.live.return_pct)), el('span',{}, `live since ${r.inception.slice(5)}`)),
-        el('div',{}, el('b',{class:'pos'}, fPct(r.backtest.cagr_pct,false)), el('span',{}, 'backtest CAGR')),
-        el('div',{}, el('b',{}, r.type==='anchor'? `${r.live.positions}/25` : `${r.live.positions}/20`), el('span',{}, r.type==='anchor'? 'positions' : `held · ${r.live.exposure_pct??'—'}% exp`)))));
+        el('div',{}, el('b',{class:cls(r.return_pct)}, fPct(r.return_pct)), el('span',{}, `live since ${r.inception.slice(5)}`)),
+        el('div',{}, el('b',{class:cls(r.realised)}, fR(r.realised)), el('span',{}, 'realised P&L')),
+        el('div',{}, el('b',{class:cls(r.unrealised)}, fR(r.unrealised)), el('span',{}, 'unrealised P&L')),
+        el('div',{}, el('b',{class:cls(r.nav-r.capital)}, fR(r.nav-r.capital)), el('span',{}, 'total P&L incl. cash leg')),
+        el('div',{}, el('b',{class:'pos'}, fPct(r.bt?.cagr,false)), el('span',{}, 'backtest CAGR')),
+        el('div',{}, el('b',{}, `${r.positions}/${r.slots} · ${fPct(r.max_dd_pct,false)}`), el('span',{}, 'positions · max DD')))));
   }
   s1.append(cards); M.append(s1);
 
-  // live table
-  const s2 = el('section'); s2.append(secHead('2','Live performance', 'every book from its inception date, marked to the latest prices; Nifty 200 Mom 30 shown as the common yardstick'));
+  // 2 — live table + live growth
+  const s2 = el('section'); s2.append(secHead('2','Live books', `every book from its inception, marked to the latest prices · realised = closed positions net of charges · unrealised = today's mark on open positions · cash leg = Nifty ETF gain or liquid-fund interest (less charges) · total = book value − capital`));
   s2.append(tableCard(rows, [
-      {label:'Strategy', left:true, key:'name'}, {label:'Engine', left:true, key:'engine'}, {label:'Universe', left:true, key:'universe'}, {label:'Since', key:'inception'}, {label:'Capital', key:'capital'},
-      {label:'Value', key:'live.nav'}, {label:'Return', key:'live.return_pct'}, {label:'Benchmark', key:'live.bench_return_pct'}, {label:'Excess', key:'_ex'}, {label:D.bench2_short, key:'live.bench2_return_pct'},
-      {label:'Max DD', key:'live.max_dd_pct'}, {label:'Held', key:'live.positions'}, {label:'Today', key:'_today', left:true}],
-    r => { const ex = (r.live.return_pct!=null && r.live.bench_return_pct!=null)? r.live.return_pct-r.live.bench_return_pct : null; r._ex=ex; r._today = r.type==='anchor'? `${r.live.exits_today} exit${r.live.exits_today===1?'':'s'}` : `exp ${r.live.exposure_pct??'—'}%`;
-      const tr=el('tr',{style:'cursor:pointer', onclick:()=> r.type==='anchor'? go(r.key,'live') : go(r.key.split(':')[0], r.key.split(':')[1], 'live')});
-      tr.append(el('td',{class:'sym'}, r.name, el('small',{}, r.alias + (r.default?' · default':''))), td(r.engine,'l'), td(r.universe,'l'), td(r.inception), td(lakh(r.capital)), td(fR(r.live.nav)), pctCell(r.live.return_pct), pctCell(r.live.bench_return_pct), pctCell(ex), pctCell(r.live.bench2_return_pct), td(fPct(r.live.max_dd_pct,false), r.live.max_dd_pct<0?'neg':''), td(r.live.positions), td(r._today,'l')); return tr; },
+      {label:'Strategy', left:true, key:'name'}, {label:'Universe', left:true, key:'universe'}, {label:'Since', key:'inception'}, {label:'Capital', key:'capital'}, {label:'Value', key:'nav'},
+      {label:'Return', key:'return_pct'}, {label:'Benchmark', key:'bench_return_pct'}, {label:'Excess', key:'_ex'}, {label:D.bench2_short, key:'bench2_return_pct'},
+      {label:'Realised P&L', key:'realised'}, {label:'Unrealised P&L', key:'unrealised'}, {label:'Cash leg', key:'_cash', title:'Nifty ETF gain (Anchor & Sail) or liquid-fund interest less charges on open positions (momentum)'}, {label:'Total P&L', key:'_tot', title:'Book value − capital'}, {label:'Max DD', key:'max_dd_pct'}, {label:'Held', key:'positions'}, {label:'Today', key:'today', left:true}],
+    r => { r._ex = (r.return_pct!=null && r.bench_return_pct!=null)? r.return_pct-r.bench_return_pct : null; r._tot = r.nav-r.capital; r._cash = r._tot-(r.realised||0)-(r.unrealised||0);
+      const tr=el('tr',{style:'cursor:pointer', onclick:r.open});
+      tr.append(el('td',{class:'sym'}, el('i',{class:'dot', style:`background:${r.color}`}), r.name, el('small',{}, r.alias)), td(r.universe,'l'), td(r.inception), td(lakh(r.capital)), td(fR(r.nav)), pctCell(r.return_pct), pctCell(r.bench_return_pct), pctCell(r._ex), pctCell(r.bench2_return_pct),
+        td(fR(r.realised), cls(r.realised)), td(fR(r.unrealised), cls(r.unrealised)), td(fR(r._cash), cls(r._cash)), td(fR(r._tot), cls(r._tot)+' strong'), td(fPct(r.max_dd_pct,false), r.max_dd_pct<0?'neg':''), td(`${r.positions}/${r.slots}`), td(r.today,'l')); return tr; },
     'No live data.', null, false));
+  // live growth of 100 — each book rebased at its own inception, daily
+  const allDates = [...new Set(rows.flatMap(r=>r.H.map(h=>h.date)))].sort();
+  const liveSeries = rows.filter(r=>r.type==='anchor' || r.uni===cmp.uni).map(r=>{ const map={}; r.H.forEach(h=>{ map[h.date]=h.nav; }); const base=r.H[0]?.nav; return {name: r.type==='anchor'? r.name : `${r.name} (${r.universe})`, color:r.color, values: allDates.map(d=> map[d]!=null && base ? map[d]/base*100 : null)}; });
+  const refH = rows[0].H; const b2={}; refH.forEach(h=>{ if(h.bench2!=null) b2[h.date]=h.bench2; }); const b2base = refH.find(h=>h.bench2!=null)?.bench2;
+  if(b2base) liveSeries.push({name:D.bench2_short, color:BENCH2_COL, values: allDates.map(d=> b2[d]!=null? b2[d]/b2base*100 : null)});
+  s2.append(el('div',{style:'margin-top:12px'}, lineChart({title:'Live books — growth of 100 since each book\'s inception (daily marks)', dates:allDates, series:liveSeries, fmt:v=>v.toFixed(1), base:100, minPts:2, height:300, wide:true})));
   M.append(s2);
 
-  // backtest table + bars
-  const s3 = el('section'); s3.append(secHead('3','Backtest 2016 → today', 'identical engines run from January 2016 on today\'s index members, net of costs; benchmark CAGRs over the same window'));
-  s3.append(tableCard(rows, [
-      {label:'Strategy', left:true, key:'name'}, {label:'Universe', left:true, key:'universe'}, {label:'CAGR', key:'backtest.cagr_pct'}, {label:'Benchmark CAGR', key:'backtest.bench_cagr_pct'}, {label:'Excess', key:'_bex'},
-      {label:`${D.bench2_short} CAGR`, key:'backtest.bench2_cagr_pct'}, {label:'Max DD', key:'backtest.max_dd_pct'}, {label:'Sharpe', key:'backtest.sharpe'}, {label:'Win rate', key:'backtest.win_rate_pct'}, {label:'Trades', key:'backtest.trades'}, {label:'₹ → today', key:'backtest.final_value'}],
-    r => { const b=r.backtest; r._bex = (b.cagr_pct!=null && b.bench_cagr_pct!=null)? b.cagr_pct-b.bench_cagr_pct : null;
-      const tr=el('tr',{style:'cursor:pointer', onclick:()=> r.type==='anchor'? go(r.key,'bt') : go(r.key.split(':')[0], r.key.split(':')[1], 'bt')});
-      tr.append(el('td',{class:'sym'}, r.name, el('small',{}, r.alias)), td(r.universe,'l'), td(fPct(b.cagr_pct,false),'pos'), td(fPct(b.bench_cagr_pct,false)), pctCell(r._bex), td(fPct(b.bench2_cagr_pct,false)), td(fPct(b.max_dd_pct,false),'neg'), td(fN(b.sharpe)), td(fPct(b.win_rate_pct,false)), td(b.trades), td(fR(b.final_value))); return tr; },
-    'No backtest data.', null, false));
-  // CAGR bars
-  const bars = el('div',{class:'card', style:'padding:14px 16px;margin-top:12px'});
-  bars.append(el('div',{class:'legend', style:'margin-bottom:10px'}, el('span',{}, el('i',{style:'background:var(--s1)'}), 'Strategy CAGR'), el('span',{}, el('i',{style:'background:var(--s2)'}), 'Own benchmark'), el('span',{}, el('i',{style:'background:var(--s3)'}), D.bench2_short)));
-  const bb = el('div',{class:'bars'}); const mx = Math.max(...rows.flatMap(r=>[r.backtest.cagr_pct||0, r.backtest.bench_cagr_pct||0, r.backtest.bench2_cagr_pct||0]))*1.05;
-  for(const r of rows){ for(const [v,c,l] of [[r.backtest.cagr_pct,'var(--s1)',`${r.name} · ${r.universe}`],[r.backtest.bench_cagr_pct,'var(--s2)',r.benchmark],[r.backtest.bench2_cagr_pct,'var(--s3)',D.bench2_short]]){
-      if(v==null) continue; const t=el('div',{class:'track'}); t.append(el('i',{style:`width:${Math.max(0,v)/mx*100}%;background:${c}`}));
-      bb.append(el('div',{class:'bar'}, el('div',{class:'lbl', title:l}, l), t, el('div',{class:'val'}, fPct(v,false)))); }
-    bb.append(el('div',{style:'height:6px'})); }
-  bars.append(bb); s3.append(bars); M.append(s3);
-
-  // growth of 100 — all strategies vs Mom30
-  const s4 = el('section'); s4.append(secHead('4','Growth of ₹100 since Jan 2016', 'all strategy backtests on one scale, with the common yardstick'));
-  const series=[]; let dates=null; const cols=['var(--s1)','var(--s4)','var(--s6)','var(--s5)','var(--s2)','var(--s7)'];
-  const picks=[]; for(const [k,P] of Object.entries(D.portfolios)) if(P.backtest) picks.push({name:P.display, hist:P.backtest.history});
-  for(const [k,Sx] of Object.entries(D.momentum.strategies)){ const U=Sx.universes[D.momentum.default_universe]; picks.push({name:`${Sx.name} (${U.universe_label})`, hist:U.backtest.history}); }
-  // align by month key
-  const months = [...new Set(picks.flatMap(p=>p.hist.map(h=>h.date.slice(0,7))))].sort();
-  picks.forEach((p,i)=>{ const map={}; p.hist.forEach(h=>{ map[h.date.slice(0,7)] = h.nav; }); const base = p.hist[0].nav; series.push({name:p.name, color:cols[i%cols.length], values: months.map(m=> map[m]!=null? map[m]/base*100 : null)}); });
-  const ref = picks[0].hist; const b2map={}; ref.forEach(h=>{ if(h.bench2!=null) b2map[h.date.slice(0,7)]=h.bench2; }); const b2base = ref.find(h=>h.bench2!=null)?.bench2;
-  if(b2base) series.push({name:D.bench2_short, color:'var(--s3)', values: months.map(m=> b2map[m]!=null? b2map[m]/b2base*100 : null)});
-  s4.append(lineChart({title:'Backtest growth of ₹100 (log scale)', dates:months.map(m=>m+'-01'), series, fmt:v=>'₹'+Math.round(v), base:100, minPts:2, height:380, wide:true, log:true}));
-  M.append(s4);
+  // 3 — backtest comparison (reference layout)
+  const s3 = el('section'); s3.append(secHead('3','Backtest comparison 2016 → today', 'identical engines run from January 2016 on today\'s index members, net of costs · return and risk statistics on month-end NAV so every book and the benchmark are compared on an identical basis'));
+  const ctl = el('div',{class:'controls', style:'margin:0 0 12px'});
+  const sel = el('select'); for(const m of METS){ const o=el('option',{value:m[0]}, m[1].replace('__B2__', D.bench2_short)); if(m[0]===OV.metric) o.selected=true; sel.append(o); }
+  sel.addEventListener('change', ()=>{ OV.metric=sel.value; renderOverview(M); window.scrollTo(0, s3.offsetTop-10); });
+  const us = el('div',{class:'switch'}); for(const [uk,UU] of Object.entries(D.momentum.strategies.S1.universes)) us.append(el('button',{class: uk===cmp.uni?'on':'', onclick:()=>{ OV.uni=uk; renderOverview(M); window.scrollTo(0, s3.offsetTop-10); }}, UU.universe_label, el('small',{}, 'momentum books')));
+  ctl.append(el('div',{}, el('label',{class:'lbl'},'Compare by metric'), sel), el('div',{}, el('label',{class:'lbl'},'Momentum universe shown'), us));
+  s3.append(ctl);
+  const met = OV.metric, MD = MET[met], label = MD.label.replace('__B2__', D.bench2_short);
+  const items = cmp.recs.map(r=>({label:r.name, value:r.vals[met], color:r.color, open:()=> isMom(r.key)? go(r.key, cmp.uni, 'bt') : go(r.key,'bt')}));
+  if(MD.bench && cmp.bench.vals[met]!=null) items.push({label:D.bench2_short, value:cmp.bench.vals[met], color:BENCH2_COL, bench:true});
+  const grid = el('div',{class:'perf'});
+  grid.append(barChart({title:`${label} — all strategies${MD.bench?' vs '+D.bench2_short:''}`, sub: MD.src==='stat'? 'month-end basis':'from the trade ledger', items, fmt:v=>fmtM(v,met), height:330}));
+  // rank table
+  const ranked = items.filter(i=>i.value!=null).slice().sort((a,b)=> MD.better==='low' ? a.value-b.value : b.value-a.value);
+  const rt = el('table'); rt.append(el('thead',{}, el('tr',{}, el('th',{},'#'), el('th',{class:'l'},'Strategy'), el('th',{}, label))));
+  const rtb = el('tbody'); ranked.forEach((it,i)=>{ const tr=el('tr',{class: it.bench?'bench':(i===0?'best':''), style: it.open?'cursor:pointer':'', onclick: it.open||null}); tr.append(td(i+1), el('td',{class:'l sym'}, el('i',{class:'dot', style:`background:${it.color}`}), it.label), td(fmtM(it.value,met), it.bench?'':'')); rtb.append(tr); }); rt.append(rtb);
+  grid.append(el('div',{class:'card'}, el('div',{class:'tblwrap'}, rt), el('div',{class:'note', style:'padding:0 14px 12px'}, MD.better==='low'? 'Ranked lowest first (lower is better for this metric).' : 'Ranked best first. The benchmark row is shaded; the leader is highlighted.')));
+  s3.append(grid);
+  const two = el('div',{class:'two', style:'margin-top:12px'});
+  two.append(bubbleChart({title:'Risk vs reward', sub:'CAGR vs max drawdown · bubble size = Calmar', points:[...cmp.recs.map(r=>({x:r.vals.mdd, y:r.vals.cagr, r:r.vals.calmar, label:r.name, color:r.color})), {x:cmp.bench.vals.mdd, y:cmp.bench.vals.cagr, r:cmp.bench.vals.calmar, label:D.bench2_short, color:BENCH2_COL}], xLabel:'Max drawdown (%)', yLabel:'CAGR (%)', fmtX:v=>v.toFixed(0)+'%', fmtY:v=>v.toFixed(0)+'%'}));
+  const months = [...new Set(cmp.recs.flatMap(r=>r.m.ym))].sort();
+  const gser = cmp.recs.map(r=>{ const map={}; r.m.ym.forEach((k,i)=>{ map[k]=r.m.nav[i]; }); const base=r.m.nav[0]; return {name:r.name, color:r.color, values: months.map(k=> map[k]!=null? map[k]/base*100 : null)}; });
+  { const map={}; cmp.bench.m.ym.forEach((k,i)=>{ map[k]=cmp.bench.m.nav[i]; }); const base=cmp.bench.m.nav.find(v=>v!=null); gser.push({name:D.bench2_short, color:BENCH2_COL, values: months.map(k=> map[k]!=null&&base? map[k]/base*100 : null)}); }
+  two.append(lineChart({title:'Growth of ₹100 since January 2016 (log scale)', dates:months.map(k=>k+'-01'), series:gser, fmt:v=>'₹'+Math.round(v), base:100, minPts:2, height:330, log:true}));
+  s3.append(two);
+  // full metrics table
+  const ft = el('table',{class:'metrics'}); const hr = el('tr',{}, el('th',{class:'l'},'Metric')); for(const r of cmp.recs) hr.append(el('th',{}, el('i',{class:'dot', style:`background:${r.color}`}), r.name, el('small',{}, r.alias))); hr.append(el('th',{class:'bench'}, D.bench2_short)); ft.append(el('thead',{}, hr));
+  const fb = el('tbody');
+  for(const mm of METS){ const key=mm[0]; const tr=el('tr',{class: key===met?'sel':'', style:'cursor:pointer', onclick:()=>{ OV.metric=key; renderOverview(M); window.scrollTo(0, s3.offsetTop-10); }}); tr.append(td(mm[1].replace('__B2__', D.bench2_short),'l'));
+    const vals = cmp.recs.map(r=>r.vals[key]); const valid = vals.filter(v=>v!=null); const best = valid.length? (MET[key].better==='low'? Math.min(...valid):Math.max(...valid)) : null;
+    cmp.recs.forEach((r,i)=>{ const v=vals[i]; const c = v!=null && v===best ? 'best' : (MET[key].unit==='₹' || key==='excess_cagr' || key==='excess_own' ? cls(v) : ''); tr.append(td(fmtM(v,key), c)); });
+    tr.append(td(MET[key].bench? fmtM(cmp.bench.vals[key],key):'—','bench')); fb.append(tr); }
+  ft.append(fb);
+  s3.append(el('h3',{}, 'Full metrics comparison'), el('div',{class:'card'}, el('div',{class:'tblwrap nomax'}, ft), el('div',{class:'note', style:'padding:0 14px 12px'}, `Return, drawdown, Calmar, Sharpe, volatility and capture ratios are computed on month-end NAV in the browser so every book and the ${D.bench2_short} are on the same footing (daily drawdowns are deeper — see each strategy page). Win rate, profit factor, holding period, trades and P&L come from each engine's ledger. Click a row to chart that metric.`)));
+  M.append(s3);
 }
 
 // =============================================================== MOMENTUM — LIVE
 function renderMomentumLive(Sx, U, M){
   M.replaceChildren();
-  const D = DATA, L = U.live, pf = L.performance, R = L.regime || {}, isS4 = Sx.code==='S4PLUS';
+  const D = DATA, L = U.live, pf = L.performance, R = L.regime || {}, isS4 = Sx.code==='S4PLUS', color = SCOL[isS4?'S4PLUS':'S1'];
+  const unreal = unrealisedOf(L.holdings);
+  M.append(pageHead(Sx.name, `${Sx.style} · ${U.universe_label} · benchmark ${U.benchmark} · yardstick ${D.bench2_short}`, [{text:Sx.name, color}, {text:Sx.code}, {text:`LIVE since ${L.inception}`}]));
   const s1 = el('section');
   s1.append(secHead('1', `Live book — ${Sx.name} · ${U.universe_label}`, `${Sx.style} · ₹${inr.format(D.momentum.capital)} committed at the ${L.inception} close · rebalances on the last trading day of each month · next ≈ ${L.next_rebalance}`));
   const kp = el('div',{class:'kpis'});
@@ -409,6 +659,9 @@ function renderMomentumLive(Sx, U, M){
     kpi(fPct(pf.bench_return_pct), U.benchmark, 'same window', signCol(pf.bench_return_pct)), kpi(fPct(pf.bench2_return_pct), D.bench2_short, 'common yardstick', signCol(pf.bench2_return_pct)),
     kpi(pf.exposure_pct!=null? pf.exposure_pct.toFixed(0)+'%':'—', 'Target exposure', isS4? (L.last_rebalance?.derisk? 'de-risk regime active':'full exposure') : 'always fully invested', isS4 && L.last_rebalance?.derisk? 'rose':'teal'),
     kpi(`${pf.holdings}/${D.momentum.rules.hold}`, 'Stocks held', `${lakh(pf.invested)} invested`, 'cyan'), kpi(lakh(pf.cash), 'Liquid-fund cash', `interest so far ${fR(pf.interest)}`, ''),
+    kpi(fR(pf.realised), 'Realised P&L', `${L.trades.length} closed position${L.trades.length===1?'':'s'} · net of charges`, signCol(pf.realised)),
+    kpi(fR(unreal), 'Unrealised P&L', `${L.holdings.length} open position${L.holdings.length===1?'':'s'} at today's prices`, signCol(unreal)),
+    kpi(fR(pf.nav-D.momentum.capital), 'Total P&L', `book value − capital · interest ${fR(pf.interest)} less charges ${fR(pf.charges)}`, signCol(pf.nav-D.momentum.capital)),
     kpi(fPct(pf.max_dd_pct,false), 'Max drawdown', 'daily NAV', pf.max_dd_pct<0?'rose':''));
   s1.append(kp);
   // regime panel
@@ -445,7 +698,7 @@ function renderMomentumLive(Sx, U, M){
   const H = L.history; const nav0 = H.length? H[0].nav:1; const b0 = H.find(h=>h.bench!=null)?.bench; const b20 = H.find(h=>h.bench2!=null)?.bench2;
   const grid = el('div',{class:'perf'});
   grid.append(lineChart({title:`Growth of 100 — ${Sx.name} vs benchmarks`, dates:H.map(h=>h.date), series:[
-      {name:Sx.name, color:'var(--s1)', values:H.map(h=>h.nav/nav0*100)}, {name:U.benchmark, color:'var(--s2)', values:H.map(h=>(b0&&h.bench!=null)?h.bench/b0*100:null)}, {name:D.bench2_short, color:'var(--s3)', values:H.map(h=>(b20&&h.bench2!=null)?h.bench2/b20*100:null)}],
+      {name:Sx.name, color, values:H.map(h=>h.nav/nav0*100)}, {name:U.benchmark, color:OWNB_COL, values:H.map(h=>(b0&&h.bench!=null)?h.bench/b0*100:null)}, {name:D.bench2_short, color:BENCH2_COL, values:H.map(h=>(b20&&h.bench2!=null)?h.bench2/b20*100:null)}],
       fmt:v=>v.toFixed(2), base:100, extra:(i)=>`(${fR(H[i].nav)} · ${H[i].n} stocks)`, minPts:2}),
     el('div',{class:'stats'},
       el('div',{}, el('span',{},'Realised P&L (closed positions, net)'), el('span',{class:cls(pf.realised)}, fR(pf.realised))),
@@ -455,7 +708,9 @@ function renderMomentumLive(Sx, U, M){
       el('div',{}, el('span',{},'Closed positions'), el('span',{}, L.trades.length)),
       el('div',{}, el('span',{},'Weighting'), el('span',{}, isS4? '50% inverse-vol + 50% equal':'equal weight')),
       el('div',{}, el('span',{},'Sector cap'), el('span',{}, `max ${D.momentum.rules.sector_cap} per NSE sector`))));
-  s2.append(grid); M.append(s2);
+  s2.append(grid);
+  if(H.length){ const mm = monthly(H); const rb = rets(mm.bench); s2.append(el('h3',{}, 'Monthly returns so far (%)'), el('div',{class:'two'}, el('div',{}, heatMonthly(mm.ym, rets(mm.nav))), el('div',{}, el('div',{class:'note', style:'margin:0 0 6px'}, `Out-performance vs ${U.benchmark} (%)`), heatMonthly(mm.ym, rets(mm.nav).map((v,i)=> (v==null||rb[i]==null)? null : v-rb[i]), {yearCol:false})))); }
+  M.append(s2);
 
   // next rebalance preview
   const s3 = el('section'); const P = L.provisional;
@@ -492,52 +747,10 @@ function renderMomentumLive(Sx, U, M){
   inp.addEventListener('input', ()=>{ q=inp.value.trim().toLowerCase(); draw(); }); tb.append(inp, chips); s4.append(tb, holder); draw(); M.append(s4);
 }
 
-// =============================================================== MOMENTUM — BACKTEST
-function renderMomentumBacktest(Sx, U, M){
-  M.replaceChildren();
-  const D = DATA, B = U.backtest, m = B.metrics, isS4 = Sx.code==='S4PLUS';
-  M.append(el('div',{class:'hero'}, el('b',{}, `${Sx.name} · ${U.universe_label}`), ` — rebalanced monthly from `, el('b',{}, m.start), ` with ₹${inr.format(D.momentum.capital)}, the same rules and every charge, the book would be worth `, el('b',{}, fR(m.final_value)), ` today (${m.as_of}) — a CAGR of `, el('b',{}, fPct(m.cagr_pct,false)), ` over ${m.years} years versus `, el('b',{}, fPct(m.bench_cagr_pct,false)), ` for the ${U.benchmark} and `, el('b',{}, fPct(m.bench2_cagr_pct,false)), ` for the ${D.bench2_short}.`,
-    B.published_cagr_pct!=null? el('span',{class:'mut'}, ` The FINSIGHTS package reported ${fPct(B.published_cagr_pct,false)} for this strategy/universe on its own (hand-typed) list and Yahoo sectors; this build uses NSE's official constituents and sector classification.`):null));
-  const s1 = el('section'); s1.append(secHead('1','Key metrics', `${m.start} → ${m.as_of} · benchmark: ${U.benchmark_source} · ${D.bench2_label}`));
-  const kp = el('div',{class:'kpis'});
-  kp.append(kpi(fPct(m.cagr_pct,false),'CAGR','from first rebalance','amber'), kpi(fPct(m.total_return_pct,false),'Total return',`${m.years} years`,'teal'), kpi(fPct(m.bench_cagr_pct,false),`${U.benchmark} CAGR`,'same window','cyan'),
-    kpi(fPct(m.excess_bench_pct),'Excess vs benchmark','CAGR difference', signCol(m.excess_bench_pct)), kpi(fPct(m.bench2_cagr_pct,false),`${D.bench2_short} CAGR`, m.excess_bench2_pct!=null? `excess ${fPct(m.excess_bench2_pct)}`:'', 'violet'),
-    kpi(fPct(m.max_dd_pct,false),'Max drawdown','daily NAV','rose'), kpi(fN(m.sharpe),'Sharpe','monthly returns, rf = 0',''), kpi(fN(m.calmar),'Calmar','CAGR ÷ max drawdown',''),
-    kpi(fR(m.net_profit),'Net profit','after charges, incl. interest','green'), kpi(fR(m.final_value),'Final value',`on ₹${inr.format(D.momentum.capital)}`,''),
-    kpi(fPct(m.win_rate_pct,false),'Win rate',`${m.wins} of ${m.closed_trades} closed`,'green'), kpi(fN(m.profit_factor),'Profit factor','gross profit ÷ gross loss',''),
-    kpi(m.closed_trades,'Closed positions',`${m.open_positions} open`,''), kpi(fPct(m.avg_win_pct),'Avg win','per winning position, net','green'), kpi(fPct(m.avg_loss_pct),'Avg loss','per losing position, net','rose'),
-    kpi(m.avg_holding_months!=null? m.avg_holding_months.toFixed(1)+' mo':'—','Avg holding','closed positions',''), kpi(fPct(m.avg_exposure_pct,false),'Avg exposure',`${m.months_derisked} de-risked month${m.months_derisked===1?'':'s'}`,''),
-    kpi(fR(m.interest_earned),'Liquid-fund interest','on idle cash at 7%','amber'), kpi(fR(m.charges_paid),'Charges paid','STT, txn, stamp, SEBI, GST, DP',''), kpi(fPct(m.positive_months_pct,false),'Positive months',`best ${fPct(m.best_month_pct)} · worst ${fPct(m.worst_month_pct)}`,''));
-  s1.append(kp); M.append(s1);
-  const s2 = el('section'); s2.append(secHead('2','Growth of capital', `₹${inr.format(D.momentum.capital)} from ${m.start}, month-end NAVs net of every charge; benchmarks scaled to the same starting capital`));
-  const H = B.history; const b0 = H.find(h=>h.bench!=null)?.bench; const b20 = H.find(h=>h.bench2!=null)?.bench2;
-  s2.append(lineChart({title:`${Sx.name} vs ${U.benchmark} and ${D.bench2_short} (log scale)`, dates:H.map(h=>h.date), series:[
-      {name:Sx.name, color:'var(--s1)', values:H.map(h=>h.nav)}, {name:U.benchmark, color:'var(--s2)', values:H.map(h=>(b0&&h.bench!=null)? h.bench/b0*D.momentum.capital:null)}, {name:D.bench2_short, color:'var(--s3)', values:H.map(h=>(b20&&h.bench2!=null)? h.bench2/b20*D.momentum.capital:null)}],
-      fmt:v=>lakh(v), base:D.momentum.capital, area:true, extra:(i)=>`· ${H[i].n} stocks · exposure ${H[i].exposure_pct??'—'}%`, minPts:2, height:380, wide:true, log:true}));
-  const two = el('div',{class:'two', style:'margin-top:12px'});
-  const dd=[]; let pk=-1e18; for(const h of H){ pk=Math.max(pk,h.nav); dd.push((h.nav/pk-1)*100); }
-  two.append(lineChart({title:'Drawdown from peak (%)', dates:H.map(h=>h.date), series:[{name:'Drawdown', color:'var(--s7)', values:dd}], fmt:v=>v.toFixed(1)+'%', area:true, base:0, minPts:2, height:220, padTop:false}),
-             lineChart({title: isS4? 'Target exposure at each rebalance (%)':'Stocks held', dates:H.map(h=>h.date), series:[{name: isS4?'Exposure':'Held', color:'var(--s4)', values:H.map(h=> isS4? h.exposure_pct : h.n)}], fmt:v=> isS4? Math.round(v)+'%' : String(Math.round(v)), area:true, base:0, minPts:2, height:220, yMax: isS4?100:20, padBottom:false}));
-  s2.append(two); M.append(s2);
-  const s3 = el('section'); s3.append(secHead('3','Year by year','calendar-year returns of the book, its benchmark and the common yardstick'));
-  s3.append(tableCard(B.yearly, [{label:'Year', left:true, key:'year', desc:false}, {label:Sx.name, key:'port_pct'}, {label:U.benchmark, key:'bench_pct'}, {label:'Excess', key:'excess_pct'}, {label:D.bench2_short, key:'bench2_pct'}, {label:'Book value at year end', key:'nav_end'}, {label:'Positions closed', key:'trades'}, {label:'Wins', key:'wins'}, {label:'Avg exposure', key:'avg_exposure_pct'}],
-    r => { const tr=el('tr'); tr.append(td(r.year,'l'), pctCell(r.port_pct), pctCell(r.bench_pct), pctCell(r.excess_pct), pctCell(r.bench2_pct), td(fR(r.nav_end)), td(r.trades), td(r.wins), td(fPct(r.avg_exposure_pct,false))); return tr; }, 'No yearly data.', 'year', false));
-  M.append(s3);
-  const s4 = el('section'); s4.append(secHead('4','What the backtest holds today', `${B.holdings.length} stocks · ${lakh(m.invested_now)} invested · ${lakh(m.cash_now)} in the liquid fund`));
-  s4.append(tableCard(B.holdings, [{label:'Stock', left:true, key:'symbol'}, {label:'Sector', left:true, key:'industry'}, {label:'Shares', key:'shares'}, {label:'Avg entry ₹', key:'avg_entry'}, {label:'Since', key:'entry_date'}, {label:'LTP ₹', key:'ltp'}, {label:'Value ₹', key:'value'}, {label:'Weight', key:'weight_pct'}, {label:'P&L %', key:'pnl_pct'}, {label:'Rank today', key:'rank_now', desc:false}],
-    r => { const tr=el('tr'); tr.append(symCell(r), td(r.industry,'l'), td(inr.format(r.shares)), td(fP(r.avg_entry)), td(r.entry_date), td(fP(r.ltp)), td(fR(r.value)), td(fPct(r.weight_pct,false)), pctCell(r.pnl_pct), td(r.rank_now ?? '—')); return tr; }, 'No holdings.', 'weight_pct', true));
-  M.append(s4);
-  const s5 = el('section'); s5.append(secHead('5','Trade log', `${B.trades.length} closed positions since ${m.start}`));
-  const tb = el('div',{class:'toolbar'}); const inp = el('input',{placeholder:'Filter symbol / reason…', type:'search'}); const holder = el('div'); let q='';
-  const draw = () => { const rows = B.trades.filter(t=>!q || t.symbol.toLowerCase().includes(q) || (t.reason||'').toLowerCase().includes(q));
-    holder.replaceChildren(tableCard(rows, [{label:'Stock', left:true, key:'symbol'}, {label:'Entry', key:'entry_date'}, {label:'Avg entry ₹', key:'avg_entry'}, {label:'Exit', key:'exit_date'}, {label:'Avg exit ₹', key:'avg_exit'}, {label:'Shares', key:'shares'}, {label:'Invested ₹', key:'invested'}, {label:'Months', key:'months'}, {label:'Return %', key:'return_pct'}, {label:'Net P&L ₹', key:'net_pnl'}, {label:'Costs ₹', key:'costs'}, {label:'Reason', key:'reason', left:true}],
-      r => { const tr=el('tr'); tr.append(el('td',{class:'sym'}, r.symbol), td(r.entry_date), td(fP(r.avg_entry)), td(r.exit_date), td(fP(r.avg_exit)), td(inr.format(r.shares)), td(fR(r.invested)), td(r.months), pctCell(r.return_pct), td(fR(r.net_pnl), cls(r.net_pnl)), td(fR(r.costs)), td(r.reason,'l')); return tr; }, 'No trades match.', 'exit_date', true)); };
-  inp.addEventListener('input', ()=>{ q=inp.value.trim().toLowerCase(); draw(); }); tb.append(inp); s5.append(tb, holder); draw(); M.append(s5);
-}
-
 function renderPortfolio(P, M){
   M.replaceChildren();
-  const D = DATA, pf = P.performance;
+  const D = DATA, pf = P.performance, color = SCOL[P.name] || 'var(--s1)';
+  M.append(pageHead(P.display, `Anchor & Sail · ${P.universe_label} · ranking ${P.ranking?'ON':'OFF'} · benchmark ${P.benchmark} · yardstick ${D.bench2_short}`, [{text:P.display, color}, {text:P.name}, {text:`LIVE since ${P.inception}`}]));
 
   const s1 = el('section');
   s1.append(secHead('1', `Signals — ${P.display}`, `${P.universe_label} (${P.universe_size} stocks) · ranking ${P.ranking?'ON':'OFF'} · ₹${inr.format(P.capital)} committed ${P.inception}`));
@@ -578,6 +791,9 @@ function renderPortfolio(P, M){
     kpi(fPct(pf.alpha_pct), 'Excess return', 'portfolio − benchmark', signCol(pf.alpha_pct)),
     kpi(fPct(pf.bench2_return_pct), DATA.bench2_short, 'common yardstick', signCol(pf.bench2_return_pct)),
     kpi(`${pf.nav? (pf.invested/pf.nav*100).toFixed(0):0}% / ${pf.nav? (pf.cash/pf.nav*100).toFixed(0):0}%`, 'Invested / Cash', `${lakh(pf.invested)} in ${pf.open_positions} stocks · ${lakh(pf.cash)} in Nifty ETF`, 'cyan'),
+    kpi(fR(pf.realised), 'Realised P&L', `${pf.closed_trades} closed · ${pf.wins} win${pf.wins===1?'':'s'} · net of charges`, signCol(pf.realised)),
+    kpi(fR(pf.unrealised), 'Unrealised P&L', `${pf.open_positions} open position${pf.open_positions===1?'':'s'} at today's prices`, signCol(pf.unrealised)),
+    kpi(fR(pf.nav-P.capital), 'Total P&L', `book value − capital · cash leg ${fR(pf.nav-P.capital-(pf.realised||0)-(pf.unrealised||0))}`, signCol(pf.nav-P.capital)),
     kpi(fPct(pf.max_dd_pct,false), 'Max drawdown', 'on daily NAV', pf.max_dd_pct<0?'rose':''),
   );
   s2.append(kp);
@@ -586,7 +802,7 @@ function renderPortfolio(P, M){
   const grid = el('div', {class:'perf'});
   const b20 = H.find(h=>h.bench2!=null)?.bench2;
   grid.append(lineChart({title:`Growth of 100 — ${P.display} vs ${P.benchmark} and ${DATA.bench2_short}`, dates:H.map(h=>h.date),
-      series:[{name:P.display, color:'var(--s1)', values:H.map(h=>h.nav/nav0*100)}, {name:P.benchmark, color:'var(--s2)', values:H.map(h=>(b0&&h.bench!=null)?h.bench/b0*100:null)}, {name:DATA.bench2_short, color:'var(--s3)', values:H.map(h=>(b20&&h.bench2!=null)?h.bench2/b20*100:null)}],
+      series:[{name:P.display, color, values:H.map(h=>h.nav/nav0*100)}, {name:P.benchmark, color:OWNB_COL, values:H.map(h=>(b0&&h.bench!=null)?h.bench/b0*100:null)}, {name:DATA.bench2_short, color:BENCH2_COL, values:H.map(h=>(b20&&h.bench2!=null)?h.bench2/b20*100:null)}],
       fmt:v=>v.toFixed(2), base:100, extra:(i)=>`(${fR(H[i].nav)})`, minPts:2}),
     el('div', {class:'stats'},
       el('div',{}, el('span',{},'Realised P&L (net of costs)'), el('span',{class:cls(pf.realised)}, fR(pf.realised))),
@@ -598,6 +814,7 @@ function renderPortfolio(P, M){
       el('div',{}, el('span',{},'Ranking when signals > slots'), el('span',{}, P.ranking? 'ON — highest score first' : 'OFF — first-come (universe order)')),
     ));
   s2.append(grid);
+  { const mm = monthly(H); const rb = rets(mm.bench); s2.append(el('h3',{}, 'Monthly returns so far (%)'), el('div',{class:'two'}, el('div',{}, heatMonthly(mm.ym, rets(mm.nav))), el('div',{}, el('div',{class:'note', style:'margin:0 0 6px'}, `Out-performance vs ${P.benchmark} (%)`), heatMonthly(mm.ym, rets(mm.nav).map((v,i)=> (v==null||rb[i]==null)? null : v-rb[i]), {yearCol:false})))); }
   M.append(s2);
 
   const s3 = el('section');
@@ -669,71 +886,27 @@ function openBookTable(rows, withWr){
     'No open positions.', 'to_stop_pct', false);
 }
 
+// =============================================================== ANCHOR & SAIL — BACKTEST
 function renderBacktest(P, M){
   M.replaceChildren();
-  const B = P.backtest, m = B.metrics;
-  const hero = el('div',{class:'hero'}, el('b',{}, `${P.display} · ${P.universe_label}`), ` — had this strategy been run from `, el('b',{}, B.start), ` with ₹26,00,000 (first entries on the ${B.first_signal_month} close), the same rules, ${DATA.strategy.slots} slots, ranking ${P.ranking?'ON':'OFF'} and every charge, the book would be worth `, el('b',{}, fR(m.final_value)), ` today (${B.as_of}), marked to market on live prices — a CAGR of `, el('b',{}, fPct(m.cagr_pct,false)), ` over ${B.years} years versus `, el('b',{}, m.bench_cagr_pct!=null? fPct(m.bench_cagr_pct,false):'n/a'), ` for the ${P.benchmark} and `, el('b',{}, m.bench2_cagr_pct!=null? fPct(m.bench2_cagr_pct,false):'n/a'), ` for the ${DATA.bench2_short}.`);
-  M.append(hero);
-
-  const s1 = el('section');
-  s1.append(secHead('1', 'Key metrics', `${B.start} → ${B.as_of} · benchmark: ${B.benchmark_source}${B.bench_from && B.bench_from > B.start ? ' · benchmark history available from ' + B.bench_from : ''}`));
-  const kp = el('div', {class:'kpis'});
-  kp.append(
-    kpi(fPct(m.cagr_pct,false), 'CAGR', 'from commitment date', 'amber'),
-    kpi(fPct(m.total_return_pct,false), 'Total return', `${B.years} years`, 'teal'),
-    kpi(fPct(m.bench_cagr_pct,false), `${P.benchmark} CAGR`, B.bench_from && B.bench_from > B.start ? `from ${B.bench_from}` : 'same window', 'cyan'),
-    kpi(fPct(m.excess_cagr_pct), 'Excess CAGR', 'strategy − benchmark', signCol(m.excess_cagr_pct)),
-    kpi(fPct(m.bench2_cagr_pct,false), `${DATA.bench2_short} CAGR`, m.excess_bench2_pct!=null? `excess ${fPct(m.excess_bench2_pct)}`:'', 'violet'),
-    kpi(fPct(m.max_dd_pct,false), 'Max drawdown', 'monthly NAV', 'rose'),
-    kpi(fN(m.sharpe), 'Sharpe', 'monthly returns, rf = 0', ''),
-    kpi(fR(m.net_profit), 'Net profit', 'after all charges', 'green'),
-    kpi(fR(m.final_value), 'Final value', `on ₹${inr.format(B.capital)}`, ''),
-    kpi(fPct(m.win_rate_pct,false), 'Win rate', `${m.wins} of ${m.total_trades} closed`, 'green'),
-    kpi(fN(m.profit_factor), 'Profit factor', 'gross profit ÷ gross loss', ''),
-    kpi(m.total_trades, 'Closed trades', `${m.open_trades} still open`, ''),
-    kpi(fPct(m.avg_win_pct), 'Avg win', 'per winning trade, net', 'green'),
-    kpi(fPct(m.avg_loss_pct), 'Avg loss', 'per losing trade, net', 'rose'),
-    kpi(m.avg_holding_months!=null? m.avg_holding_months.toFixed(1)+' mo' : '—', 'Avg holding', 'closed trades', ''),
-    kpi(fN(m.calmar), 'Calmar', 'CAGR ÷ max drawdown', ''),
-    kpi(m.max_stocks_held, 'Max stocks held', `avg ${fN(m.avg_stocks_held,1)}`, ''),
-    kpi(fR(m.charges_paid), 'Charges paid', 'STT, txn, stamp, SEBI, GST, DP', 'amber'),
-    kpi(fR(m.gross_profit), 'Gross profit', `gross loss ${fR(m.gross_loss)}`, ''),
-    kpi(fR(m.realised_pnl), 'Realised P&L', `unrealised ${fR(m.unrealised_pnl)}`, signCol(m.realised_pnl)),
-    kpi(m.best_year||'—', 'Best year', `worst ${m.worst_year||'—'}`, 'violet'),
-  );
-  s1.append(kp);
-  M.append(s1);
-
-  const s2 = el('section');
-  s2.append(secHead('2', 'Growth of capital', `₹${inr.format(B.capital)} committed ${B.start}, marked to market on monthly closes and net of every charge; benchmark scaled to the same starting capital`));
-  const H = B.history;
-  const b0 = H.find(h=>h.bench!=null)?.bench;
-  const b20 = H.find(h=>h.bench2!=null)?.bench2;
-  s2.append(lineChart({title:`${P.display} vs ${P.benchmark} and ${DATA.bench2_short}`, dates:H.map(h=>h.date),
-    series:[{name:P.display, color:'var(--s1)', values:H.map(h=>h.nav)}, {name:P.benchmark, color:'var(--s2)', values:H.map(h=>(b0&&h.bench!=null)? h.bench/b0*B.capital : null)}, {name:DATA.bench2_short, color:'var(--s3)', values:H.map(h=>(b20&&h.bench2!=null)? h.bench2/b20*B.capital : null)}],
-    fmt:v=>lakh(v), base:B.capital, area:true, extra:(i)=>`· ${H[i].n} stocks held`, minPts:2, height:380, wide:true}));
-  const two = el('div',{class:'two', style:'margin-top:12px'});
-  two.append(lineChart({title:'Drawdown from peak (%)', dates:H.map(h=>h.date), series:[{name:'Drawdown', color:'var(--rose)', values:H.map(h=>h.dd)}], fmt:v=>v.toFixed(1)+'%', area:true, base:0, minPts:2, height:220, padTop:false}),
-             lineChart({title:'Stocks held (of 25 slots)', dates:H.map(h=>h.date), series:[{name:'Held', color:'var(--cyan)', values:H.map(h=>h.n)}], fmt:v=>String(Math.round(v)), area:true, base:0, minPts:2, height:220, yMax:25, padBottom:false}));
-  s2.append(two);
-  M.append(s2);
-
-  const s3 = el('section');
-  s3.append(secHead('3', 'Year by year', 'calendar-year returns of the strategy book and the benchmark'));
-  s3.append(tableCard(B.yearly, [
+  const B = P.backtest, m = B.metrics, color = SCOL[P.name] || 'var(--s1)';
+  M.append(pageHead(P.display, `Anchor & Sail · ${P.universe_label} · ranking ${P.ranking?'ON':'OFF'} · benchmark ${P.benchmark} · yardstick ${DATA.bench2_short}`, [{text:P.display, color}, {text:P.name}, {text:'BACKTEST ' + B.start.slice(0,4) + ' → ' + B.as_of}]));
+  M.append(el('div',{class:'hero'}, el('b',{}, `${P.display} · ${P.universe_label}`), ` — had this strategy been run from `, el('b',{}, B.start), ` with ₹${inr.format(B.capital)} (first entries on the ${B.first_signal_month} close), the same rules, ${DATA.strategy.slots} slots, ranking ${P.ranking?'ON':'OFF'} and every charge, the book would be worth `, el('b',{}, fR(m.final_value)), ` today (${B.as_of}), marked to market on live prices — a CAGR of `, el('b',{}, fPct(m.cagr_pct,false)), ` over ${B.years} years versus `, el('b',{}, m.bench_cagr_pct!=null? fPct(m.bench_cagr_pct,false):'n/a'), ` for the ${P.benchmark} and `, el('b',{}, m.bench2_cagr_pct!=null? fPct(m.bench2_cagr_pct,false):'n/a'), ` for the ${DATA.bench2_short}.`));
+  btAnalytics(M, {name:P.display, color, capital:B.capital, benchName:P.benchmark, H:B.history, start:B.start, asOf:B.as_of,
+    eng:{win_rate:m.win_rate_pct, wins:m.wins, trades:m.total_trades, profit_factor:m.profit_factor, avg_hold:m.avg_holding_months, realised:m.realised_pnl, unrealised:m.unrealised_pnl, final_value:m.final_value},
+    charges:m.charges_paid, trades:B.trades.filter(t=>t.status==='closed').map(normAS),
+    extraKpis:[kpi(fPct(m.avg_win_pct),'Avg win','per winning trade, net','green'), kpi(fPct(m.avg_loss_pct),'Avg loss','per losing trade, net','rose'), kpi(m.max_stocks_held,'Max stocks held',`avg ${fN(m.avg_stocks_held,1)} of ${DATA.strategy.slots}`,''), kpi(m.best_year||'—','Best year',`worst ${m.worst_year||'—'}`,'violet')],
+    rightChart:(mm)=> lineChart({title:`Stocks held (of ${DATA.strategy.slots} slots)`, dates:mm.dates, series:[{name:'Held', color:'var(--cyan)', values:mm.n}], fmt:v=>String(Math.round(v)), area:true, base:0, minPts:2, height:260, yMax:DATA.strategy.slots, padBottom:false})});
+  const s6 = el('section'); s6.append(secHead('6','Year by year', 'calendar-year returns of the strategy book, its benchmark and the common yardstick'));
+  s6.append(tableCard(B.yearly, [
       {label:'Year', left:true, key:'year', desc:false}, {label:`${P.display}`, key:'port_pct'}, {label:P.benchmark, key:'bench_pct'}, {label:'Excess', key:'excess_pct'}, {label:DATA.bench2_short, key:'bench2_pct'},
       {label:'Book value at year end', key:'nav_end'}, {label:'Trades closed', key:'trades'}, {label:'Wins', key:'wins'}, {label:'Max held', key:'max_held'}],
     r => { const tr=el('tr'); tr.append(td(r.year,'l'), pctCell(r.port_pct), pctCell(r.bench_pct), pctCell(r.excess_pct), pctCell(r.bench2_pct), td(fR(r.nav_end)), td(r.trades), td(r.wins), td(r.max_held)); return tr; },
     'No yearly data.', 'year', false));
-  M.append(s3);
-
-  const s4 = el('section');
-  s4.append(secHead('4', 'What the backtest holds today', `${B.open_positions.length} of ${DATA.strategy.slots} slots · stops as the strategy would have them now · ${lakh(m.invested_now)} invested, ${lakh(m.cash_now)} in the Nifty ETF`));
-  s4.append(openBookTable(B.open_positions, false));
-  M.append(s4);
-
-  const s5 = el('section');
-  s5.append(secHead('5', 'Trade log', `${B.trades.length} positions since ${B.first_signal_month} · exits: ${Object.entries(m.exit_reasons||{}).map(([k,v])=>`${k} ${v}`).join(' · ')}`));
+  M.append(s6);
+  const s7 = el('section'); s7.append(secHead('7','What the backtest holds today', `${B.open_positions.length} of ${DATA.strategy.slots} slots · stops as the strategy would have them now · ${lakh(m.invested_now)} invested, ${lakh(m.cash_now)} in the Nifty ETF · unrealised ${fR(m.unrealised_pnl)}`));
+  s7.append(openBookTable(B.open_positions, false)); M.append(s7);
+  const s8 = el('section'); s8.append(secHead('8','Trade log', `${B.trades.length} positions since ${B.first_signal_month} · exits: ${Object.entries(m.exit_reasons||{}).map(([k,v])=>`${k} ${v}`).join(' · ')} · realised ${fR(m.realised_pnl)}`));
   const tb = el('div',{class:'toolbar'}); const inp = el('input',{placeholder:'Filter symbol / name / reason…', type:'search'}); const holder = el('div'); let q='';
   const drawT = () => { const rows = B.trades.filter(t=>!q || t.symbol.toLowerCase().includes(q) || (t.name||'').toLowerCase().includes(q) || (t.reason||'').toLowerCase().includes(q));
     holder.replaceChildren(tableCard(rows, [
@@ -743,9 +916,38 @@ function renderBacktest(P, M){
         tr.append(symCell(r), td(r.entry_date), td(fP(r.entry)), td(inr.format(r.qty)), td(r.exit_date||'—'), td(fP(r.exit_price)), el('td',{class:'l'}, el('span',{class:'tag '+rc}, r.reason)),
           el('td',{}, r.scaled? el('span',{class:'tag scale'},'50% OUT'):'·'), td(r.months), pctCell(r.pnl_pct), td(r.status==='open' ? (r.realised? fR(r.realised)+' *':'—') : fR(r.realised), cls(r.realised)), td(r.rank??'—'), td(fP(r.score))); return tr; },
       'No trades match.', 'exit_date', true)); };
-  inp.addEventListener('input', ()=>{ q=inp.value.trim().toLowerCase(); drawT(); }); tb.append(inp); s5.append(tb, holder); drawT();
-  s5.append(el('div',{class:'note'}, '* open positions show realised cash from a 50% scale-out only. P&L % for closed trades is net of all charges on the original position value; for open positions it is the unrealised move of the remaining quantity.'));
-  M.append(s5);
+  inp.addEventListener('input', ()=>{ q=inp.value.trim().toLowerCase(); drawT(); }); tb.append(inp); s8.append(tb, holder); drawT();
+  s8.append(el('div',{class:'note'}, '* open positions show realised cash from a 50% scale-out only. P&L % for closed trades is net of all charges on the original position value; for open positions it is the unrealised move of the remaining quantity.'));
+  M.append(s8);
+}
+
+// =============================================================== MOMENTUM — BACKTEST
+function renderMomentumBacktest(Sx, U, M){
+  M.replaceChildren();
+  const D = DATA, B = U.backtest, m = B.metrics, isS4 = Sx.code==='S4PLUS', color = SCOL[Sx.code==='S1'?'S1':'S4PLUS'];
+  M.append(pageHead(Sx.name, `${Sx.style} · ${U.universe_label} · benchmark ${U.benchmark} · yardstick ${D.bench2_short}`, [{text:Sx.name, color}, {text:Sx.code}, {text:'BACKTEST ' + m.start.slice(0,4) + ' → ' + m.as_of}]));
+  M.append(el('div',{class:'hero'}, el('b',{}, `${Sx.name} · ${U.universe_label}`), ` — rebalanced monthly from `, el('b',{}, m.start), ` with ₹${inr.format(D.momentum.capital)}, the same rules and every charge, the book would be worth `, el('b',{}, fR(m.final_value)), ` today (${m.as_of}) — a CAGR of `, el('b',{}, fPct(m.cagr_pct,false)), ` over ${m.years} years versus `, el('b',{}, fPct(m.bench_cagr_pct,false)), ` for the ${U.benchmark} and `, el('b',{}, fPct(m.bench2_cagr_pct,false)), ` for the ${D.bench2_short}.`,
+    B.published_cagr_pct!=null? el('span',{class:'mut'}, ` The FINSIGHTS package reported ${fPct(B.published_cagr_pct,false)} for this strategy/universe on its own (hand-typed) list and Yahoo sectors; this build uses NSE's official constituents and sector classification.`):null));
+  const unreal = unrealisedOf(B.holdings);
+  btAnalytics(M, {name:Sx.name, color, capital:D.momentum.capital, benchName:U.benchmark, H:B.history, start:m.start, asOf:m.as_of, mddDaily:m.max_dd_pct,
+    eng:{win_rate:m.win_rate_pct, wins:m.wins, trades:m.closed_trades, profit_factor:m.profit_factor, avg_hold:m.avg_holding_months, realised:m.realised_pnl, unrealised:unreal, final_value:m.final_value},
+    charges:m.charges_paid, interest:m.interest_earned, trades:B.trades.map(normMom),
+    extraKpis:[kpi(fPct(m.avg_win_pct),'Avg win','per winning position, net','green'), kpi(fPct(m.avg_loss_pct),'Avg loss','per losing position, net','rose'), kpi(fPct(m.avg_exposure_pct,false),'Avg exposure',`${m.months_derisked} de-risked month${m.months_derisked===1?'':'s'}`,''), kpi(m.rebalances,'Rebalances',`${m.open_positions} positions open now`,'')],
+    rightChart:(mm)=> lineChart({title: isS4? 'Target exposure at each rebalance (%)':'Stocks held', dates:mm.dates, series:[{name: isS4?'Exposure':'Held', color:'var(--cyan)', values: isS4? mm.exposure : mm.n}], fmt:v=> isS4? Math.round(v)+'%' : String(Math.round(v)), area:true, base:0, minPts:2, height:260, yMax: isS4?100:D.momentum.rules.hold, padBottom:false})});
+  const s6 = el('section'); s6.append(secHead('6','Year by year','calendar-year returns of the book, its benchmark and the common yardstick'));
+  s6.append(tableCard(B.yearly, [{label:'Year', left:true, key:'year', desc:false}, {label:Sx.name, key:'port_pct'}, {label:U.benchmark, key:'bench_pct'}, {label:'Excess', key:'excess_pct'}, {label:D.bench2_short, key:'bench2_pct'}, {label:'Book value at year end', key:'nav_end'}, {label:'Positions closed', key:'trades'}, {label:'Wins', key:'wins'}, {label:'Avg exposure', key:'avg_exposure_pct'}],
+    r => { const tr=el('tr'); tr.append(td(r.year,'l'), pctCell(r.port_pct), pctCell(r.bench_pct), pctCell(r.excess_pct), pctCell(r.bench2_pct), td(fR(r.nav_end)), td(r.trades), td(r.wins), td(fPct(r.avg_exposure_pct,false))); return tr; }, 'No yearly data.', 'year', false));
+  M.append(s6);
+  const s7 = el('section'); s7.append(secHead('7','What the backtest holds today', `${B.holdings.length} stocks · ${lakh(m.invested_now)} invested · ${lakh(m.cash_now)} in the liquid fund · unrealised ${fR(unreal)}`));
+  s7.append(tableCard(B.holdings, [{label:'Stock', left:true, key:'symbol'}, {label:'Sector', left:true, key:'industry'}, {label:'Shares', key:'shares'}, {label:'Avg entry ₹', key:'avg_entry'}, {label:'Since', key:'entry_date'}, {label:'LTP ₹', key:'ltp'}, {label:'Value ₹', key:'value'}, {label:'Weight', key:'weight_pct'}, {label:'P&L %', key:'pnl_pct'}, {label:'Unrealised ₹', key:'unrealised'}, {label:'Rank today', key:'rank_now', desc:false}],
+    r => { const tr=el('tr'); tr.append(symCell(r), td(r.industry,'l'), td(inr.format(r.shares)), td(fP(r.avg_entry)), td(r.entry_date), td(fP(r.ltp)), td(fR(r.value)), td(fPct(r.weight_pct,false)), pctCell(r.pnl_pct), td(fR(r.unrealised), cls(r.unrealised)), td(r.rank_now ?? '—')); return tr; }, 'No holdings.', 'weight_pct', true));
+  M.append(s7);
+  const s8 = el('section'); s8.append(secHead('8','Trade log', `${B.trades.length} closed positions since ${m.start} · realised ${fR(m.realised_pnl)}`));
+  const tb = el('div',{class:'toolbar'}); const inp = el('input',{placeholder:'Filter symbol / reason…', type:'search'}); const holder = el('div'); let q='';
+  const draw = () => { const rows = B.trades.filter(t=>!q || t.symbol.toLowerCase().includes(q) || (t.reason||'').toLowerCase().includes(q));
+    holder.replaceChildren(tableCard(rows, [{label:'Stock', left:true, key:'symbol'}, {label:'Entry', key:'entry_date'}, {label:'Avg entry ₹', key:'avg_entry'}, {label:'Exit', key:'exit_date'}, {label:'Avg exit ₹', key:'avg_exit'}, {label:'Shares', key:'shares'}, {label:'Invested ₹', key:'invested'}, {label:'Months', key:'months'}, {label:'Return %', key:'return_pct'}, {label:'Net P&L ₹', key:'net_pnl'}, {label:'Costs ₹', key:'costs'}, {label:'Reason', key:'reason', left:true}],
+      r => { const tr=el('tr'); tr.append(el('td',{class:'sym'}, r.symbol), td(r.entry_date), td(fP(r.avg_entry)), td(r.exit_date), td(fP(r.avg_exit)), td(inr.format(r.shares)), td(fR(r.invested)), td(r.months), pctCell(r.return_pct), td(fR(r.net_pnl), cls(r.net_pnl)), td(fR(r.costs)), td(r.reason,'l')); return tr; }, 'No trades match.', 'exit_date', true)); };
+  inp.addEventListener('input', ()=>{ q=inp.value.trim().toLowerCase(); draw(); }); tb.append(inp); s8.append(tb, holder); draw(); M.append(s8);
 }
 
 function lineChart({title, dates, series, fmt, base, area=false, extra, minPts=2, height=280, yMax, wide=false, padTop=true, padBottom=true, log=false}){
@@ -800,7 +1002,7 @@ function lineChart({title, dates, series, fmt, base, area=false, extra, minPts=2
 // ---------------------------------------------------------------- theme toggle (visual only — no data changes)
 function applyTheme(t){ document.documentElement.setAttribute('data-theme', t); $('#themeLabel').textContent = t==='light' ? 'Light' : 'Dark'; try{ localStorage.setItem('fs_theme', t); }catch(e){} }
 applyTheme((()=>{ try{ return localStorage.getItem('fs_theme') || localStorage.getItem('as_theme') || 'dark'; }catch(e){ return 'dark'; } })());
-$('#theme').addEventListener('click', ()=> applyTheme(document.documentElement.getAttribute('data-theme')==='light' ? 'dark' : 'light'));
+$('#theme').addEventListener('click', ()=>{ applyTheme(document.documentElement.getAttribute('data-theme')==='light' ? 'dark' : 'light'); if(DATA){ const y=window.scrollY; render(); window.scrollTo(0,y); } });
 
 // ---------------------------------------------------------------- refresh with feedback
 function nowIST(){ return new Date(Date.now() + 5.5*3600e3); }
