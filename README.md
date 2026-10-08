@@ -1,108 +1,103 @@
-# Anchor & Sail — live signal dashboard
+# FINSIGHTS by Himanshu Arora — live strategy dashboard
 
-Four portfolios, one strategy (monthly Williams %R(14) + EMA 5/15/50, long only), rebuilt
-automatically by GitHub Actions and published on GitHub Pages. Setup: see `SETUP.md`.
+Six model portfolios from two engines, rebuilt automatically by GitHub Actions and published on
+GitHub Pages. Setup and upgrade steps: see `SETUP.md`.
 
-| Portfolio | Universe | Ranking | Benchmark |
-|---|---|---|---|
-| CORE | NIFTY 50 + NIFTY NEXT 50 | OFF | Nifty 100 |
-| PRECISION | NIFTY MIDCAP 150 | ON | Nifty Midcap 150 |
-| FRONTIER | NIFTY SMALLCAP 250 | OFF | Nifty Smallcap 250 |
-| SPECTRUM | all three pooled, deduplicated | ON | Nifty 500 |
+| Page | Engine | Universe | Live since | Capital | Benchmark |
+|---|---|---|---|---|---|
+| Bharat Wealth Portfolio (CORE) | Anchor & Sail, ranking OFF | NIFTY 50 + NIFTY NEXT 50 | 31 Aug 2026 close | ₹26 L | Nifty 100 |
+| Precision | Anchor & Sail, ranking ON | NIFTY MIDCAP 150 | 31 Aug 2026 close | ₹26 L | Nifty Midcap 150 |
+| Frontier | Anchor & Sail, ranking OFF | NIFTY SMALLCAP 250 | 31 Aug 2026 close | ₹26 L | Nifty Smallcap 250 |
+| Udaan (SPECTRUM) | Anchor & Sail, ranking ON | all three pooled (~500) | 31 Aug 2026 close | ₹26 L | Nifty 500 |
+| Alpha Leaders (S1) | Momentum, fully invested | Nifty 100 / **Nifty 200** / Nifty 500 | 30 Sep 2026 close | ₹10 L each | Nifty 100 / 200 / 500 |
+| Wealth Vriddhi (S4+) | Defensive momentum | Nifty 100 / **Nifty 200** / Nifty 500 | 30 Sep 2026 close | ₹10 L each | Nifty 100 / 200 / 500 |
 
-Each book: ₹26,00,000 committed at the **August 2026 month-end close** (fresh start), size =
-corpus / 25 (compounding), max 25 positions, idle cash earns the Nifty 50 (^NSEI) return.
+Every book is additionally compared with the **Nifty 200 Momentum 30** index as a common
+yardstick. The FINSIGHTS package's "Bharat Wealth Portfolio" and "Udaan" are the Anchor & Sail
+CORE and SPECTRUM books, so they are shown under those client names rather than duplicated.
 
-## What the page shows, per portfolio
+## Pages
 
-1. **Signals** — exits (stop / gap / target scale-out) hit this month with TODAY flagged;
-   entry signals from the last completed month-end close with rank, qty, stop, target and
-   whether the book took them (or "No slot"); the open book sorted by distance to stop.
-2. **Performance vs benchmark** — NAV, return, benchmark return, excess, invested/cash,
-   drawdown, growth-of-100 chart, realised/unrealised P&L.
-3. **Watchlist** — entry side: armed names one condition away (with a "would trigger if the
-   month closed today" flag); exit side: holdings within 5% of stop or target.
-4. **Universe** — every stock with latest OHLC, day change, %R(14) for the completed month and
-   the running month, EMA 5/15/50, armed/trend flags, score, and a state tag.
+* **Overview** — today's alerts (exits, stops within 3%, rebalances, de-risk regime), one card
+  per strategy, a live-performance table for all ten books, a backtest table (CAGR, benchmark
+  CAGR, Mom 30 CAGR, drawdown, Sharpe, win rate, trades, final value), CAGR bars and a
+  growth-of-₹100 chart of every strategy since January 2016. Rows and cards open the strategy page.
+* **One page per strategy**, each with a LIVE BOOK / BACKTEST switch. Momentum pages also have a
+  Nifty 100 / 200 / 500 switch (Nifty 200 is the default and the page remembers the choice in the URL).
+* The theme switch (Dark / Light) changes the palette and the data colours — each theme has its
+  own set of series colours tuned to its background. Nothing else changes.
 
-## Backtest view (2016 → today)
+## Anchor & Sail (four books)
 
-The BACKTEST switch on each portfolio runs the identical engine on monthly bars from the
-**31 Dec 2015 close** (₹26L committed, first entries on the Jan-2016 close) to the last
-completed month, then marks the resulting book to market at today's prices. It reuses the same
-`Book` class as the live ledger — same slots, ranking, cost model and Nifty-ETF cash leg — so
-the two views cannot drift apart. It shows key metrics (CAGR from the commitment date, max
-drawdown on monthly NAV, Sharpe with rf = 0, Calmar, win rate, profit factor, average win/loss,
-holding period, charges), growth of capital vs the benchmark scaled to the same starting
-capital, drawdown, stocks held, calendar-year returns, the book the strategy would hold today
-with its stops, and the full trade log. It is recomputed on every run from the freshly
-downloaded history (nothing is stored), so a data revision shows up immediately rather than
-silently. Price history is downloaded from July 2010 so the indicators are fully warmed by 2016.
+Monthly Williams %R(14): armed when < −40, trigger when ≥ −20 on a later completed monthly close
+with EMA 5 > 15 > 50. Entry at that close, stop −15%, target +30% with a 50% scale-out, stop to
+breakeven after the scale-out and then trailed to the previous month's low. 25 slots, size =
+corpus / 25 (compounding), idle cash earns the Nifty 50 (^NSEI) return, daily stop monitoring.
+Per page: exit signals this month, every entry signal from the last completed close (taken / no
+slot), the open book with live stop levels, performance vs both benchmarks, watchlists and the
+full universe table with OHLC, %R, EMAs and state. The backtest view runs the identical `Book`
+from the 31 Dec 2015 close.
 
-Benchmark history: Yahoo's `NIFTYMIDCAP150.NS` / `NIFTYSMLCAP250.NS` series may start later
-than 2016; the benchmark CAGR is then measured from the first available date and the page says
-so. Drop the official CSV from niftyindices.com into `data/benchmarks/` for the full window.
+## Alpha Leaders (S1) and Wealth Vriddhi (S4+)
 
-## How the engine follows the brief
+Ported from the FINSIGHTS package's `combined_backtest.py` and run live with the same parameters:
 
-* `engine/strategy.py` — indicators (`calc_ind`), per-stock monthly state machine
-  (`gen_positions`) and the live ledger (`Book`). Parameters are at the top of the file.
-* Entry needs, on the same **completed** monthly close: armed (%R < −40 earlier, flag persists
-  until an entry fires) → %R ≥ −20 → EMA5 > EMA15 > EMA50. Entry price = that close.
-* Exits are checked in the brief's order on every run using **daily** bars (the brief requires
-  daily stop monitoring): open ≤ stop → out at open ("Stop (gap)"); low ≤ stop → out at stop
-  ("SL Hit" / "Trail (prev-low)"); not scaled and high ≥ target → sell 50% at target, stop to
-  breakeven. Once scaled, at the start of each new month the stop trails to the previous
-  month's low.
-* Costs (TXN, STT, stamp, SEBI, GST, DP) are charged inside the ledger; ≈0.25% round trip.
-* The running month is **never** used for signal generation — entry signals change once a
-  month; the open book and stops change daily.
+* **Score** = mean percentile rank of 12-1 month return, 6-month return and 12-month Sharpe.
+* **S1 gate**: liquidity ≥ ₹5 cr/day (60-day median traded value) and price above the 200-DMA.
+  Equal weight, always 100% invested.
+* **S4+ gate** adds a rising 200-DMA (vs its own level 20 sessions earlier) and downside capture
+  below the universe median. Exposure 50% when the Nifty 50 is below its 200-day mean, ×0.8 when
+  the median 20d/252d volatility ratio exceeds 1.7. Weights = 50% inverse-volatility + 50% equal.
+* Hold 20, keep an existing holding while it stays inside the top 30, at most 5 names per NSE
+  sector (NSE's own "Industry" classification from the constituent file). Idle cash earns a
+  liquid-fund yield of 7% p.a., accrued daily.
+* **Rebalance** on the last trading session of every month at that session's close — the live
+  book rebalances when the month's last session has closed (the 18:00 IST build), never during
+  the running month. Between rebalances the page shows a *next-rebalance preview*: the target
+  list, would-be sells and the rank 21–30 buffer as if the month closed today.
+* Costs: the package's delivery charges (transaction, STT, stamp duty on buys, SEBI, GST, DP ₹20
+  + GST per sell). Quantities are whole shares; a target whose single share costs more than its
+  allocation is listed as "not bought" and the cash stays in the liquid fund.
+* Backtests start at the first month-end of 2016 with ₹10 L; the package's published CAGR for
+  each strategy/universe is shown alongside for reference. Differences come from NSE's official
+  constituent lists and sectors (the package used hand-typed lists and Yahoo sectors), the
+  survivorship-biased universe and whole-share quantities.
 
-## Interpretation choices (not fully pinned down by the brief)
+## Benchmarks
 
-* **Per-stock cycle.** `gen_positions` runs the strategy for each stock independently from
-  2015; a stock whose per-stock cycle is already "in a position" (entered before this book
-  started) does not produce a fresh entry until that cycle exits — shown as **IN CYCLE**. This
-  mirrors how the reference backtest generates candidates.
-* **First-come when ranking is OFF** = NSE constituent-list order.
-* **Quantities** are whole shares (floor of size / price); a slot that cannot afford one share
-  is reported as "Insufficient cash".
-* **Cash leg** is held as Nifty 50 units (mark-to-market daily), which equals applying the
-  ^NSEI return to cash.
-* **Warm-up**: a stock produces signals once %R(14) is computable (14 monthly bars), matching a
-  reference that treats indicators as valid when non-NaN; 65+ months of history are downloaded
-  before 2016 so long-listed names are fully warmed. Recently listed stocks join after 14 months.
-* **Ledger version**: `LEDGER_VERSION` in `build.py` is bumped when the signal engine changes; an
-  older ledger is rebuilt deterministically from the inception close on the next run.
-* **Same-bar re-entry**: a stock may re-enter on the same monthly bar its previous per-stock
-  position exited if all three conditions hold.
+Primary: Yahoo `^CNX100`, `^CNX200`, `^CRSLDX`, `NIFTYMIDCAP150.NS`, `NIFTYSMLCAP250.NS`
+(labelled ETF proxies only as a visible fallback; an official CSV in `data/benchmarks/
+<PORTFOLIO>.csv` with `Date, Close` overrides). Common yardstick: the official **Nifty 200
+Momentum 30** history in `data/benchmarks/NIFTY200MOM30.csv` (`Date, index_level`), extended
+beyond its last date by chaining the daily returns of a tracking ETF (a warning names the ETF;
+refresh the CSV from niftyindices.com now and then to remove the tracking error).
 
-## Data notes (from the brief's findings)
+## Data notes
 
-* Prices: Yahoo Finance via yfinance, adjusted. Bulk downloads are chunked, retried
-  per-symbol, and reconciled against the previous run's cache; anything served from cache or
-  missing is listed in the warnings banner.
-* Universes: NSE's official constituent CSVs, refreshed every run; if NSE is unreachable the
-  last good snapshot in `data/universe/` is used **and a warning is shown**. Overlaps between
-  lists are reported.
-* Benchmarks: `^CNX100`, `NIFTYMIDCAP150.NS`, `NIFTYSMLCAP250.NS`, `^CRSLDX`; labelled ETF
-  proxies only as a visible fallback; an official CSV in `data/benchmarks/` overrides both.
-* Survivorship bias: the universe is today's members applied to the warm-up history.
-* Yahoo's NSE feed is delayed about 15 minutes; the 15-minute intraday builds are for stop
-  monitoring, the 18:00 IST run is the day's final word. The dashboard is published to GitHub
-  Pages straight from each build (data.json is not committed); ledgers are committed only when
-  an entry, exit, scale-out, trail or split happened, or on the end-of-day pass.
-* Theme: the Light/Dark switch in the header is purely visual (remembered per browser).
+* Prices: Yahoo Finance via yfinance, adjusted, ~15 minutes delayed. Downloads are chunked,
+  retried per symbol and reconciled against the previous run's cache; anything served from cache
+  is listed in the warnings banner.
+* Universes: NSE's official constituent CSVs every run (Nifty 50, Next 50, Midcap 150, Smallcap
+  250, Nifty 200); if NSE is unreachable the committed snapshot in `data/universe/` is used **and
+  a warning is shown**. Overlaps between the size indices are reported.
+* The 15-minute intraday builds monitor stops; the 18:00 IST run is the day's final word and the
+  only one that can rebalance the momentum books. Ledgers (`data/state/*.json`) are committed
+  when something material happened or on the end-of-day pass; `data.json` is published to Pages
+  directly and never committed.
 
 ## Files
 
 ```
-engine/strategy.py   strategy + ledger            docs/index.html   the dashboard
-engine/build.py      orchestrator (writes docs/data.json)   docs/data.json   generated each run
-engine/data.py       yfinance download / reconcile / benchmarks
-engine/universes.py  NSE constituent lists + snapshot fallback
-data/state/*.json    the four ledgers (committed by the workflow)
-data/universe/       last good constituent lists
-tests/test_engine.py unit checks of every rule
+engine/strategy.py        Anchor & Sail indicators, state machine, ledger
+engine/momentum.py        S1 / S4+ features, gates, selection, weights, ledger, simulator
+engine/momentum_build.py  runs the six momentum books (live + backtest), builds their payload
+engine/build.py           orchestrator: downloads, both engines, summary, docs/data.json
+engine/data.py            yfinance download / reconcile / benchmarks / Nifty 200 Mom 30
+engine/universes.py       NSE constituent lists + NSE sectors + snapshot fallback
+docs/index.html           the dashboard (single file)
+data/state/               CORE/PRECISION/FRONTIER/SPECTRUM.json + MOM_<S1|S4PLUS>_<universe>.json
+data/universe/            constituent snapshots, company_names.json, industry.json
+data/benchmarks/          NIFTY200MOM30.csv (official history)
+tests/                    test_engine.py (Anchor & Sail), test_momentum.py (momentum)
 .github/workflows/daily_dashboard.yml   the schedule
 ```

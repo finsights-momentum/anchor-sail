@@ -1,4 +1,6 @@
-# Anchor & Sail dashboard — one-time setup (about 15 minutes, no coding)
+# FINSIGHTS dashboard — setup and upgrades (no coding)
+
+> **Already running an earlier version?** Jump to **Upgrading an existing dashboard** at the end.
 
 After this setup the dashboard rebuilds itself on GitHub's servers every trading hour and
 every evening. You never run anything again — you just open the link.
@@ -26,11 +28,12 @@ every evening. You never run anything again — you just open the link.
 
 ## Step 3 — Upload the dashboard files
 
-1. Unzip `anchor-sail.zip` on your computer.
+1. Unzip `anchor-sail-v4.zip` on your computer.
 2. In the repository page click **Add file** → **Upload files**.
 3. Drag these folders and files from the unzipped folder into the upload area:
    `engine`, `data`, `docs`, `tests`, `requirements.txt`, `README.md`, `SETUP.md`
-   (drag the folders themselves — GitHub keeps the folder structure).
+   (drag the folders themselves — GitHub keeps the folder structure; `data` contains the
+   `universe` snapshots and the `benchmarks` folder with the Nifty 200 Momentum 30 history).
 4. Scroll down, click **Commit changes**.
 
 ## Step 4 — Add the scheduler file (the one hidden folder)
@@ -86,11 +89,41 @@ upload it as `data/benchmarks/PRECISION.csv` or `data/benchmarks/FRONTIER.csv`
 
 Actions → click the red run → read the summary. The most common cause is Yahoo being slow;
 the next scheduled run simply retries and the dashboard keeps showing the last good data.
-Nothing in the ledger is lost — the open book lives in `data/state/*.json` and is committed
-after every successful run.
+Nothing in the ledger is lost — the open books live in `data/state/*.json` and are committed
+after every end-of-day run or material change.
+
+## Upgrading an existing dashboard (v3 → v4: FINSIGHTS, momentum strategies)
+
+Nothing already running is lost — the four Anchor & Sail ledgers in `data/state/` stay as they
+are. Uploading a file with the same name replaces the old copy.
+
+1. Unzip `anchor-sail-v4.zip`.
+2. Repository page → **Add file** → **Upload files**. Drag in the folders `engine`, `docs`,
+   `tests`, the `data` folder (it only contains `universe/` and `benchmarks/` — the new Nifty 200
+   list, the NSE sector file and the Nifty 200 Momentum 30 history; your ledgers are not touched)
+   and the files `README.md`, `SETUP.md`. Click **Commit changes**.
+3. The scheduler file does not need to change for v4.
+4. **Actions** → **Anchor & Sail daily dashboard** → **Run workflow** → **Run workflow**.
+   The first v4 run takes 8–12 minutes: it downloads prices for the Nifty 200 list and runs six
+   momentum backtests from 2016 plus the live books from the 30 Sep 2026 close. Later runs are
+   as fast as before because the price cache is reused.
+5. Open your dashboard URL and hard-refresh once (Ctrl+F5 / Cmd+Shift+R) so the browser drops the
+   old page. The Overview is the new landing page; each strategy has its own page in the top bar.
+
+What to expect on the first v4 build:
+
+* Warnings naming the ETF used to extend the Nifty 200 Momentum 30 series past 18 Sep 2026 — this
+  is expected; the index itself is not on Yahoo. Download a fresh history from niftyindices.com
+  (Reports → Historical Data → Nifty 200 Momentum 30) and upload it as
+  `data/benchmarks/NIFTY200MOM30.csv` (columns `Date`, `index_level`) whenever you want the exact figures.
+* The Alpha Leaders / Wealth Vriddhi backtest CAGRs differ from the FINSIGHTS package figures,
+  which are shown next to them as "published": this build uses NSE's official constituents and
+  sector classification instead of the package's hand-typed lists.
+* If NSE's constituent files were not reachable, the usual "using committed snapshot" warnings appear.
 
 ## Changing the strategy parameters
 
 Do not — the brief says the strategy must not change. Everything is in `engine/strategy.py`
-(parameters at the top) and `engine/build.py` (`INCEPTION_MONTH`, portfolio table). If a
+(parameters at the top), `engine/momentum.py` (momentum parameters at the top) and `engine/build.py`
+(`INCEPTION_MONTH`, `MOM_INCEPTION`, portfolio table). If a
 change is ever agreed, edit the file on GitHub (pencil icon) and the next run picks it up.

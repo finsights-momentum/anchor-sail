@@ -28,8 +28,11 @@ NSE_CSV = {
     "NIFTYNEXT50": "https://nsearchives.nseindia.com/content/indices/ind_niftynext50list.csv",
     "NIFTYMIDCAP150": "https://nsearchives.nseindia.com/content/indices/ind_niftymidcap150list.csv",
     "NIFTYSMALLCAP250": "https://nsearchives.nseindia.com/content/indices/ind_niftysmallcap250list.csv",
+    "NIFTY200": "https://nsearchives.nseindia.com/content/indices/ind_nifty200list.csv",
 }
-EXPECTED = {"NIFTY50": 50, "NIFTYNEXT50": 50, "NIFTYMIDCAP150": 150, "NIFTYSMALLCAP250": 250}
+EXPECTED = {"NIFTY50": 50, "NIFTYNEXT50": 50, "NIFTYMIDCAP150": 150, "NIFTYSMALLCAP250": 250, "NIFTY200": 200}
+# NSE's own macro-economic sector ("Industry" column) per symbol — used for the momentum strategies' 5-per-sector cap
+INDUSTRY_FILE = "industry.json"
 
 HEADERS = {
     "User-Agent": ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
@@ -67,7 +70,7 @@ def _read_snapshot(name: str) -> tuple[list[str], str | None]:
     return syms, date
 
 
-def _write_snapshot(name: str, symbols: list[str], names: dict[str, str]):
+def _write_snapshot(name: str, symbols: list[str], names: dict[str, str], industry: dict[str, str] | None = None):
     UNI_DIR.mkdir(parents=True, exist_ok=True)
     (UNI_DIR / f"{name}.txt").write_text(",".join(symbols) + "\n")
     meta_p = UNI_DIR / "snapshot_meta.json"
@@ -88,6 +91,26 @@ def _write_snapshot(name: str, symbols: list[str], names: dict[str, str]):
             allnames = {}
     allnames.update(names)
     names_p.write_text(json.dumps(allnames, indent=0, ensure_ascii=False))
+    if industry:
+        ind_p = UNI_DIR / INDUSTRY_FILE
+        allind = {}
+        if ind_p.exists():
+            try:
+                allind = json.loads(ind_p.read_text())
+            except Exception:
+                allind = {}
+        allind.update(industry)
+        ind_p.write_text(json.dumps(allind, indent=0, ensure_ascii=False))
+
+
+def load_industry() -> dict[str, str]:
+    p = UNI_DIR / INDUSTRY_FILE
+    if p.exists():
+        try:
+            return json.loads(p.read_text())
+        except Exception:
+            return {}
+    return {}
 
 
 def load_company_names() -> dict[str, str]:
@@ -109,10 +132,12 @@ def load_universes(offline: bool = False) -> tuple[dict[str, list[str]], list[st
         df = None if offline else _fetch_csv(url)
         if df is not None and "Symbol" in df.columns and len(df) == EXPECTED[name]:
             syms = [str(s).strip() for s in df["Symbol"].tolist()]
-            names = {}
+            names, industry = {}, {}
             if "Company Name" in df.columns:
                 names = {str(s).strip(): str(n).strip() for s, n in zip(df["Symbol"], df["Company Name"])}
-            _write_snapshot(name, syms, names)
+            if "Industry" in df.columns:
+                industry = {str(s).strip(): str(n).strip() for s, n in zip(df["Symbol"], df["Industry"])}
+            _write_snapshot(name, syms, names, industry)
             lists[name] = syms
             meta["source"][name] = "NSE live"
         else:
@@ -128,7 +153,7 @@ def load_universes(offline: bool = False) -> tuple[dict[str, list[str]], list[st
             if not syms:
                 warnings.append(f"{name}: NO universe available (snapshot missing).")
     # mutual exclusivity check
-    for a, b in itertools.combinations(lists, 2):
+    for a, b in itertools.combinations([k for k in lists if k != "NIFTY200"], 2):
         ov = sorted(set(lists[a]) & set(lists[b]))
         if ov:
             warnings.append(f"Universe overlap {a} ∩ {b}: {', '.join(ov)} — one list is stale.")
@@ -143,4 +168,8 @@ def portfolio_universes(lists: dict[str, list[str]]) -> dict[str, list[str]]:
     for s in core + precision + frontier:
         if s not in seen:
             seen.add(s); spectrum.append(s)
-    return {"CORE": core, "PRECISION": precision, "FRONTIER": frontier, "SPECTRUM": spectrum}
+    n200 = list(lists.get("NIFTY200") or [])
+    if len(n200) != 200:                                  # derive if the list is missing: Nifty 100 + first 100 of Midcap 150 is NOT exact,
+        n200 = core + [s for s in precision if s in set(n200)]   # so only trust the official list; otherwise fall back to Nifty 100 only
+    return {"CORE": core, "PRECISION": precision, "FRONTIER": frontier, "SPECTRUM": spectrum,
+            "NIFTY100": core, "NIFTY200": n200, "NIFTY500": spectrum}

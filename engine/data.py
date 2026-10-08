@@ -40,6 +40,13 @@ BENCHMARKS = {
 # A CSV downloaded from niftyindices.com (Reports -> Historical Data) placed at
 # data/benchmarks/<PORTFOLIO>.csv with columns Date, Close overrides every source above.
 
+# Common yardstick for every strategy (the FINSIGHTS package benchmark): official daily series committed at
+# data/benchmarks/NIFTY200MOM30.csv, extended beyond its last date by chaining daily returns of the first
+# available tracker on Yahoo (an index quote if one exists, else an ETF that tracks the index).
+MOM30_NAME = "Nifty 200 Momentum 30"
+MOM30_CSV = ROOT / "data" / "benchmarks" / "NIFTY200MOM30.csv"
+MOM30_EXTENDERS = [("NIFTY200MOMENTM30.NS", "index"), ("HDFCMOMENT.NS", "etf"), ("MOMENTUM.NS", "etf"), ("MOM30IETF.NS", "etf")]
+
 
 def to_yahoo(sym: str) -> str:
     return f"{sym}.NS"
@@ -257,3 +264,32 @@ def load_benchmark(portfolio: str, start: str, log=print) -> tuple[pd.Series | N
             return got[ysym]["Close"], label, warnings
     warnings.append(f"{portfolio}: no benchmark data available ({BENCHMARKS[portfolio]['name']}).")
     return None, f"{BENCHMARKS[portfolio]['name']} — UNAVAILABLE", warnings
+
+
+def load_mom30(start: str, log=print) -> tuple[pd.Series | None, str, list[str]]:
+    """Nifty 200 Momentum 30: official CSV, extended with a Yahoo tracker's daily returns after the CSV's last date."""
+    warnings: list[str] = []
+    if not MOM30_CSV.exists():
+        return None, f"{MOM30_NAME} — CSV missing", [f"{MOM30_NAME}: data/benchmarks/NIFTY200MOM30.csv not found."]
+    df = pd.read_csv(MOM30_CSV, float_precision="round_trip")
+    dcol = [c for c in df.columns if c.strip().lower() in ("date", "index date")][0]
+    ccol = [c for c in df.columns if c.strip().lower() in ("index_level", "close", "closing index value", "close price", "nav")][0]
+    s = pd.Series(df[ccol].astype(float).values, index=pd.to_datetime(df[dcol])).sort_index()
+    s = s[~s.index.duplicated(keep="last")]
+    s = s[s.index >= pd.Timestamp(start)]
+    label = f"{MOM30_NAME} (official series to {s.index.max().date()})"
+    for ysym, kind in MOM30_EXTENDERS:
+        got, _ = fetch_daily([ysym], start=str((s.index.max() - pd.Timedelta(days=10)).date()), retries=1, log=lambda *_: None)
+        if ysym in got and len(got[ysym]) > 2:
+            ext = got[ysym]["Close"]
+            ext = ext[ext.index > s.index.max()]
+            anchor = got[ysym]["Close"][got[ysym]["Close"].index <= s.index.max()]
+            if len(ext) and len(anchor):
+                chained = s.iloc[-1] * ext / float(anchor.iloc[-1])
+                s = pd.concat([s, chained])
+                label += f", extended with {ysym} {'index' if kind == 'index' else 'ETF'} returns"
+                if kind == "etf":
+                    warnings.append(f"{MOM30_NAME}: extended beyond the official CSV using {ysym} ETF daily returns "
+                                    f"(tracking error applies). Refresh data/benchmarks/NIFTY200MOM30.csv from niftyindices.com periodically.")
+            break
+    return s, label, warnings

@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import math
 import sys
 import time
@@ -23,7 +24,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import strategy as S                                   # noqa: E402
 from universes import load_universes, portfolio_universes, load_company_names   # noqa: E402
 from data import (fetch_daily, reconcile_with_cache, to_monthly, load_benchmark, to_yahoo, from_yahoo,
-                  fetch_splits, HISTORY_START, NIFTY_CASH, BENCHMARKS)        # noqa: E402
+                  fetch_splits, load_mom30, HISTORY_START, NIFTY_CASH, BENCHMARKS, MOM30_NAME)   # noqa: E402
+from universes import load_industry                                           # noqa: E402
+from momentum_build import run_momentum, MOM_UNIVERSES                        # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 STATE_DIR = ROOT / "data" / "state"
@@ -31,7 +34,6 @@ DOCS = ROOT / "docs"
 IST = ZoneInfo("Asia/Kolkata")
 
 # ----------------------------------------------------------------------------- configuration
-import os
 INCEPTION_MONTH = os.environ.get("AS_INCEPTION_MONTH", "2026-08")   # capital committed at this month's last close
 WARMUP_BARS = S.WR_LEN             # signals once %R(14) is computable (the reference treats indicators as valid when non-NaN)
 BACKTEST_START = "2016-01"         # backtest: capital committed at the previous month-end close, first entries on this month's close
@@ -40,11 +42,13 @@ LEDGER_VERSION = 2                 # bump when the signal engine changes; ledger
                                    # deterministically from the inception close (only safe while the book is young)
 
 PORTFOLIOS = {
-    "CORE":      {"label": "Core",      "universe": "NIFTY 50 + NIFTY NEXT 50", "ranking": False},
-    "PRECISION": {"label": "Precision", "universe": "NIFTY MIDCAP 150",         "ranking": True},
-    "FRONTIER":  {"label": "Frontier",  "universe": "NIFTY SMALLCAP 250",       "ranking": False},
-    "SPECTRUM":  {"label": "Spectrum",  "universe": "All three pooled (~500)",  "ranking": True},
+    "CORE":      {"label": "Core",      "display": "Bharat Wealth Portfolio", "alias": "CORE",      "universe": "NIFTY 100 (Nifty 50 + Next 50)", "ranking": False},
+    "PRECISION": {"label": "Precision", "display": "Precision",               "alias": "PRECISION", "universe": "NIFTY MIDCAP 150",               "ranking": True},
+    "FRONTIER":  {"label": "Frontier",  "display": "Frontier",                "alias": "FRONTIER",  "universe": "NIFTY SMALLCAP 250",             "ranking": False},
+    "SPECTRUM":  {"label": "Spectrum",  "display": "Udaan",                   "alias": "SPECTRUM",  "universe": "NIFTY 500 (all three pooled)",   "ranking": True},
 }
+MOM_INCEPTION = os.environ.get("MOM_INCEPTION", "2026-09-30")   # Alpha Leaders / Wealth Vriddhi live books: capital committed at this session's close
+BRAND = {"name": "FINSIGHTS", "by": "Himanshu Arora"}
 
 
 def log(*a):
@@ -135,7 +139,7 @@ def _bench_at(bench, d):
 
 
 def run_backtest(pname, uni, ranking, monthly, entries_by_month, nsei_m, month_last_day, bench, bench_label,
-                 names, snap, data_date, nsei_last, completed_key, log):
+                 names, snap, data_date, nsei_last, completed_key, log, bench2=None):
     """Full strategy simulation on monthly bars from BACKTEST_START to the last completed month, then
     marked to market at today's prices. Same rules, slots, ranking, cost model and cash leg as the live
     book (the Book class is reused unchanged)."""
@@ -163,7 +167,7 @@ def run_backtest(pname, uni, ranking, monthly, entries_by_month, nsei_m, month_l
              "cash_units": S.CAPITAL / nsei_close[commit_key], "ranking": ranking}
     book = S.Book(state)
     hist = [{"date": str(commit_day.date()), "month": commit_key, "nav": S.CAPITAL, "bench": _bench_at(bench, commit_day),
-             "cash": S.CAPITAL, "inv": 0.0, "n": 0}]
+             "bench2": _bench_at(bench2, commit_day), "cash": S.CAPITAL, "inv": 0.0, "n": 0}]
     prev_key = commit_key
     for mk in months:
         d = month_last_day[mk]
@@ -182,7 +186,7 @@ def run_backtest(pname, uni, ranking, monthly, entries_by_month, nsei_m, month_l
         book.take_entries(d, mk, cands, closes_all, nc, ranking)
         closes_held = {s: closes_all[s] for s in book.held_symbols() if s in closes_all}
         nav, cash, inv = book.nav(closes_held, nc)
-        hist.append({"date": str(d.date()), "month": mk, "nav": round(nav, 2), "bench": _bench_at(bench, d),
+        hist.append({"date": str(d.date()), "month": mk, "nav": round(nav, 2), "bench": _bench_at(bench, d), "bench2": _bench_at(bench2, d),
                      "cash": round(cash, 2), "inv": round(inv, 2), "n": len(book.open_positions())})
         prev_key = mk
 
@@ -191,7 +195,7 @@ def run_backtest(pname, uni, ranking, monthly, entries_by_month, nsei_m, month_l
     nav_now, cash_now, inv_now = book.nav(ltp, nsei_last)
     if str(data_date.date()) != hist[-1]["date"]:
         hist.append({"date": str(data_date.date()), "month": month_key(data_date), "nav": round(nav_now, 2),
-                     "bench": _bench_at(bench, data_date), "cash": round(cash_now, 2), "inv": round(inv_now, 2),
+                     "bench": _bench_at(bench, data_date), "bench2": _bench_at(bench2, data_date), "cash": round(cash_now, 2), "inv": round(inv_now, 2),
                      "n": len(book.open_positions()), "mtm": True})
 
     # ---- metrics
@@ -205,6 +209,12 @@ def run_backtest(pname, uni, ranking, monthly, entries_by_month, nsei_m, month_l
         by = (pd.Timestamp(bh[-1][0]) - pd.Timestamp(bh[0][0])).days / 365.25
         bret = bh[-1][1] / bh[0][1] - 1
         bcagr = (bh[-1][1] / bh[0][1]) ** (1 / by) - 1 if by > 0 else None
+    bh2 = [(h["date"], h["bench2"]) for h in hist if h.get("bench2") is not None]
+    bret2 = bcagr2 = None
+    if len(bh2) >= 2:
+        by2 = (pd.Timestamp(bh2[-1][0]) - pd.Timestamp(bh2[0][0])).days / 365.25
+        bret2 = bh2[-1][1] / bh2[0][1] - 1
+        bcagr2 = (bh2[-1][1] / bh2[0][1]) ** (1 / by2) - 1 if by2 > 0 else None
     # strategy return over the same window as the benchmark (fair comparison when bench history is short)
     ret_same_window = None
     if bench_from:
@@ -254,21 +264,23 @@ def run_backtest(pname, uni, ranking, monthly, entries_by_month, nsei_m, month_l
     by_year = {}
     for h in hist:
         by_year.setdefault(h["date"][:4], []).append(h)
-    prev_nav, prev_b = S.CAPITAL, hist[0]["bench"]
+    prev_nav, prev_b, prev_b2 = S.CAPITAL, hist[0]["bench"], hist[0].get("bench2")
     for y in sorted(by_year):
         if by_year[y][-1]["date"] == hist[0]["date"]:
             continue                                   # commitment point only — no return to show
         last = by_year[y][-1]
         pr = last["nav"] / prev_nav - 1
         br = (last["bench"] / prev_b - 1) if (last["bench"] and prev_b) else None
+        br2 = (last["bench2"] / prev_b2 - 1) if (last.get("bench2") and prev_b2) else None
         ntr = sum(1 for p in closed if (p["exit_date"] or "")[:4] == y)
         nw = sum(1 for p in wins if (p["exit_date"] or "")[:4] == y)
         yearly.append({"year": y + (" (YTD)" if y == str(data_date.year) else ""), "port_pct": fnum(pr * 100),
-                       "bench_pct": fnum(br * 100) if br is not None else None,
+                       "bench_pct": fnum(br * 100) if br is not None else None, "bench2_pct": fnum(br2 * 100) if br2 is not None else None,
                        "excess_pct": fnum((pr - br) * 100) if br is not None else None,
                        "nav_end": fnum(last["nav"]), "trades": ntr, "wins": nw,
                        "max_held": max(h["n"] for h in by_year[y])})
         prev_nav, prev_b = last["nav"], last["bench"] if last["bench"] else prev_b
+        prev_b2 = last.get("bench2") or prev_b2
 
     # open book today
     open_pos = []
@@ -295,6 +307,8 @@ def run_backtest(pname, uni, ranking, monthly, entries_by_month, nsei_m, month_l
             "cagr_pct": fnum(cagr * 100) if cagr is not None else None,
             "bench_return_pct": fnum(bret * 100) if bret is not None else None, "bench_cagr_pct": fnum(bcagr * 100) if bcagr is not None else None,
             "excess_cagr_pct": fnum((cagr - bcagr) * 100) if (cagr is not None and bcagr is not None) else None,
+            "bench2_return_pct": fnum(bret2 * 100) if bret2 is not None else None, "bench2_cagr_pct": fnum(bcagr2 * 100) if bcagr2 is not None else None,
+            "excess_bench2_pct": fnum((cagr - bcagr2) * 100) if (cagr is not None and bcagr2 is not None) else None,
             "return_same_window_pct": fnum(ret_same_window * 100) if ret_same_window is not None else None,
             "max_dd_pct": fnum(mdd * 100), "sharpe": fnum(sharpe), "calmar": fnum(calmar),
             "total_trades": len(closed), "open_trades": len(open_pos), "wins": len(wins), "losses": len(losses),
@@ -311,7 +325,7 @@ def run_backtest(pname, uni, ranking, monthly, entries_by_month, nsei_m, month_l
             "worst_year": min(yearly, key=lambda y: y["port_pct"] if y["port_pct"] is not None else 1e9)["year"] if yearly else None,
             "exit_reasons": reasons, "cash_now": fnum(cash_now), "invested_now": fnum(inv_now),
         },
-        "history": [{"date": h["date"], "nav": h["nav"], "bench": h["bench"], "n": h["n"], "dd": dd} for h, dd in zip(hist, dd_series)],
+        "history": [{"date": h["date"], "nav": h["nav"], "bench": h["bench"], "bench2": h.get("bench2"), "n": h["n"], "dd": dd} for h, dd in zip(hist, dd_series)],
         "yearly": yearly, "open_positions": open_pos, "trades": trades,
     }
 
@@ -429,6 +443,14 @@ def main(mock: bool = False, offline: bool = False):
     inception_day = month_last_day[INCEPTION_MONTH]
     final_cutoff = today if after_close else today - pd.Timedelta(days=1)   # last day whose bar is final
 
+    industry = load_industry()
+    if mock:
+        mom30, mom30_label, mw = nsei["Close"] * 1.07, "MOCK Nifty 200 Momentum 30", []
+    else:
+        mom30, mom30_label, mw = load_mom30(HISTORY_START, log=log)
+    warnings += mw
+    log(f"benchmark 2: {mom30_label}")
+
     out_portfolios = {}
     material_change = False
     for pname, cfg in PORTFOLIOS.items():
@@ -499,7 +521,7 @@ def main(mock: bool = False, offline: bool = False):
                 bb = bench[bench.index <= d]
                 if len(bb):
                     bval = float(bb.iloc[-1])
-            state["history"][dk] = {"nav": round(nav, 2), "bench": bval, "cash": round(cash, 2), "inv": round(inv, 2)}
+            state["history"][dk] = {"nav": round(nav, 2), "bench": bval, "bench2": _bench_at(mom30, d), "cash": round(cash, 2), "inv": round(inv, 2)}
         state["last_processed_date"] = str(min(data_date, final_cutoff).date()) if data_date >= inception_day else None
         state["last_run"] = now_ist.isoformat()
         if len(state["events"]) != events_before or state.get("created", "").startswith(now_ist.strftime("%Y-%m-%dT")):
@@ -513,6 +535,9 @@ def main(mock: bool = False, offline: bool = False):
         nav_now = navs[-1] if navs else S.CAPITAL
         bench_now = hist[-1][1]["bench"] if hist else None
         bench_0 = h0["bench"] if h0 else None
+        b2_now = hist[-1][1].get("bench2") if hist else None
+        b2_0 = h0.get("bench2") if h0 else None
+        bret2 = (b2_now / b2_0 - 1) if (b2_now and b2_0) else None
         ret = nav_now / S.CAPITAL - 1
         bret = (bench_now / bench_0 - 1) if (bench_now and bench_0) else None
         days = (pd.Timestamp(hist[-1][0]) - inception_day).days if hist else 0
@@ -614,12 +639,13 @@ def main(mock: bool = False, offline: bool = False):
         realised_total += sum(p["realised"] for p in book.positions if p["status"] == "open")   # scale-out cash
         unreal = sum((r["unrealised"] or 0) for r in open_pos)
         out_portfolios[pname] = {
-            "name": pname, "label": cfg["label"], "universe_label": cfg["universe"], "ranking": cfg["ranking"],
-            "universe_size": len(uni), "benchmark": BENCHMARKS[pname]["name"], "benchmark_source": bench_label,
+            "name": pname, "label": cfg["label"], "display": cfg["display"], "alias": cfg["alias"], "universe_label": cfg["universe"], "ranking": cfg["ranking"],
+            "universe_size": len(uni), "benchmark": BENCHMARKS[pname]["name"], "benchmark_source": bench_label, "bench2": mom30_label,
             "inception": state["inception"], "capital": S.CAPITAL,
             "performance": {
                 "nav": fnum(nav_now), "return_pct": fnum(ret * 100), "bench_return_pct": fnum(bret * 100) if bret is not None else None,
                 "alpha_pct": fnum((ret - bret) * 100) if bret is not None else None,
+                "bench2_return_pct": fnum(bret2 * 100) if bret2 is not None else None,
                 "cagr_pct": fnum(cagr * 100) if cagr is not None else None,
                 "bench_cagr_pct": fnum(bcagr * 100) if bcagr is not None else None,
                 "cash": fnum(hist[-1][1]["cash"]) if hist else S.CAPITAL, "invested": fnum(hist[-1][1]["inv"]) if hist else 0,
@@ -629,15 +655,28 @@ def main(mock: bool = False, offline: bool = False):
                 "wins": sum(1 for p in book.positions if p["status"] == "closed" and p["realised"] > 0),
                 "bench_level": bench_now, "bench_base": bench_0,
             },
-            "history": [{"date": k, "nav": v["nav"], "bench": v["bench"]} for k, v in hist],
+            "history": [{"date": k, "nav": v["nav"], "bench": v["bench"], "bench2": v.get("bench2")} for k, v in hist],
             "exits": exits, "entries": entries, "signal_month": sig_month,
             "open_positions": open_pos, "watch_entry": wl_entry, "watch_exit": wl_exit,
             "universe": uni_rows,
             "events": state["events"][-200:],
             "backtest": run_backtest(pname, uni, cfg["ranking"], monthly, entries_by_month, nsei_m, month_last_day,
                                      bench, bench_label, names, snap, data_date, float(nsei["Close"].iloc[-1]),
-                                     completed_key, log),
+                                     completed_key, log, bench2=mom30),
         }
+
+    # ---- momentum strategies (Alpha Leaders / Wealth Vriddhi) on Nifty 100 / 200 / 500
+    def fetch_bench(symbols, name):
+        for y in symbols:
+            got, _ = fetch_daily([y], start=HISTORY_START, retries=2, log=lambda *_: None)
+            if y in got and len(got[y]) > 5:
+                return got[y]["Close"], f"{name} (Yahoo {y})"
+        warnings.append(f"{name}: no benchmark data on Yahoo.")
+        return None, f"{name} — UNAVAILABLE"
+    log("momentum strategies …")
+    momentum_out, mom_material = run_momentum(prices, nsei, unis, names, industry, data_date, today, after_close, completed_key,
+                                              MOM_INCEPTION, mom30, mom30_label, fetch_bench, log, mock=mock)
+    material_change = material_change or mom_material
 
     # ---- market status
     if data_date.date() == today.date():
@@ -645,7 +684,33 @@ def main(mock: bool = False, offline: bool = False):
     else:
         status = f"As of previous close {data_date.date()}"
 
+    # ---- summary rows for the overview page
+    summary = []
+    for pname, P in out_portfolios.items():
+        pf, bt = P["performance"], P["backtest"]["metrics"] if P.get("backtest") else {}
+        summary.append({"key": pname, "type": "anchor", "name": P["display"], "alias": P["alias"], "engine": "Anchor & Sail",
+                        "universe": P["universe_label"], "benchmark": P["benchmark"], "capital": P["capital"], "inception": P["inception"],
+                        "live": {"nav": pf["nav"], "return_pct": pf["return_pct"], "bench_return_pct": pf["bench_return_pct"],
+                                 "bench2_return_pct": pf.get("bench2_return_pct"), "max_dd_pct": pf["max_dd_pct"], "positions": pf["open_positions"],
+                                 "exits_today": sum(1 for e in P["exits"] if e["today"]), "signals": len(P["entries"])},
+                        "backtest": {"cagr_pct": bt.get("cagr_pct"), "bench_cagr_pct": bt.get("bench_cagr_pct"), "bench2_cagr_pct": bt.get("bench2_cagr_pct"),
+                                     "max_dd_pct": bt.get("max_dd_pct"), "sharpe": bt.get("sharpe"), "win_rate_pct": bt.get("win_rate_pct"),
+                                     "final_value": bt.get("final_value"), "trades": bt.get("total_trades")}})
+    for code, Sx in momentum_out["strategies"].items():
+        for ukey, U in Sx["universes"].items():
+            pf, bt = U["live"]["performance"], U["backtest"]["metrics"]
+            summary.append({"key": f"{code}:{ukey}", "type": "momentum", "name": Sx["name"], "alias": code.replace("PLUS", "+"),
+                            "engine": Sx["style"], "universe": U["universe_label"], "benchmark": U["benchmark"], "capital": momentum_out["capital"],
+                            "inception": U["live"]["inception"], "default": ukey == momentum_out["default_universe"],
+                            "live": {"nav": pf["nav"], "return_pct": pf["return_pct"], "bench_return_pct": pf["bench_return_pct"],
+                                     "bench2_return_pct": pf["bench2_return_pct"], "max_dd_pct": pf["max_dd_pct"], "positions": pf["holdings"],
+                                     "exposure_pct": pf["exposure_pct"]},
+                            "backtest": {"cagr_pct": bt["cagr_pct"], "bench_cagr_pct": bt["bench_cagr_pct"], "bench2_cagr_pct": bt["bench2_cagr_pct"],
+                                         "max_dd_pct": bt["max_dd_pct"], "sharpe": bt["sharpe"], "win_rate_pct": bt["win_rate_pct"],
+                                         "final_value": bt["final_value"], "trades": bt["closed_trades"]}})
+
     payload = {
+        "brand": BRAND,
         "generated_at_ist": now_ist.strftime("%Y-%m-%d %H:%M:%S IST"),
         "generated_at_utc": datetime.utcnow().isoformat() + "Z",
         "data_date": str(data_date.date()), "market_status": status,
@@ -657,13 +722,17 @@ def main(mock: bool = False, offline: bool = False):
         "strategy": {"wr_len": S.WR_LEN, "arm": S.ARM_LEVEL, "trigger": S.TRIGGER_LEVEL, "emas": [5, 15, 50],
                      "stop_pct": -15, "target_pct": 30, "scale": 50, "slots": S.SLOTS, "capital": S.CAPITAL},
         "portfolios": out_portfolios,
+        "momentum": momentum_out,
+        "summary": summary,
+        "bench2_label": mom30_label,
         "runtime_sec": round(time.time() - t0, 1),
     }
     DOCS.mkdir(parents=True, exist_ok=True)
     (DOCS / "data.json").write_text(json.dumps(payload, default=str, separators=(",", ":")))
     # tell the workflow whether the ledgers are worth committing on this run
     flag = ROOT / "data" / ".commit"
-    if material_change or after_close or not (STATE_DIR / "CORE.json").exists():
+    mom_state_missing = any(not (STATE_DIR / f"MOM_{code}_{uni}.json").exists() for code in ("S1", "S4PLUS") for uni in MOM_UNIVERSES)
+    if material_change or after_close or not (STATE_DIR / "CORE.json").exists() or mom_state_missing:
         flag.write_text(now_ist.isoformat())
     elif flag.exists():
         flag.unlink()

@@ -3,54 +3,50 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Anchor & Sail — Live Signals</title>
+<title>FINSIGHTS by Himanshu Arora — Live Strategy Dashboard</title>
 <style>
+/* ---------- DARK (default): deep navy, data colours tuned for dark surfaces ---------- */
 :root{
   color-scheme: dark;
   --bg:#0a0e1a; --bg2:#0d1326; --surface:#111a2e; --surface-2:#16213a; --surface-3:#1b2742; --border:#1f2b47; --border-2:#2a3a5e;
-  --text:#e8eefb; --text-2:#9fb0cc; --text-3:#6b7a99;
-  --teal:#2dd4bf; --cyan:#38bdf8; --pink:#f472b6; --rose:#fb7185; --green:#34d399; --amber:#fbbf24; --violet:#a78bfa; --blue:#60a5fa;
+  --text:#e8eefb; --text-2:#9fb0cc; --text-3:#6b7a99; --strong:#ffffff;
+  --teal:#2dd4bf; --cyan:#38bdf8; --pink:#f472b6; --rose:#fb7185; --green:#34d399; --amber:#fbbf24; --violet:#a78bfa; --blue:#60a5fa; --lime:#a3e635;
   --good:#34d399; --bad:#fb7185; --warn:#fbbf24;
-  --good-bg:rgba(52,211,153,.13); --bad-bg:rgba(251,113,133,.14); --warn-bg:rgba(251,191,36,.14); --teal-bg:rgba(45,212,191,.14); --pink-bg:rgba(244,114,182,.14); --violet-bg:rgba(167,139,250,.16); --grey-bg:rgba(159,176,204,.12);
-  --s1:var(--teal); --s2:var(--pink);
-  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --good-bg:rgba(52,211,153,.13); --bad-bg:rgba(251,113,133,.14); --warn-bg:rgba(251,191,36,.14); --teal-bg:rgba(45,212,191,.14); --pink-bg:rgba(244,114,182,.14); --violet-bg:rgba(167,139,250,.16); --grey-bg:rgba(159,176,204,.12); --cyan-bg:rgba(56,189,248,.14);
+  /* chart series: strategy / primary benchmark / common benchmark / extra */
+  --s1:#2dd4bf; --s2:#f472b6; --s3:#fbbf24; --s4:#38bdf8; --s5:#a78bfa; --s6:#a3e635; --s7:#fb7185;
+  --hero-grad: linear-gradient(135deg, rgba(45,212,191,.16), rgba(56,189,248,.10) 50%, rgba(244,114,182,.12));
+  --shadow: 0 10px 40px rgba(0,0,0,.35);
 }
+/* ---------- LIGHT: cool paper, saturated-but-darker data colours for white surfaces ---------- */
 :root[data-theme="light"]{
   color-scheme: light;
-  --bg:#f3f5fa; --bg2:#eef1f8; --surface:#ffffff; --surface-2:#f1f4fa; --surface-3:#e7ecf5; --border:#dde3ee; --border-2:#c5cfe0;
-  --text:#0f172a; --text-2:#4b5872; --text-3:#7d8aa3;
-  --teal:#0f9f8f; --cyan:#0284c7; --pink:#db2777; --rose:#e11d48; --green:#0f9d58; --amber:#c98500; --violet:#6d4fd8; --blue:#2563eb;
-  --good:#0f9d58; --bad:#e11d48; --warn:#c98500;
-  --good-bg:rgba(15,157,88,.12); --bad-bg:rgba(225,29,72,.10); --warn-bg:rgba(201,133,0,.12); --teal-bg:rgba(15,159,143,.12); --pink-bg:rgba(219,39,119,.10); --violet-bg:rgba(109,79,216,.12); --grey-bg:rgba(75,88,114,.10);
-  --strong:#0b1120;
+  --bg:#f4f6fb; --bg2:#eef2f9; --surface:#ffffff; --surface-2:#f3f6fb; --surface-3:#e9eef7; --border:#dfe5f0; --border-2:#c6d0e2;
+  --text:#0f172a; --text-2:#475569; --text-3:#7b8aa5; --strong:#0b1120;
+  --teal:#0f766e; --cyan:#0369a1; --pink:#be185d; --rose:#dc2626; --green:#15803d; --amber:#b45309; --violet:#6d28d9; --blue:#1d4ed8; --lime:#4d7c0f;
+  --good:#15803d; --bad:#dc2626; --warn:#b45309;
+  --good-bg:rgba(21,128,61,.10); --bad-bg:rgba(220,38,38,.09); --warn-bg:rgba(180,83,9,.10); --teal-bg:rgba(15,118,110,.10); --pink-bg:rgba(190,24,93,.09); --violet-bg:rgba(109,40,217,.10); --grey-bg:rgba(71,85,105,.09); --cyan-bg:rgba(3,105,161,.10);
+  --s1:#0f766e; --s2:#be185d; --s3:#b45309; --s4:#0369a1; --s5:#6d28d9; --s6:#4d7c0f; --s7:#dc2626;
+  --hero-grad: linear-gradient(135deg, rgba(15,118,110,.10), rgba(3,105,161,.07) 50%, rgba(190,24,93,.08));
+  --shadow: 0 10px 30px rgba(15,23,42,.10);
 }
-:root{--strong:#ffffff}
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif}
 body{background:
-  radial-gradient(900px 500px at -10% -10%, rgba(56,189,248,.14), transparent 60%),
-  radial-gradient(800px 500px at 110% 0%, rgba(167,139,250,.14), transparent 60%),
-  radial-gradient(700px 500px at 50% 120%, rgba(244,114,182,.08), transparent 60%),
-  var(--bg); min-height:100vh}
+  radial-gradient(900px 520px at -10% -10%, rgba(56,189,248,.14), transparent 60%),
+  radial-gradient(800px 520px at 110% 0%, rgba(167,139,250,.14), transparent 60%),
+  radial-gradient(700px 500px at 50% 120%, rgba(244,114,182,.08), transparent 60%), var(--bg); min-height:100vh}
 :root[data-theme="light"] body{background:
-  radial-gradient(900px 500px at -10% -10%, rgba(2,132,199,.08), transparent 60%),
-  radial-gradient(800px 500px at 110% 0%, rgba(109,79,216,.07), transparent 60%),
-  var(--bg)}
-:root[data-theme="light"] .tab.active{box-shadow:0 0 0 1px var(--teal), 0 10px 30px rgba(15,159,143,.15)}
-:root[data-theme="light"] .tt{box-shadow:0 8px 30px rgba(15,23,42,.15)}
-.theme{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border-2);background:var(--surface);border-radius:999px;padding:4px 6px 4px 10px;font-size:12px;color:var(--text-2);cursor:pointer;user-select:none}
-.theme .knob{width:34px;height:20px;border-radius:999px;background:var(--surface-3);position:relative;border:1px solid var(--border-2)}
-.theme .knob::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--cyan));transition:left .15s}
-:root[data-theme="light"] .theme .knob::after{left:16px;background:linear-gradient(135deg,var(--amber),#f59e0b)}
-.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--surface-3);color:var(--text);border:1px solid var(--border-2);border-radius:10px;padding:10px 16px;font-size:13px;box-shadow:0 10px 30px rgba(0,0,0,.35);z-index:9;display:none;max-width:90vw;text-align:center}
-.toast b{color:var(--strong)}
+  radial-gradient(900px 520px at -10% -10%, rgba(3,105,161,.07), transparent 60%),
+  radial-gradient(800px 520px at 110% 0%, rgba(109,40,217,.06), transparent 60%), var(--bg)}
 a{color:var(--cyan)}
-.wrap{max-width:1540px;margin:0 auto;padding:14px 22px 70px}
+.wrap{max-width:1560px;margin:0 auto;padding:14px 22px 70px}
 header{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center;justify-content:space-between;padding:10px 0 14px;border-bottom:1px solid var(--border)}
-.brand{display:flex;align-items:center;gap:12px}
-.logo{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--amber),#f59e0b);color:#1a1200;font-weight:900;font-size:13px;display:grid;place-items:center;letter-spacing:-.02em;box-shadow:0 0 24px rgba(251,191,36,.25)}
-h1{font-size:18px;margin:0;letter-spacing:.14em;text-transform:uppercase;font-weight:800}
-h1 small{display:block;letter-spacing:0;text-transform:none;font-weight:500;color:var(--text-2);font-size:12px;margin-top:2px}
+.brand{display:flex;align-items:center;gap:14px}
+.logo{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--amber),#f59e0b);color:#1a1200;font-weight:900;font-size:12px;display:grid;place-items:center;letter-spacing:.02em;box-shadow:0 0 26px rgba(251,191,36,.28)}
+h1{font-size:20px;margin:0;letter-spacing:.16em;text-transform:uppercase;font-weight:900}
+h1 em{font-style:normal;color:var(--text-2);font-weight:500;letter-spacing:.02em;text-transform:none;font-size:14px;margin-left:10px}
+h1 small{display:block;letter-spacing:0;text-transform:none;font-weight:500;color:var(--text-2);font-size:12px;margin-top:3px}
 .meta{display:flex;flex-wrap:wrap;gap:6px 18px;color:var(--text-2);font-size:12.5px;align-items:center}
 .meta b{color:var(--text)}
 .pill{display:inline-block;padding:2px 10px;border-radius:999px;font-size:11.5px;font-weight:700;letter-spacing:.02em;white-space:nowrap}
@@ -59,25 +55,31 @@ h1 small{display:block;letter-spacing:0;text-transform:none;font-weight:500;colo
 .pill.stale{background:var(--warn-bg);color:var(--amber)}
 button{font:inherit;cursor:pointer;border:1px solid var(--border-2);background:var(--surface);color:var(--text);border-radius:9px;padding:7px 13px}
 button:hover{border-color:var(--teal);color:var(--strong)}
+.theme{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border-2);background:var(--surface);border-radius:999px;padding:4px 6px 4px 10px;font-size:12px;color:var(--text-2);cursor:pointer;user-select:none}
+.theme .knob{width:34px;height:20px;border-radius:999px;background:var(--surface-3);position:relative;border:1px solid var(--border-2)}
+.theme .knob::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--cyan));transition:left .15s}
+:root[data-theme="light"] .theme .knob::after{left:16px;background:linear-gradient(135deg,var(--amber),#f59e0b)}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--surface-3);color:var(--text);border:1px solid var(--border-2);border-radius:10px;padding:10px 16px;font-size:13px;box-shadow:var(--shadow);z-index:9;display:none;max-width:90vw;text-align:center}
+.toast b{color:var(--strong)}
 .banner{margin:14px 0 0;padding:10px 14px;border-radius:12px;background:var(--warn-bg);border:1px solid rgba(251,191,36,.35);font-size:13px}
 .banner summary{cursor:pointer;font-weight:600;color:var(--amber)}
 .banner ul{margin:8px 0 0;padding-left:18px;color:var(--text-2)}
 .banner.err{background:var(--bad-bg);border-color:rgba(251,113,133,.4)} .banner.err summary{color:var(--rose)}
-.tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:18px 0 12px}
-.tab{border:1px solid var(--border);background:linear-gradient(180deg,var(--surface),var(--bg2));border-radius:14px;padding:13px 15px;text-align:left;cursor:pointer;transition:all .15s;position:relative;overflow:hidden}
-.tab:hover{border-color:var(--border-2);transform:translateY(-1px)}
-.tab.active{border-color:var(--teal);box-shadow:0 0 0 1px var(--teal), 0 10px 40px rgba(45,212,191,.12)}
-.tab.active::before{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:linear-gradient(90deg,var(--teal),var(--cyan),var(--pink))}
-.tab .name{font-weight:800;font-size:15px;display:flex;justify-content:space-between;align-items:baseline;letter-spacing:.04em}
-.tab .name span{font-size:10.5px;color:var(--text-3);font-weight:600;letter-spacing:.03em}
-.tab .sub{color:var(--text-2);font-size:12px;margin-top:2px}
-.tab .row{display:flex;gap:14px;margin-top:9px;font-size:12px;color:var(--text-3);flex-wrap:wrap}
-.tab .row b{color:var(--text);font-variant-numeric:tabular-nums}
-.pos{color:var(--green)} .neg{color:var(--rose)} .mut{color:var(--text-3)}
-.switch{display:flex;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:5px;width:max-content;margin:6px 0 4px}
+/* navigation */
+nav.pages{display:flex;gap:6px;flex-wrap:wrap;margin:16px 0 6px;border-bottom:1px solid var(--border);padding-bottom:10px}
+nav.pages button{border:1px solid transparent;background:transparent;color:var(--text-2);padding:8px 14px;border-radius:10px;font-weight:700;letter-spacing:.02em;font-size:13px;display:flex;flex-direction:column;align-items:flex-start;gap:1px}
+nav.pages button small{font-weight:500;font-size:10.5px;color:var(--text-3);letter-spacing:.02em}
+nav.pages button:hover{background:var(--surface);color:var(--text)}
+nav.pages button.on{background:var(--surface);color:var(--strong);border-color:var(--border-2);box-shadow:0 0 0 1px var(--teal) inset}
+nav.pages button.on small{color:var(--teal)}
+nav.pages .sep{width:1px;background:var(--border-2);margin:6px 6px}
+.controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:8px 0 4px}
+.switch{display:flex;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:5px;width:max-content}
 .switch button{border:none;background:transparent;color:var(--text-2);padding:8px 16px;border-radius:9px;font-weight:700;letter-spacing:.03em;font-size:12.5px}
 .switch button.on{background:linear-gradient(135deg,var(--teal),var(--cyan));color:#04121a}
+:root[data-theme="light"] .switch button.on{color:#ffffff}
 .switch button small{display:block;font-weight:500;letter-spacing:0;font-size:11px;opacity:.85}
+.pos{color:var(--green)} .neg{color:var(--rose)} .mut{color:var(--text-3)}
 section{margin-top:26px}
 .sec-h{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 10px}
 .sec-h .num{width:28px;height:28px;border-radius:8px;background:var(--teal-bg);color:var(--teal);font-weight:800;display:grid;place-items:center;font-size:13px;box-shadow:0 0 0 1px rgba(45,212,191,.35) inset}
@@ -98,15 +100,9 @@ td.sym{font-weight:700;text-align:left;color:var(--strong)}
 td.sym small{display:block;font-weight:400;color:var(--text-3);font-size:11px;max-width:230px;overflow:hidden;text-overflow:ellipsis}
 .empty{padding:18px;color:var(--text-3);font-size:13px;text-align:center}
 .tag{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10.5px;font-weight:800;letter-spacing:.04em}
-.tag.exit{background:var(--bad-bg);color:var(--rose)}
-.tag.entry{background:var(--good-bg);color:var(--green)}
-.tag.scale{background:var(--warn-bg);color:var(--amber)}
-.tag.held{background:var(--teal-bg);color:var(--teal)}
-.tag.armed{background:var(--violet-bg);color:var(--violet)}
-.tag.pink{background:var(--pink-bg);color:var(--pink)}
-.tag.grey{background:var(--grey-bg);color:var(--text-2)}
-.tag.today{background:var(--rose);color:#1a0508}
-.tag.noslot{background:var(--grey-bg);color:var(--text-2)}
+.tag.exit{background:var(--bad-bg);color:var(--rose)} .tag.entry{background:var(--good-bg);color:var(--green)} .tag.scale{background:var(--warn-bg);color:var(--amber)}
+.tag.held{background:var(--teal-bg);color:var(--teal)} .tag.armed{background:var(--violet-bg);color:var(--violet)} .tag.pink{background:var(--pink-bg);color:var(--pink)}
+.tag.grey{background:var(--grey-bg);color:var(--text-2)} .tag.today{background:var(--rose);color:#fff} .tag.noslot{background:var(--grey-bg);color:var(--text-2)} .tag.cyan{background:var(--cyan-bg);color:var(--cyan)}
 .ok{color:var(--green);font-weight:700} .no{color:var(--text-3)}
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:12px}
 .kpi{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px}
@@ -116,14 +112,14 @@ td.sym small{display:block;font-weight:400;color:var(--text-3);font-size:11px;ma
 .kpi .v.teal{color:var(--teal)} .kpi .v.cyan{color:var(--cyan)} .kpi .v.pink{color:var(--pink)} .kpi .v.green{color:var(--green)} .kpi .v.amber{color:var(--amber)} .kpi .v.rose{color:var(--rose)} .kpi .v.violet{color:var(--violet)}
 .perf{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:12px}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-@media (max-width:1000px){.perf,.two{grid-template-columns:1fr}.tabs{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:1000px){.perf,.two{grid-template-columns:1fr}}
 .chart{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px 8px}
 .chart .t{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px;margin-bottom:4px}
 .chart .t b{font-size:13.5px}
-.legend{display:flex;gap:16px;font-size:12px;color:var(--text-2)}
+.legend{display:flex;gap:14px;font-size:12px;color:var(--text-2);flex-wrap:wrap}
 .legend i{display:inline-block;width:14px;height:3px;vertical-align:middle;margin-right:6px;border-radius:2px}
 svg{display:block;width:100%;height:auto}
-.tt{position:absolute;pointer-events:none;background:var(--surface-3);border:1px solid var(--border-2);border-radius:9px;padding:7px 10px;font-size:12px;box-shadow:0 8px 30px rgba(0,0,0,.45);display:none;z-index:5;white-space:nowrap;color:var(--text)}
+.tt{position:absolute;pointer-events:none;background:var(--surface-3);border:1px solid var(--border-2);border-radius:9px;padding:7px 10px;font-size:12px;box-shadow:var(--shadow);display:none;z-index:5;white-space:nowrap;color:var(--text)}
 .stats{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:6px 16px}
 .stats div{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
 .stats div:last-child{border-bottom:none}
@@ -135,21 +131,54 @@ svg{display:block;width:100%;height:auto}
 .toolbar .chips{display:flex;gap:6px;flex-wrap:wrap}
 .chip{border:1px solid var(--border-2);background:var(--surface);border-radius:999px;padding:4px 11px;font-size:12px;cursor:pointer;color:var(--text-2)}
 .chip.on{background:var(--teal);color:#04121a;border-color:var(--teal);font-weight:700}
+:root[data-theme="light"] .chip.on{color:#fff}
 .note{font-size:12px;color:var(--text-3);margin-top:8px;line-height:1.5}
 footer{margin-top:34px;color:var(--text-3);font-size:12px;border-top:1px solid var(--border);padding-top:12px;line-height:1.6}
 .stopbar{display:inline-block;width:70px;height:6px;background:var(--surface-3);border-radius:3px;vertical-align:middle;margin-left:6px;position:relative;overflow:hidden}
 .stopbar i{position:absolute;left:0;top:0;bottom:0;border-radius:3px}
 #loading{padding:60px;text-align:center;color:var(--text-2);line-height:1.7}
-.hero{background:linear-gradient(135deg,rgba(45,212,191,.12),rgba(56,189,248,.08) 50%,rgba(244,114,182,.10));border:1px solid var(--border-2);border-radius:14px;padding:14px 18px;margin-bottom:12px;font-size:13.5px;color:var(--text-2)}
+.hero{background:var(--hero-grad);border:1px solid var(--border-2);border-radius:14px;padding:14px 18px;margin-bottom:12px;font-size:13.5px;color:var(--text-2)}
 .hero b{color:var(--strong)}
+/* overview */
+.ov-hero{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:14px;margin-top:16px}
+@media (max-width:1000px){.ov-hero{grid-template-columns:1fr}}
+.ov-title{background:var(--hero-grad);border:1px solid var(--border-2);border-radius:16px;padding:22px 24px}
+.ov-title h2{margin:0 0 6px;font-size:26px;letter-spacing:-.01em;color:var(--strong)}
+.ov-title p{margin:0;color:var(--text-2);font-size:13.5px;line-height:1.6;max-width:70ch}
+.ov-title .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.ov-title .row span{background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:4px 12px;font-size:12px;color:var(--text-2)}
+.ov-title .row span b{color:var(--strong)}
+.alerts{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px 18px}
+.alerts h4{margin:0 0 10px;font-size:11.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--text-2)}
+.alerts .a{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
+.alerts .a:last-child{border-bottom:none}
+.alerts .a b{color:var(--strong)}
+.gridcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+.scard{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;cursor:pointer;transition:all .15s;position:relative;overflow:hidden}
+.scard::before{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:linear-gradient(90deg,var(--teal),var(--cyan),var(--pink))}
+.scard:hover{border-color:var(--border-2);transform:translateY(-1px);box-shadow:var(--shadow)}
+.scard .n{font-weight:800;font-size:15px;color:var(--strong);display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.scard .n small{font-size:10.5px;color:var(--text-3);font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.scard .u{color:var(--text-2);font-size:12px;margin-top:2px}
+.scard .m{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.scard .m div{background:var(--surface-2);border-radius:10px;padding:8px 10px}
+.scard .m b{display:block;font-size:16px;font-variant-numeric:tabular-nums;color:var(--strong)}
+.scard .m span{font-size:10.5px;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em}
+.bars{display:grid;gap:8px}
+.bar{display:grid;grid-template-columns:200px 1fr 70px;gap:10px;align-items:center;font-size:12.5px}
+.bar .lbl{color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar .track{height:12px;background:var(--surface-3);border-radius:6px;overflow:hidden;position:relative}
+.bar .track i{position:absolute;left:0;top:0;bottom:0;border-radius:6px}
+.bar .val{text-align:right;font-variant-numeric:tabular-nums;font-weight:700;color:var(--strong)}
+@media (max-width:700px){.bar{grid-template-columns:120px 1fr 60px}}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
     <div class="brand">
-      <div class="logo">A&amp;S</div>
-      <h1>Anchor &amp; Sail <small>live signal dashboard · four portfolios · live book and 2016→today backtest</small></h1>
+      <div class="logo">FIN</div>
+      <h1>FINSIGHTS <em>by Himanshu Arora</em><small>live strategy dashboard · six model portfolios · live books and 2016→today backtests</small></h1>
     </div>
     <div class="meta" id="meta"></div>
     <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
@@ -160,8 +189,8 @@ footer{margin-top:34px;color:var(--text-3);font-size:12px;border-top:1px solid v
   </header>
   <div id="warnings"></div>
   <div id="loading">Loading latest data…</div>
-  <div id="tabs" class="tabs" hidden></div>
-  <div id="switch" class="switch" hidden></div>
+  <nav class="pages" id="nav" hidden></nav>
+  <div class="controls" id="controls"></div>
   <main id="main"></main>
   <footer id="foot"></footer>
 </div>
@@ -184,63 +213,74 @@ const pctCell = v => { const t=document.createElement('td'); t.className=cls(v);
 const yesno = b => b==null ? '—' : b ? '✓' : '·';
 const lakh = v => v==null ? '—' : (v<0?'−':'') + '₹' + (Math.abs(v)>=1e7 ? (Math.abs(v)/1e7).toFixed(2)+' Cr' : (Math.abs(v)/1e5).toFixed(1)+' L');
 
-let DATA=null, active = localStorage.getItem('as_tab') || 'CORE', view = localStorage.getItem('as_view') || 'live';
+// ---------------------------------------------------------------- state & routing (hash: #overview | #CORE/live | #S1/NIFTY200/bt)
+let DATA=null;
+const ROUTE = {page:'overview', view:'live', uni:null};
+const isMom = p => /^S\d/.test(p);
+function readHash(){ const h=(location.hash||'#overview').slice(1).split('/'); ROUTE.page=h[0]||'overview'; if(isMom(ROUTE.page)){ ROUTE.uni=h[1]||null; ROUTE.view=h[2]||'live'; } else { ROUTE.view=h[1]||'live'; } }
+function go(page, a, b){ location.hash = isMom(page) ? `#${page}/${a||ROUTE.uni||DATA.momentum.default_universe}/${b||'live'}` : `#${page}/${a||'live'}`; }
+window.addEventListener('hashchange', ()=>{ readHash(); if(DATA) render(); });
 
 async function load(){
   try{
     const r = await fetch('data.json?t=' + Date.now(), {cache:'no-store'});
     if(!r.ok) throw new Error('HTTP '+r.status);
     DATA = await r.json();
+    DATA.bench2_short = 'Nifty 200 Mom 30';
     render();
   }catch(e){
-    $('#loading').innerHTML = '<b>No data yet</b> (' + e.message + ').<br><br>If this is a fresh setup: go to the repository → <b>Actions</b> → <b>Anchor &amp; Sail daily dashboard</b> → <b>Run workflow</b>, wait ~5 minutes, then reload this page.<br>If you opened index.html from your disk, open the GitHub Pages URL instead — a browser cannot read data.json from a local file.';
+    $('#loading').innerHTML = '<b>No data yet</b> (' + e.message + ').<br><br>If this is a fresh setup: go to the repository → <b>Actions</b> → <b>Run workflow</b>, wait ~6 minutes, then reload this page.<br>If you opened index.html from your disk, open the GitHub Pages URL instead — a browser cannot read data.json from a local file.';
   }
 }
 
 function render(){
-  const D = DATA;
+  const D = DATA; readHash();
   $('#loading').hidden = true;
   const live = D.market_status.startsWith('LIVE');
-  const st = el('span', {class:'pill ' + (live?'live':(D.market_status.startsWith('Closed')?'closed':'stale'))}, D.market_status);
   $('#meta').replaceChildren(
-    el('span', {}, 'Data as of ', el('b', {}, D.data_date)), st,
+    el('span', {}, 'Data as of ', el('b', {}, D.data_date)), el('span', {class:'pill ' + (live?'live':(D.market_status.startsWith('Closed')?'closed':'stale'))}, D.market_status),
     el('span', {}, 'Nifty 50 ', el('b', {}, fP(D.nifty.close)), ' ', el('span', {class:cls(D.nifty.chg_pct)}, fPct(D.nifty.chg_pct))),
     el('span', {}, 'Signal month ', el('b', {}, D.completed_month), ' · running ', el('b', {}, D.running_month)),
-    el('span', {}, 'Built ', el('b', {}, D.generated_at_ist))
-  );
+    el('span', {}, 'Built ', el('b', {}, D.generated_at_ist)));
   const W = $('#warnings'); W.replaceChildren();
   if(D.warnings && D.warnings.length){
     const mock = D.warnings.some(w=>w.startsWith('MOCK'));
-    const det = el('details', {class:'banner' + (mock?' err':'')});
-    if(mock) det.setAttribute('open','');
-    det.append(el('summary', {}, `${D.warnings.length} data warning${D.warnings.length>1?'s':''} — click to expand`),
-               el('ul', {}, ...D.warnings.map(w=>el('li', {}, w))));
+    const det = el('details', {class:'banner' + (mock?' err':'')}); if(mock) det.setAttribute('open','');
+    det.append(el('summary', {}, `${D.warnings.length} data warning${D.warnings.length>1?'s':''} — click to expand`), el('ul', {}, ...D.warnings.map(w=>el('li', {}, w))));
     W.append(det);
   }
-  const T = $('#tabs'); T.hidden=false; T.replaceChildren();
-  for(const [k,P] of Object.entries(D.portfolios)){
-    const pf = P.performance, bt = P.backtest;
-    const exitsToday = P.exits.filter(e=>e.today).length;
-    const b = el('button', {class:'tab' + (k===active?' active':''), onclick:()=>{active=k; localStorage.setItem('as_tab',k); render();}},
-      el('div', {class:'name'}, P.name, el('span', {}, `${P.universe_label} · RANK ${P.ranking?'ON':'OFF'}`)),
-      el('div', {class:'sub'}, `vs ${P.benchmark}`),
-      el('div', {class:'row'},
-        el('span', {}, 'Live ', el('b', {class:cls(pf.return_pct)}, fPct(pf.return_pct))),
-        el('span', {}, 'Bench ', el('b', {class:cls(pf.bench_return_pct)}, fPct(pf.bench_return_pct))),
-        el('span', {}, 'Open ', el('b', {}, `${pf.open_positions}/${pf.slots}`)),
-        el('span', {}, 'Exits today ', el('b', {class: exitsToday?'neg':''}, exitsToday)),
-        bt ? el('span', {}, 'Backtest CAGR ', el('b', {class:'pos'}, fPct(bt.metrics.cagr_pct,false))) : null
-      ));
-    T.append(b);
-  }
-  const P = D.portfolios[active];
-  const SW = $('#switch'); SW.hidden=false; SW.replaceChildren(
-    el('button', {class: view==='live'?'on':'', onclick:()=>{view='live'; localStorage.setItem('as_view',view); render();}}, 'LIVE BOOK', el('small',{}, `since ${P.inception} · daily stops`)),
-    el('button', {class: view==='bt'?'on':'', onclick:()=>{view='bt'; localStorage.setItem('as_view',view); render();}}, 'BACKTEST', el('small',{}, P.backtest ? `${P.backtest.start} → ${P.backtest.as_of}` : 'not available'))
-  );
-  if(view==='bt' && P.backtest) renderBacktest(P); else renderPortfolio(P);
-  $('#foot').innerHTML = `Strategy: monthly bars · Williams %R(${D.strategy.wr_len}) armed &lt; ${D.strategy.arm}, trigger ≥ ${D.strategy.trigger} · EMA 5 &gt; 15 &gt; 50 · stop −15% · target +30% (50% scale-out, stop to breakeven, then trails previous month's low) · ${D.strategy.slots} slots · size = corpus/25 · idle cash in Nifty 50 ETF (^NSEI) · Indian delivery costs applied.<br>
-  Entry signals are generated <b>once a month</b> on the completed close (running month excluded) — the entry table stays the same all month by design. The open book and its stops are re-checked on every run. Universe = today's index members (survivorship bias vs the benchmark is present and unquantified). Prices: Yahoo Finance via yfinance, adjusted. Build time ${D.runtime_sec}s.`;
+  // navigation
+  const N = $('#nav'); N.hidden=false; N.replaceChildren();
+  const navBtn = (key, label, sub) => el('button', {class: ROUTE.page===key?'on':'', onclick:()=>{ if(key==='overview') location.hash='#overview'; else go(key, isMom(key)? (ROUTE.uni||D.momentum.default_universe):'live', 'live'); }}, label, el('small',{}, sub));
+  N.append(navBtn('overview','Overview','all strategies'));
+  N.append(el('span',{class:'sep'}));
+  for(const [k,P] of Object.entries(D.portfolios)) N.append(navBtn(k, P.display, `Anchor & Sail · ${P.universe_label.split(' (')[0]}`));
+  N.append(el('span',{class:'sep'}));
+  for(const [k,Sx] of Object.entries(D.momentum.strategies)) N.append(navBtn(k, Sx.name, Sx.style));
+  // controls + page
+  const C = $('#controls'); C.replaceChildren();
+  const M = $('#main');
+  if(ROUTE.page==='overview'){ renderOverview(M); }
+  else if(D.portfolios[ROUTE.page]){
+    const P = D.portfolios[ROUTE.page];
+    C.append(viewSwitch(v=>go(ROUTE.page, v), ROUTE.view, `since ${P.inception} · daily stops`, P.backtest? `${P.backtest.start} → ${P.backtest.as_of}`:'n/a'));
+    if(ROUTE.view==='bt' && P.backtest) renderBacktest(P, M); else renderPortfolio(P, M);
+  } else if(D.momentum.strategies[ROUTE.page]){
+    const Sx = D.momentum.strategies[ROUTE.page]; const uni = ROUTE.uni && Sx.universes[ROUTE.uni] ? ROUTE.uni : D.momentum.default_universe;
+    const U = Sx.universes[uni];
+    const us = el('div',{class:'switch'}); for(const [uk,UU] of Object.entries(Sx.universes)) us.append(el('button',{class: uk===uni?'on':'', onclick:()=>go(ROUTE.page, uk, ROUTE.view)}, UU.universe_label, el('small',{}, `${UU.universe_size} stocks`)));
+    C.append(us, viewSwitch(v=>go(ROUTE.page, uni, v), ROUTE.view, `since ${U.live.inception} · monthly rebalance`, `${U.backtest.metrics.start} → ${U.backtest.metrics.as_of}`));
+    if(ROUTE.view==='bt') renderMomentumBacktest(Sx, U, M); else renderMomentumLive(Sx, U, M);
+  } else { location.hash='#overview'; return; }
+  $('#foot').innerHTML = `<b>Anchor & Sail</b> (Bharat Wealth Portfolio, Precision, Frontier, Udaan): monthly bars · Williams %R(14) armed &lt; −40, trigger ≥ −20 · EMA 5 &gt; 15 &gt; 50 · stop −15% · target +30% (50% scale-out, stop to breakeven, then trails previous month's low) · 25 slots · size = corpus/25 · idle cash in Nifty 50 ETF · ₹26 L each.<br>
+  <b>Alpha Leaders</b> (S1) and <b>Wealth Vriddhi</b> (S4+): monthly rebalance on the last session's close · momentum score = mean rank of 12-1m return, 6m return, 12m Sharpe · hold 20, keep names inside the top 30, max 5 per NSE sector, liquidity ≥ ₹5 cr/day · S4+ adds rising 200-DMA + below-median downside capture, 50% exposure when Nifty &lt; 200-DMA (×0.8 in a vol spike), 50/50 inverse-vol blend · idle cash in a 7% liquid fund · ₹10 L each.<br>
+  All figures net of itemised delivery costs, before tax. Universes are today's NSE index members applied to history (survivorship bias). Prices: Yahoo Finance via yfinance (adjusted, ~15 min delayed). Common yardstick: ${D.bench2_label}. Build time ${D.runtime_sec}s.`;
+}
+
+function viewSwitch(onpick, cur, liveSub, btSub){
+  return el('div',{class:'switch'},
+    el('button',{class: cur!=='bt'?'on':'', onclick:()=>onpick('live')}, 'LIVE BOOK', el('small',{}, liveSub)),
+    el('button',{class: cur==='bt'?'on':'', onclick:()=>onpick('bt')}, 'BACKTEST', el('small',{}, btSub)));
 }
 
 function sortable(table, rows, cols, renderRow, defaultKey, defaultDesc){
@@ -248,7 +288,8 @@ function sortable(table, rows, cols, renderRow, defaultKey, defaultDesc){
   const thead = el('thead'); const tbody = el('tbody');
   const draw = () => {
     const rs = rows.slice();
-    if(key){ rs.sort((a,b)=>{ const x=a[key], y=b[key]; if(x==null&&y==null) return 0; if(x==null) return 1; if(y==null) return -1; return (typeof x==='number'? x-y : String(x).localeCompare(String(y))) * (desc?-1:1); }); }
+    const gv = (o,k) => k.indexOf('.')<0 ? o[k] : k.split('.').reduce((v,kk)=>v==null?undefined:v[kk], o);
+    if(key){ rs.sort((a,b)=>{ const x=gv(a,key), y=gv(b,key); if(x==null&&y==null) return 0; if(x==null) return 1; if(y==null) return -1; return (typeof x==='number'? x-y : String(x).localeCompare(String(y))) * (desc?-1:1); }); }
     tbody.replaceChildren(...rs.map(renderRow));
     thead.querySelectorAll('th').forEach(th=>{ const a=th.querySelector('.arrow'); if(a) a.textContent = th.dataset.key===key ? (desc?'▼':'▲') : ''; });
   };
@@ -273,13 +314,233 @@ function secHead(n, title, desc){ return el('div', {class:'sec-h'}, el('span',{c
 const kpi = (v, k, d, c) => el('div', {class:'kpi'}, el('div',{class:'v '+(c||'')},v), el('div',{class:'k'},k), d? el('div',{class:'d'},d):null);
 const signCol = v => v==null ? '' : v>0 ? 'green' : v<0 ? 'rose' : '';
 
-// =============================================================== LIVE VIEW
-function renderPortfolio(P){
-  const M = $('#main'); M.replaceChildren();
+// =============================================================== OVERVIEW
+function renderOverview(M){
+  M.replaceChildren();
+  const D = DATA, rows = D.summary;
+  const alerts = [];
+  for(const [k,P] of Object.entries(D.portfolios)){
+    for(const e of P.exits.filter(e=>e.today)) alerts.push({strategy:P.display, text:`${e.type==='EXIT'?'Exit':'Scale-out'} ${e.symbol} — ${e.reason}`, kind:'exit', key:k});
+    const near = P.open_positions.filter(p=>p.to_stop_pct!=null && p.to_stop_pct<=3);
+    if(near.length) alerts.push({strategy:P.display, text:`${near.length} holding${near.length>1?'s':''} within 3% of stop: ${near.slice(0,4).map(p=>p.symbol).join(', ')}${near.length>4?'…':''}`, kind:'warn', key:k});
+  }
+  for(const [k,Sx] of Object.entries(D.momentum.strategies)){
+    const U = Sx.universes[D.momentum.default_universe]; const lr = U.live.last_rebalance;
+    if(lr && lr.date >= D.data_date.slice(0,8)+'01') alerts.push({strategy:`${Sx.name} · ${U.universe_label}`, text:`Rebalanced ${lr.date}: ${lr.orders.filter(o=>o.side==='BUY').length} buys, ${lr.orders.filter(o=>o.side==='SELL').length} sells · exposure ${lr.exposure_pct}%`, kind:'info', key:k});
+    if(U.live.regime && U.live.regime.nifty_vs_200dma_pct!=null && U.live.regime.nifty_vs_200dma_pct<0 && k==='S4PLUS') alerts.push({strategy:Sx.name, text:`Nifty is ${fPct(U.live.regime.nifty_vs_200dma_pct)} vs its 200-DMA — de-risk regime (50% exposure) at the next rebalance`, kind:'warn', key:k});
+  }
+  const hero = el('div',{class:'ov-hero'},
+    el('div',{class:'ov-title'}, el('h2',{}, 'Six model portfolios, two engines, one page.'),
+      el('p',{}, `Four Anchor & Sail books (monthly Williams %R + EMA trend, daily stop monitoring) and two monthly-rebalanced momentum books across Nifty 100 / 200 / 500. Every strategy is run live from its inception date and re-backtested from January 2016 on every build, against its own index and against the ${D.bench2_short} as a common yardstick.`),
+      el('div',{class:'row'}, el('span',{}, 'Strategies ', el('b',{}, Object.keys(D.portfolios).length + Object.keys(D.momentum.strategies).length)), el('span',{}, 'Live books ', el('b',{}, rows.length)),
+        el('span',{}, 'Signal month ', el('b',{}, D.completed_month)), el('span',{}, 'Next momentum rebalance ', el('b',{}, Object.values(D.momentum.strategies)[0].universes[D.momentum.default_universe].live.next_rebalance)),
+        el('span',{}, 'Data ', el('b',{}, D.data_date)))),
+    el('div',{class:'alerts'}, el('h4',{}, `Today's alerts · ${alerts.length}`),
+      ...(alerts.length? alerts.slice(0,8).map(a=>el('div',{class:'a'}, el('span',{}, el('span',{class:'tag '+(a.kind==='exit'?'exit':a.kind==='warn'?'scale':'cyan')}, a.kind.toUpperCase()), ' ', el('b',{}, a.strategy), ' — ', a.text), el('a',{href:'#'+a.key+'/live'}, 'open'))) : [el('div',{class:'empty'}, 'No stop, target or rebalance event today. Open books are within normal ranges.')])));
+  M.append(hero);
+
+  // strategy cards
+  const s1 = el('section'); s1.append(secHead('1','Strategies at a glance', 'click a card to open its page'));
+  const cards = el('div',{class:'gridcards'});
+  for(const r of rows.filter(r=>r.type==='anchor' || r.default)){
+    const key = r.type==='anchor'? r.key : r.key.split(':')[0];
+    cards.append(el('div',{class:'scard', onclick:()=> r.type==='anchor'? go(key,'live') : go(key, r.key.split(':')[1], 'live')},
+      el('div',{class:'n'}, r.name, el('small',{}, r.alias)), el('div',{class:'u'}, `${r.engine} · ${r.universe} · ₹${lakh(r.capital).slice(1)} · vs ${r.benchmark}`),
+      el('div',{class:'m'},
+        el('div',{}, el('b',{class:cls(r.live.return_pct)}, fPct(r.live.return_pct)), el('span',{}, `live since ${r.inception.slice(5)}`)),
+        el('div',{}, el('b',{class:'pos'}, fPct(r.backtest.cagr_pct,false)), el('span',{}, 'backtest CAGR')),
+        el('div',{}, el('b',{}, r.type==='anchor'? `${r.live.positions}/25` : `${r.live.positions}/20`), el('span',{}, r.type==='anchor'? 'positions' : `held · ${r.live.exposure_pct??'—'}% exp`)))));
+  }
+  s1.append(cards); M.append(s1);
+
+  // live table
+  const s2 = el('section'); s2.append(secHead('2','Live performance', 'every book from its inception date, marked to the latest prices; Nifty 200 Mom 30 shown as the common yardstick'));
+  s2.append(tableCard(rows, [
+      {label:'Strategy', left:true, key:'name'}, {label:'Engine', left:true, key:'engine'}, {label:'Universe', left:true, key:'universe'}, {label:'Since', key:'inception'}, {label:'Capital', key:'capital'},
+      {label:'Value', key:'live.nav'}, {label:'Return', key:'live.return_pct'}, {label:'Benchmark', key:'live.bench_return_pct'}, {label:'Excess', key:'_ex'}, {label:D.bench2_short, key:'live.bench2_return_pct'},
+      {label:'Max DD', key:'live.max_dd_pct'}, {label:'Held', key:'live.positions'}, {label:'Today', key:'_today', left:true}],
+    r => { const ex = (r.live.return_pct!=null && r.live.bench_return_pct!=null)? r.live.return_pct-r.live.bench_return_pct : null; r._ex=ex; r._today = r.type==='anchor'? `${r.live.exits_today} exit${r.live.exits_today===1?'':'s'}` : `exp ${r.live.exposure_pct??'—'}%`;
+      const tr=el('tr',{style:'cursor:pointer', onclick:()=> r.type==='anchor'? go(r.key,'live') : go(r.key.split(':')[0], r.key.split(':')[1], 'live')});
+      tr.append(el('td',{class:'sym'}, r.name, el('small',{}, r.alias + (r.default?' · default':''))), td(r.engine,'l'), td(r.universe,'l'), td(r.inception), td(lakh(r.capital)), td(fR(r.live.nav)), pctCell(r.live.return_pct), pctCell(r.live.bench_return_pct), pctCell(ex), pctCell(r.live.bench2_return_pct), td(fPct(r.live.max_dd_pct,false), r.live.max_dd_pct<0?'neg':''), td(r.live.positions), td(r._today,'l')); return tr; },
+    'No live data.', null, false));
+  M.append(s2);
+
+  // backtest table + bars
+  const s3 = el('section'); s3.append(secHead('3','Backtest 2016 → today', 'identical engines run from January 2016 on today\'s index members, net of costs; benchmark CAGRs over the same window'));
+  s3.append(tableCard(rows, [
+      {label:'Strategy', left:true, key:'name'}, {label:'Universe', left:true, key:'universe'}, {label:'CAGR', key:'backtest.cagr_pct'}, {label:'Benchmark CAGR', key:'backtest.bench_cagr_pct'}, {label:'Excess', key:'_bex'},
+      {label:`${D.bench2_short} CAGR`, key:'backtest.bench2_cagr_pct'}, {label:'Max DD', key:'backtest.max_dd_pct'}, {label:'Sharpe', key:'backtest.sharpe'}, {label:'Win rate', key:'backtest.win_rate_pct'}, {label:'Trades', key:'backtest.trades'}, {label:'₹ → today', key:'backtest.final_value'}],
+    r => { const b=r.backtest; r._bex = (b.cagr_pct!=null && b.bench_cagr_pct!=null)? b.cagr_pct-b.bench_cagr_pct : null;
+      const tr=el('tr',{style:'cursor:pointer', onclick:()=> r.type==='anchor'? go(r.key,'bt') : go(r.key.split(':')[0], r.key.split(':')[1], 'bt')});
+      tr.append(el('td',{class:'sym'}, r.name, el('small',{}, r.alias)), td(r.universe,'l'), td(fPct(b.cagr_pct,false),'pos'), td(fPct(b.bench_cagr_pct,false)), pctCell(r._bex), td(fPct(b.bench2_cagr_pct,false)), td(fPct(b.max_dd_pct,false),'neg'), td(fN(b.sharpe)), td(fPct(b.win_rate_pct,false)), td(b.trades), td(fR(b.final_value))); return tr; },
+    'No backtest data.', null, false));
+  // CAGR bars
+  const bars = el('div',{class:'card', style:'padding:14px 16px;margin-top:12px'});
+  bars.append(el('div',{class:'legend', style:'margin-bottom:10px'}, el('span',{}, el('i',{style:'background:var(--s1)'}), 'Strategy CAGR'), el('span',{}, el('i',{style:'background:var(--s2)'}), 'Own benchmark'), el('span',{}, el('i',{style:'background:var(--s3)'}), D.bench2_short)));
+  const bb = el('div',{class:'bars'}); const mx = Math.max(...rows.flatMap(r=>[r.backtest.cagr_pct||0, r.backtest.bench_cagr_pct||0, r.backtest.bench2_cagr_pct||0]))*1.05;
+  for(const r of rows){ for(const [v,c,l] of [[r.backtest.cagr_pct,'var(--s1)',`${r.name} · ${r.universe}`],[r.backtest.bench_cagr_pct,'var(--s2)',r.benchmark],[r.backtest.bench2_cagr_pct,'var(--s3)',D.bench2_short]]){
+      if(v==null) continue; const t=el('div',{class:'track'}); t.append(el('i',{style:`width:${Math.max(0,v)/mx*100}%;background:${c}`}));
+      bb.append(el('div',{class:'bar'}, el('div',{class:'lbl', title:l}, l), t, el('div',{class:'val'}, fPct(v,false)))); }
+    bb.append(el('div',{style:'height:6px'})); }
+  bars.append(bb); s3.append(bars); M.append(s3);
+
+  // growth of 100 — all strategies vs Mom30
+  const s4 = el('section'); s4.append(secHead('4','Growth of ₹100 since Jan 2016', 'all strategy backtests on one scale, with the common yardstick'));
+  const series=[]; let dates=null; const cols=['var(--s1)','var(--s4)','var(--s6)','var(--s5)','var(--s2)','var(--s7)'];
+  const picks=[]; for(const [k,P] of Object.entries(D.portfolios)) if(P.backtest) picks.push({name:P.display, hist:P.backtest.history});
+  for(const [k,Sx] of Object.entries(D.momentum.strategies)){ const U=Sx.universes[D.momentum.default_universe]; picks.push({name:`${Sx.name} (${U.universe_label})`, hist:U.backtest.history}); }
+  // align by month key
+  const months = [...new Set(picks.flatMap(p=>p.hist.map(h=>h.date.slice(0,7))))].sort();
+  picks.forEach((p,i)=>{ const map={}; p.hist.forEach(h=>{ map[h.date.slice(0,7)] = h.nav; }); const base = p.hist[0].nav; series.push({name:p.name, color:cols[i%cols.length], values: months.map(m=> map[m]!=null? map[m]/base*100 : null)}); });
+  const ref = picks[0].hist; const b2map={}; ref.forEach(h=>{ if(h.bench2!=null) b2map[h.date.slice(0,7)]=h.bench2; }); const b2base = ref.find(h=>h.bench2!=null)?.bench2;
+  if(b2base) series.push({name:D.bench2_short, color:'var(--s3)', values: months.map(m=> b2map[m]!=null? b2map[m]/b2base*100 : null)});
+  s4.append(lineChart({title:'Backtest growth of ₹100 (log scale)', dates:months.map(m=>m+'-01'), series, fmt:v=>'₹'+Math.round(v), base:100, minPts:2, height:380, wide:true, log:true}));
+  M.append(s4);
+}
+
+// =============================================================== MOMENTUM — LIVE
+function renderMomentumLive(Sx, U, M){
+  M.replaceChildren();
+  const D = DATA, L = U.live, pf = L.performance, R = L.regime || {}, isS4 = Sx.code==='S4PLUS';
+  const s1 = el('section');
+  s1.append(secHead('1', `Live book — ${Sx.name} · ${U.universe_label}`, `${Sx.style} · ₹${inr.format(D.momentum.capital)} committed at the ${L.inception} close · rebalances on the last trading day of each month · next ≈ ${L.next_rebalance}`));
+  const kp = el('div',{class:'kpis'});
+  kp.append(kpi(fR(pf.nav),'Book value',`on ₹${inr.format(D.momentum.capital)}`,'amber'), kpi(fPct(pf.return_pct),'Return since inception',`${pf.days} days`, signCol(pf.return_pct)),
+    kpi(fPct(pf.bench_return_pct), U.benchmark, 'same window', signCol(pf.bench_return_pct)), kpi(fPct(pf.bench2_return_pct), D.bench2_short, 'common yardstick', signCol(pf.bench2_return_pct)),
+    kpi(pf.exposure_pct!=null? pf.exposure_pct.toFixed(0)+'%':'—', 'Target exposure', isS4? (L.last_rebalance?.derisk? 'de-risk regime active':'full exposure') : 'always fully invested', isS4 && L.last_rebalance?.derisk? 'rose':'teal'),
+    kpi(`${pf.holdings}/${D.momentum.rules.hold}`, 'Stocks held', `${lakh(pf.invested)} invested`, 'cyan'), kpi(lakh(pf.cash), 'Liquid-fund cash', `interest so far ${fR(pf.interest)}`, ''),
+    kpi(fPct(pf.max_dd_pct,false), 'Max drawdown', 'daily NAV', pf.max_dd_pct<0?'rose':''));
+  s1.append(kp);
+  // regime panel
+  s1.append(el('div',{class:'stats', style:'margin-bottom:12px'},
+    el('div',{}, el('span',{},'Nifty 50 vs its 200-day average'), el('span',{class:cls(R.nifty_vs_200dma_pct)}, `${fP(R.nifty)} vs ${fP(R.nifty_200dma)} (${fPct(R.nifty_vs_200dma_pct)})` + (isS4? (R.nifty_vs_200dma_pct<0? ' → de-risk to 50%':' → full exposure') : ' (informational for Alpha Leaders)'))),
+    el('div',{}, el('span',{},'Median volatility regime (20d / 252d)'), el('span',{class: R.median_volregime>D.momentum.rules.volregime_max?'neg':''}, `${fN(R.median_volregime)} ${isS4? (R.median_volregime>D.momentum.rules.volregime_max? '→ vol spike, exposure ×0.8':'· below '+D.momentum.rules.volregime_max+' threshold'):''}`)),
+    el('div',{}, el('span',{},'Eligible stocks today (liquidity + trend gate)'), el('span',{}, `${R.eligible_now ?? '—'} of ${U.universe_size}`)),
+    el('div',{}, el('span',{},'Last rebalance'), el('span',{}, L.last_rebalance? `${L.last_rebalance.date} · ${L.last_rebalance.orders.length} orders · exposure ${L.last_rebalance.exposure_pct}%` : 'not yet — first rebalance at the inception close')),
+  ));
+  s1.append(el('h3',{}, `Current portfolio · ${L.holdings.length} stocks`));
+  s1.append(tableCard(L.holdings, [
+      {label:'Stock', left:true, key:'symbol'}, {label:'Sector', left:true, key:'industry'}, {label:'Shares', key:'shares'}, {label:'Avg entry ₹', key:'avg_entry'}, {label:'Since', key:'entry_date'}, {label:'LTP ₹', key:'ltp'},
+      {label:'Value ₹', key:'value'}, {label:'Weight', key:'weight_pct'}, {label:'P&L %', key:'pnl_pct'}, {label:'Unrealised ₹', key:'unrealised'}, {label:'Rank today', key:'rank_now', desc:false, title:'Momentum rank in the universe if the month closed today'}, {label:'Score', key:'score_now'}, {label:'Status today', key:'in_buffer', left:true}],
+    r => { const tr=el('tr'); tr.append(symCell(r), td(r.industry,'l'), td(inr.format(r.shares)), td(fP(r.avg_entry)), td(r.entry_date), td(fP(r.ltp)), td(fR(r.value)), td(fPct(r.weight_pct,false)), pctCell(r.pnl_pct), td(fR(r.unrealised), cls(r.unrealised)),
+        td(r.rank_now ?? '—'), td(fN(r.score_now,1)), el('td',{class:'l'}, r.rank_now==null? el('span',{class:'tag exit'},'INELIGIBLE') : r.rank_now<=D.momentum.rules.hold? el('span',{class:'tag entry'},'TOP 20') : r.in_buffer? el('span',{class:'tag scale'},'BUFFER 21–30') : el('span',{class:'tag exit'},'WOULD SELL'))); return tr; },
+    L.started? 'No holdings (fully in the liquid fund).' : `The book starts with the first rebalance on the ${L.inception} close.`, 'weight_pct', true));
+  // last rebalance orders
+  if(L.last_rebalance){
+    s1.append(el('h3',{}, `Last rebalance orders — ${L.last_rebalance.date} · exposure ${L.last_rebalance.exposure_pct}%${L.last_rebalance.derisk?' · DE-RISK':''}${L.last_rebalance.volspike?' · VOL SPIKE':''}`));
+    s1.append(tableCard(L.last_rebalance.orders, [
+        {label:'Side', key:'side', left:true}, {label:'Stock', left:true, key:'symbol'}, {label:'Qty', key:'qty'}, {label:'Price ₹', key:'price'}, {label:'Value ₹', key:'value'}, {label:'Rank', key:'rank'}, {label:'Target weight', key:'weight_pct'}],
+      r => { const tr=el('tr'); tr.append(el('td',{class:'l'}, el('span',{class:'tag '+(r.side==='BUY'?'entry':r.side==='SELL'?'exit':r.side==='TRIM'?'scale':'cyan')}, r.side)), el('td',{class:'sym'}, r.symbol), td(inr.format(r.qty)), td(fP(r.price)), td(fR(r.value)), td(r.rank ?? '—'), td(r.weight_pct!=null? fPct(r.weight_pct,false):'—')); return tr; },
+      'No orders at the last rebalance (portfolio unchanged).', null, false));
+    if(L.last_rebalance.skipped && L.last_rebalance.skipped.length){
+      s1.append(el('div',{class:'empty', style:'text-align:left;margin-top:8px'}, el('b',{}, `${L.last_rebalance.skipped.length} target${L.last_rebalance.skipped.length>1?'s':''} not bought: `),
+        L.last_rebalance.skipped.map(k=>`${k.symbol} (rank ${k.rank}${k.price? ', ₹'+inr.format(k.price)+' vs ₹'+inr.format(k.target_value)+' target':''}) — ${k.reason.toLowerCase()}`).join(' · '),
+        '. The unspent allocation stays in the liquid fund until the next rebalance.'));
+    }
+  }
+  M.append(s1);
+
+  // performance
+  const s2 = el('section'); s2.append(secHead('2', `Performance vs ${U.benchmark} and ${D.bench2_short}`, `since ${L.inception} · benchmark source: ${U.benchmark_source}`));
+  const H = L.history; const nav0 = H.length? H[0].nav:1; const b0 = H.find(h=>h.bench!=null)?.bench; const b20 = H.find(h=>h.bench2!=null)?.bench2;
+  const grid = el('div',{class:'perf'});
+  grid.append(lineChart({title:`Growth of 100 — ${Sx.name} vs benchmarks`, dates:H.map(h=>h.date), series:[
+      {name:Sx.name, color:'var(--s1)', values:H.map(h=>h.nav/nav0*100)}, {name:U.benchmark, color:'var(--s2)', values:H.map(h=>(b0&&h.bench!=null)?h.bench/b0*100:null)}, {name:D.bench2_short, color:'var(--s3)', values:H.map(h=>(b20&&h.bench2!=null)?h.bench2/b20*100:null)}],
+      fmt:v=>v.toFixed(2), base:100, extra:(i)=>`(${fR(H[i].nav)} · ${H[i].n} stocks)`, minPts:2}),
+    el('div',{class:'stats'},
+      el('div',{}, el('span',{},'Realised P&L (closed positions, net)'), el('span',{class:cls(pf.realised)}, fR(pf.realised))),
+      el('div',{}, el('span',{},'Interest earned (liquid fund, 7% p.a.)'), el('span',{}, fR(pf.interest))),
+      el('div',{}, el('span',{},'Charges paid'), el('span',{}, fR(pf.charges))),
+      el('div',{}, el('span',{},'Rebalances so far'), el('span',{}, L.rebalances.length)),
+      el('div',{}, el('span',{},'Closed positions'), el('span',{}, L.trades.length)),
+      el('div',{}, el('span',{},'Weighting'), el('span',{}, isS4? '50% inverse-vol + 50% equal':'equal weight')),
+      el('div',{}, el('span',{},'Sector cap'), el('span',{}, `max ${D.momentum.rules.sector_cap} per NSE sector`))));
+  s2.append(grid); M.append(s2);
+
+  // next rebalance preview
+  const s3 = el('section'); const P = L.provisional;
+  s3.append(secHead('3', 'Next rebalance preview', `what the ${L.next_rebalance} rebalance would do if the month closed today — ranks move daily until then`));
+  if(P){
+    s3.append(el('div',{class:'hero'}, el('b',{}, `Exposure ${P.exposure_pct}%`), P.derisk? ' — Nifty below its 200-DMA, de-risk regime.' : ' — full exposure.', P.volspike? ' Vol spike: ×0.8 applied.':'', ` Target list: `, el('b',{}, `${P.targets.filter(t=>t.action==='BUY').length} new buys`), `, `, el('b',{}, `${P.targets.filter(t=>t.action==='HOLD').length} holds`), `, `, el('b',{}, `${P.would_sell.length} sells`), '.'));
+    s3.append(el('h3',{}, 'Target portfolio if rebalanced today'));
+    s3.append(tableCard(P.targets, [
+        {label:'Rank', key:'rank', desc:false}, {label:'Stock', left:true, key:'symbol'}, {label:'Sector', left:true, key:'industry'}, {label:'Action', key:'action', left:true}, {label:'Score', key:'score'}, {label:'Target weight', key:'weight_pct'}],
+      r => { const tr=el('tr'); tr.append(td(r.rank), symCell(r), td(r.industry,'l'), el('td',{class:'l'}, el('span',{class:'tag '+(r.action==='BUY'?'entry':'held')}, r.action)), td(fN(r.score,1)), td(fPct(r.weight_pct,false))); return tr; },
+      'No eligible stocks today.', 'rank', false));
+    const two = el('div',{class:'two'});
+    const left = el('div'); left.append(el('h3',{}, `Would be sold · ${P.would_sell.length}`), tableCard(P.would_sell, [{label:'Stock', left:true, key:'symbol'}, {label:'Rank today', key:'rank'}, {label:'Score', key:'score'}, {label:'Reason', key:'reason', left:true}],
+      r => { const tr=el('tr'); tr.append(symCell(r), td(r.rank ?? 'ineligible'), td(fN(r.score,1)), td(r.reason,'l')); return tr; }, 'Nothing would be sold.', null, false));
+    const right = el('div'); right.append(el('h3',{}, `Watchlist — ranks 21–30 (buffer zone) · ${P.watch.length}`), tableCard(P.watch, [{label:'Rank', key:'rank', desc:false}, {label:'Stock', left:true, key:'symbol'}, {label:'Sector', left:true, key:'industry'}, {label:'Score', key:'score'}],
+      r => { const tr=el('tr'); tr.append(td(r.rank), symCell(r), td(r.industry,'l'), td(fN(r.score,1))); return tr; }, 'No names in the buffer zone.', 'rank', false));
+    two.append(left, right); s3.append(two);
+  } else s3.append(el('div',{class:'empty'}, 'Not enough price history to score the universe today.'));
+  M.append(s3);
+
+  // universe
+  const s4 = el('section'); s4.append(secHead('4', `Universe — ${U.universe_label}`, `${U.universe_size} stocks ranked on today's momentum score; eligibility = liquidity ≥ ₹${D.momentum.rules.liq_min_cr} cr/day + above 200-DMA${isS4?' + rising 200-DMA + below-median downside capture':''}`));
+  const tb = el('div',{class:'toolbar'}); const inp = el('input',{placeholder:'Filter symbol / name / sector…', type:'search'}); const holder = el('div'); let q='', f='ALL';
+  const chips = el('div',{class:'chips'});
+  const draw = () => { const rows = U.universe_rows.filter(r => (!q || r.symbol.toLowerCase().includes(q) || (r.name||'').toLowerCase().includes(q) || (r.industry||'').toLowerCase().includes(q)) && (f==='ALL' || (f==='HELD'&&r.held) || (f==='TOP 20'&&r.rank&&r.rank<=20) || (f==='TOP 30'&&r.rank&&r.rank<=30) || (f==='ELIGIBLE'&&r.eligible) || (f==='INELIGIBLE'&&!r.eligible)));
+    holder.replaceChildren(tableCard(rows, [
+      {label:'Rank', key:'rank', desc:false}, {label:'Stock', left:true, key:'symbol'}, {label:'Sector', left:true, key:'industry'}, {label:'Status', key:'held', left:true}, {label:'Score', key:'score'}, {label:'LTP ₹', key:'close'},
+      {label:'12-1m mom', key:'mom12_1_pct'}, {label:'6m ret', key:'r126_pct'}, {label:'12m ret', key:'r252_pct'}, {label:'12m Sharpe', key:'sharpe12'}, {label:'vs 200-DMA', key:'dist200_pct'}, {label:'200-DMA slope', key:'slope200_pct'},
+      {label:'Down capture', key:'dcap', title:'Downside capture vs Nifty over 252 sessions (lower is calmer)'}, {label:'Liquidity ₹cr/day', key:'liq_cr'}, {label:'Vol 252d', key:'hv252_pct'}, {label:'Vol regime', key:'volregime'}],
+      r => { const tr=el('tr'); tr.append(td(r.rank ?? '—'), symCell(r), td(r.industry,'l'), el('td',{class:'l'}, r.held? el('span',{class:'tag held'},'HELD') : r.eligible? (r.rank<=20? el('span',{class:'tag entry'},'TOP 20') : r.rank<=30? el('span',{class:'tag scale'},'BUFFER') : el('span',{class:'tag grey'},'ELIGIBLE')) : el('span',{class:'tag grey'},'—')),
+        td(fN(r.score,1)), td(fP(r.close)), pctCell(r.mom12_1_pct), pctCell(r.r126_pct), pctCell(r.r252_pct), td(fN(r.sharpe12)), pctCell(r.dist200_pct), pctCell(r.slope200_pct), td(fN(r.dcap)), td(fN(r.liq_cr,1)), td(fPct(r.hv252_pct,false)), td(fN(r.volregime))); return tr; },
+      'No stocks match.', 'rank', false)); };
+  for(const s of ['ALL','HELD','TOP 20','TOP 30','ELIGIBLE','INELIGIBLE']) chips.append(el('button',{class:'chip'+(s===f?' on':''), onclick:(e)=>{ f=s; chips.querySelectorAll('.chip').forEach(x=>x.classList.toggle('on', x.textContent===s)); draw(); }}, s));
+  inp.addEventListener('input', ()=>{ q=inp.value.trim().toLowerCase(); draw(); }); tb.append(inp, chips); s4.append(tb, holder); draw(); M.append(s4);
+}
+
+// =============================================================== MOMENTUM — BACKTEST
+function renderMomentumBacktest(Sx, U, M){
+  M.replaceChildren();
+  const D = DATA, B = U.backtest, m = B.metrics, isS4 = Sx.code==='S4PLUS';
+  M.append(el('div',{class:'hero'}, el('b',{}, `${Sx.name} · ${U.universe_label}`), ` — rebalanced monthly from `, el('b',{}, m.start), ` with ₹${inr.format(D.momentum.capital)}, the same rules and every charge, the book would be worth `, el('b',{}, fR(m.final_value)), ` today (${m.as_of}) — a CAGR of `, el('b',{}, fPct(m.cagr_pct,false)), ` over ${m.years} years versus `, el('b',{}, fPct(m.bench_cagr_pct,false)), ` for the ${U.benchmark} and `, el('b',{}, fPct(m.bench2_cagr_pct,false)), ` for the ${D.bench2_short}.`,
+    B.published_cagr_pct!=null? el('span',{class:'mut'}, ` The FINSIGHTS package reported ${fPct(B.published_cagr_pct,false)} for this strategy/universe on its own (hand-typed) list and Yahoo sectors; this build uses NSE's official constituents and sector classification.`):null));
+  const s1 = el('section'); s1.append(secHead('1','Key metrics', `${m.start} → ${m.as_of} · benchmark: ${U.benchmark_source} · ${D.bench2_label}`));
+  const kp = el('div',{class:'kpis'});
+  kp.append(kpi(fPct(m.cagr_pct,false),'CAGR','from first rebalance','amber'), kpi(fPct(m.total_return_pct,false),'Total return',`${m.years} years`,'teal'), kpi(fPct(m.bench_cagr_pct,false),`${U.benchmark} CAGR`,'same window','cyan'),
+    kpi(fPct(m.excess_bench_pct),'Excess vs benchmark','CAGR difference', signCol(m.excess_bench_pct)), kpi(fPct(m.bench2_cagr_pct,false),`${D.bench2_short} CAGR`, m.excess_bench2_pct!=null? `excess ${fPct(m.excess_bench2_pct)}`:'', 'violet'),
+    kpi(fPct(m.max_dd_pct,false),'Max drawdown','daily NAV','rose'), kpi(fN(m.sharpe),'Sharpe','monthly returns, rf = 0',''), kpi(fN(m.calmar),'Calmar','CAGR ÷ max drawdown',''),
+    kpi(fR(m.net_profit),'Net profit','after charges, incl. interest','green'), kpi(fR(m.final_value),'Final value',`on ₹${inr.format(D.momentum.capital)}`,''),
+    kpi(fPct(m.win_rate_pct,false),'Win rate',`${m.wins} of ${m.closed_trades} closed`,'green'), kpi(fN(m.profit_factor),'Profit factor','gross profit ÷ gross loss',''),
+    kpi(m.closed_trades,'Closed positions',`${m.open_positions} open`,''), kpi(fPct(m.avg_win_pct),'Avg win','per winning position, net','green'), kpi(fPct(m.avg_loss_pct),'Avg loss','per losing position, net','rose'),
+    kpi(m.avg_holding_months!=null? m.avg_holding_months.toFixed(1)+' mo':'—','Avg holding','closed positions',''), kpi(fPct(m.avg_exposure_pct,false),'Avg exposure',`${m.months_derisked} de-risked month${m.months_derisked===1?'':'s'}`,''),
+    kpi(fR(m.interest_earned),'Liquid-fund interest','on idle cash at 7%','amber'), kpi(fR(m.charges_paid),'Charges paid','STT, txn, stamp, SEBI, GST, DP',''), kpi(fPct(m.positive_months_pct,false),'Positive months',`best ${fPct(m.best_month_pct)} · worst ${fPct(m.worst_month_pct)}`,''));
+  s1.append(kp); M.append(s1);
+  const s2 = el('section'); s2.append(secHead('2','Growth of capital', `₹${inr.format(D.momentum.capital)} from ${m.start}, month-end NAVs net of every charge; benchmarks scaled to the same starting capital`));
+  const H = B.history; const b0 = H.find(h=>h.bench!=null)?.bench; const b20 = H.find(h=>h.bench2!=null)?.bench2;
+  s2.append(lineChart({title:`${Sx.name} vs ${U.benchmark} and ${D.bench2_short} (log scale)`, dates:H.map(h=>h.date), series:[
+      {name:Sx.name, color:'var(--s1)', values:H.map(h=>h.nav)}, {name:U.benchmark, color:'var(--s2)', values:H.map(h=>(b0&&h.bench!=null)? h.bench/b0*D.momentum.capital:null)}, {name:D.bench2_short, color:'var(--s3)', values:H.map(h=>(b20&&h.bench2!=null)? h.bench2/b20*D.momentum.capital:null)}],
+      fmt:v=>lakh(v), base:D.momentum.capital, area:true, extra:(i)=>`· ${H[i].n} stocks · exposure ${H[i].exposure_pct??'—'}%`, minPts:2, height:380, wide:true, log:true}));
+  const two = el('div',{class:'two', style:'margin-top:12px'});
+  const dd=[]; let pk=-1e18; for(const h of H){ pk=Math.max(pk,h.nav); dd.push((h.nav/pk-1)*100); }
+  two.append(lineChart({title:'Drawdown from peak (%)', dates:H.map(h=>h.date), series:[{name:'Drawdown', color:'var(--s7)', values:dd}], fmt:v=>v.toFixed(1)+'%', area:true, base:0, minPts:2, height:220, padTop:false}),
+             lineChart({title: isS4? 'Target exposure at each rebalance (%)':'Stocks held', dates:H.map(h=>h.date), series:[{name: isS4?'Exposure':'Held', color:'var(--s4)', values:H.map(h=> isS4? h.exposure_pct : h.n)}], fmt:v=> isS4? Math.round(v)+'%' : String(Math.round(v)), area:true, base:0, minPts:2, height:220, yMax: isS4?100:20, padBottom:false}));
+  s2.append(two); M.append(s2);
+  const s3 = el('section'); s3.append(secHead('3','Year by year','calendar-year returns of the book, its benchmark and the common yardstick'));
+  s3.append(tableCard(B.yearly, [{label:'Year', left:true, key:'year', desc:false}, {label:Sx.name, key:'port_pct'}, {label:U.benchmark, key:'bench_pct'}, {label:'Excess', key:'excess_pct'}, {label:D.bench2_short, key:'bench2_pct'}, {label:'Book value at year end', key:'nav_end'}, {label:'Positions closed', key:'trades'}, {label:'Wins', key:'wins'}, {label:'Avg exposure', key:'avg_exposure_pct'}],
+    r => { const tr=el('tr'); tr.append(td(r.year,'l'), pctCell(r.port_pct), pctCell(r.bench_pct), pctCell(r.excess_pct), pctCell(r.bench2_pct), td(fR(r.nav_end)), td(r.trades), td(r.wins), td(fPct(r.avg_exposure_pct,false))); return tr; }, 'No yearly data.', 'year', false));
+  M.append(s3);
+  const s4 = el('section'); s4.append(secHead('4','What the backtest holds today', `${B.holdings.length} stocks · ${lakh(m.invested_now)} invested · ${lakh(m.cash_now)} in the liquid fund`));
+  s4.append(tableCard(B.holdings, [{label:'Stock', left:true, key:'symbol'}, {label:'Sector', left:true, key:'industry'}, {label:'Shares', key:'shares'}, {label:'Avg entry ₹', key:'avg_entry'}, {label:'Since', key:'entry_date'}, {label:'LTP ₹', key:'ltp'}, {label:'Value ₹', key:'value'}, {label:'Weight', key:'weight_pct'}, {label:'P&L %', key:'pnl_pct'}, {label:'Rank today', key:'rank_now', desc:false}],
+    r => { const tr=el('tr'); tr.append(symCell(r), td(r.industry,'l'), td(inr.format(r.shares)), td(fP(r.avg_entry)), td(r.entry_date), td(fP(r.ltp)), td(fR(r.value)), td(fPct(r.weight_pct,false)), pctCell(r.pnl_pct), td(r.rank_now ?? '—')); return tr; }, 'No holdings.', 'weight_pct', true));
+  M.append(s4);
+  const s5 = el('section'); s5.append(secHead('5','Trade log', `${B.trades.length} closed positions since ${m.start}`));
+  const tb = el('div',{class:'toolbar'}); const inp = el('input',{placeholder:'Filter symbol / reason…', type:'search'}); const holder = el('div'); let q='';
+  const draw = () => { const rows = B.trades.filter(t=>!q || t.symbol.toLowerCase().includes(q) || (t.reason||'').toLowerCase().includes(q));
+    holder.replaceChildren(tableCard(rows, [{label:'Stock', left:true, key:'symbol'}, {label:'Entry', key:'entry_date'}, {label:'Avg entry ₹', key:'avg_entry'}, {label:'Exit', key:'exit_date'}, {label:'Avg exit ₹', key:'avg_exit'}, {label:'Shares', key:'shares'}, {label:'Invested ₹', key:'invested'}, {label:'Months', key:'months'}, {label:'Return %', key:'return_pct'}, {label:'Net P&L ₹', key:'net_pnl'}, {label:'Costs ₹', key:'costs'}, {label:'Reason', key:'reason', left:true}],
+      r => { const tr=el('tr'); tr.append(el('td',{class:'sym'}, r.symbol), td(r.entry_date), td(fP(r.avg_entry)), td(r.exit_date), td(fP(r.avg_exit)), td(inr.format(r.shares)), td(fR(r.invested)), td(r.months), pctCell(r.return_pct), td(fR(r.net_pnl), cls(r.net_pnl)), td(fR(r.costs)), td(r.reason,'l')); return tr; }, 'No trades match.', 'exit_date', true)); };
+  inp.addEventListener('input', ()=>{ q=inp.value.trim().toLowerCase(); draw(); }); tb.append(inp); s5.append(tb, holder); draw(); M.append(s5);
+}
+
+function renderPortfolio(P, M){
+  M.replaceChildren();
   const D = DATA, pf = P.performance;
 
   const s1 = el('section');
-  s1.append(secHead('1', `Signals — ${P.name}`, `${P.universe_label} (${P.universe_size} stocks) · ranking ${P.ranking?'ON':'OFF'} · ₹${inr.format(P.capital)} committed ${P.inception}`));
+  s1.append(secHead('1', `Signals — ${P.display}`, `${P.universe_label} (${P.universe_size} stocks) · ranking ${P.ranking?'ON':'OFF'} · ₹${inr.format(P.capital)} committed ${P.inception}`));
   s1.append(el('h3', {}, `Exit signals — stops / targets hit (this month${P.exits.some(e=>e.today)?', today highlighted':''})`));
   s1.append(tableCard(P.exits, [
       {label:'Stock', left:true, key:'symbol'}, {label:'Action', key:'type'}, {label:'Date', key:'date'}, {label:'Reason', key:'reason', left:true},
@@ -315,6 +576,7 @@ function renderPortfolio(P){
     kpi(fPct(pf.return_pct), 'Portfolio return', pf.cagr_pct!=null? `CAGR ${fPct(pf.cagr_pct)}` : 'absolute since inception', signCol(pf.return_pct)),
     kpi(fPct(pf.bench_return_pct), P.benchmark, pf.bench_cagr_pct!=null? `CAGR ${fPct(pf.bench_cagr_pct)}` : (pf.bench_level? `level ${fP(pf.bench_level)}`:'unavailable'), signCol(pf.bench_return_pct)),
     kpi(fPct(pf.alpha_pct), 'Excess return', 'portfolio − benchmark', signCol(pf.alpha_pct)),
+    kpi(fPct(pf.bench2_return_pct), DATA.bench2_short, 'common yardstick', signCol(pf.bench2_return_pct)),
     kpi(`${pf.nav? (pf.invested/pf.nav*100).toFixed(0):0}% / ${pf.nav? (pf.cash/pf.nav*100).toFixed(0):0}%`, 'Invested / Cash', `${lakh(pf.invested)} in ${pf.open_positions} stocks · ${lakh(pf.cash)} in Nifty ETF`, 'cyan'),
     kpi(fPct(pf.max_dd_pct,false), 'Max drawdown', 'on daily NAV', pf.max_dd_pct<0?'rose':''),
   );
@@ -322,8 +584,9 @@ function renderPortfolio(P){
   const H = P.history.filter(h=>h.nav!=null);
   const nav0 = H.length? H[0].nav : 1, b0 = H.find(h=>h.bench!=null)?.bench;
   const grid = el('div', {class:'perf'});
-  grid.append(lineChart({title:`Growth of 100 — ${P.name} vs ${P.benchmark}`, dates:H.map(h=>h.date),
-      series:[{name:P.name, color:'var(--s1)', values:H.map(h=>h.nav/nav0*100)}, {name:P.benchmark, color:'var(--s2)', values:H.map(h=>(b0&&h.bench!=null)?h.bench/b0*100:null)}],
+  const b20 = H.find(h=>h.bench2!=null)?.bench2;
+  grid.append(lineChart({title:`Growth of 100 — ${P.display} vs ${P.benchmark} and ${DATA.bench2_short}`, dates:H.map(h=>h.date),
+      series:[{name:P.display, color:'var(--s1)', values:H.map(h=>h.nav/nav0*100)}, {name:P.benchmark, color:'var(--s2)', values:H.map(h=>(b0&&h.bench!=null)?h.bench/b0*100:null)}, {name:DATA.bench2_short, color:'var(--s3)', values:H.map(h=>(b20&&h.bench2!=null)?h.bench2/b20*100:null)}],
       fmt:v=>v.toFixed(2), base:100, extra:(i)=>`(${fR(H[i].nav)})`, minPts:2}),
     el('div', {class:'stats'},
       el('div',{}, el('span',{},'Realised P&L (net of costs)'), el('span',{class:cls(pf.realised)}, fR(pf.realised))),
@@ -406,11 +669,10 @@ function openBookTable(rows, withWr){
     'No open positions.', 'to_stop_pct', false);
 }
 
-// =============================================================== BACKTEST VIEW
-function renderBacktest(P){
-  const M = $('#main'); M.replaceChildren();
+function renderBacktest(P, M){
+  M.replaceChildren();
   const B = P.backtest, m = B.metrics;
-  const hero = el('div',{class:'hero'}, el('b',{}, `${P.name} · ${P.universe_label}`), ` — had this strategy been run from `, el('b',{}, B.start), ` with ₹26,00,000 (first entries on the ${B.first_signal_month} close), the same rules, ${DATA.strategy.slots} slots, ranking ${P.ranking?'ON':'OFF'} and every charge, the book would be worth `, el('b',{}, fR(m.final_value)), ` today (${B.as_of}), marked to market on live prices — a CAGR of `, el('b',{}, fPct(m.cagr_pct,false)), ` over ${B.years} years versus `, el('b',{}, m.bench_cagr_pct!=null? fPct(m.bench_cagr_pct,false):'n/a'), ` for the ${P.benchmark}.`);
+  const hero = el('div',{class:'hero'}, el('b',{}, `${P.display} · ${P.universe_label}`), ` — had this strategy been run from `, el('b',{}, B.start), ` with ₹26,00,000 (first entries on the ${B.first_signal_month} close), the same rules, ${DATA.strategy.slots} slots, ranking ${P.ranking?'ON':'OFF'} and every charge, the book would be worth `, el('b',{}, fR(m.final_value)), ` today (${B.as_of}), marked to market on live prices — a CAGR of `, el('b',{}, fPct(m.cagr_pct,false)), ` over ${B.years} years versus `, el('b',{}, m.bench_cagr_pct!=null? fPct(m.bench_cagr_pct,false):'n/a'), ` for the ${P.benchmark} and `, el('b',{}, m.bench2_cagr_pct!=null? fPct(m.bench2_cagr_pct,false):'n/a'), ` for the ${DATA.bench2_short}.`);
   M.append(hero);
 
   const s1 = el('section');
@@ -421,6 +683,7 @@ function renderBacktest(P){
     kpi(fPct(m.total_return_pct,false), 'Total return', `${B.years} years`, 'teal'),
     kpi(fPct(m.bench_cagr_pct,false), `${P.benchmark} CAGR`, B.bench_from && B.bench_from > B.start ? `from ${B.bench_from}` : 'same window', 'cyan'),
     kpi(fPct(m.excess_cagr_pct), 'Excess CAGR', 'strategy − benchmark', signCol(m.excess_cagr_pct)),
+    kpi(fPct(m.bench2_cagr_pct,false), `${DATA.bench2_short} CAGR`, m.excess_bench2_pct!=null? `excess ${fPct(m.excess_bench2_pct)}`:'', 'violet'),
     kpi(fPct(m.max_dd_pct,false), 'Max drawdown', 'monthly NAV', 'rose'),
     kpi(fN(m.sharpe), 'Sharpe', 'monthly returns, rf = 0', ''),
     kpi(fR(m.net_profit), 'Net profit', 'after all charges', 'green'),
@@ -445,8 +708,9 @@ function renderBacktest(P){
   s2.append(secHead('2', 'Growth of capital', `₹${inr.format(B.capital)} committed ${B.start}, marked to market on monthly closes and net of every charge; benchmark scaled to the same starting capital`));
   const H = B.history;
   const b0 = H.find(h=>h.bench!=null)?.bench;
-  s2.append(lineChart({title:`${P.name} vs ${P.benchmark}`, dates:H.map(h=>h.date),
-    series:[{name:P.name, color:'var(--s1)', values:H.map(h=>h.nav)}, {name:P.benchmark, color:'var(--s2)', values:H.map(h=>(b0&&h.bench!=null)? h.bench/b0*B.capital : null)}],
+  const b20 = H.find(h=>h.bench2!=null)?.bench2;
+  s2.append(lineChart({title:`${P.display} vs ${P.benchmark} and ${DATA.bench2_short}`, dates:H.map(h=>h.date),
+    series:[{name:P.display, color:'var(--s1)', values:H.map(h=>h.nav)}, {name:P.benchmark, color:'var(--s2)', values:H.map(h=>(b0&&h.bench!=null)? h.bench/b0*B.capital : null)}, {name:DATA.bench2_short, color:'var(--s3)', values:H.map(h=>(b20&&h.bench2!=null)? h.bench2/b20*B.capital : null)}],
     fmt:v=>lakh(v), base:B.capital, area:true, extra:(i)=>`· ${H[i].n} stocks held`, minPts:2, height:380, wide:true}));
   const two = el('div',{class:'two', style:'margin-top:12px'});
   two.append(lineChart({title:'Drawdown from peak (%)', dates:H.map(h=>h.date), series:[{name:'Drawdown', color:'var(--rose)', values:H.map(h=>h.dd)}], fmt:v=>v.toFixed(1)+'%', area:true, base:0, minPts:2, height:220, padTop:false}),
@@ -457,9 +721,9 @@ function renderBacktest(P){
   const s3 = el('section');
   s3.append(secHead('3', 'Year by year', 'calendar-year returns of the strategy book and the benchmark'));
   s3.append(tableCard(B.yearly, [
-      {label:'Year', left:true, key:'year', desc:false}, {label:`${P.name}`, key:'port_pct'}, {label:P.benchmark, key:'bench_pct'}, {label:'Excess', key:'excess_pct'},
+      {label:'Year', left:true, key:'year', desc:false}, {label:`${P.display}`, key:'port_pct'}, {label:P.benchmark, key:'bench_pct'}, {label:'Excess', key:'excess_pct'}, {label:DATA.bench2_short, key:'bench2_pct'},
       {label:'Book value at year end', key:'nav_end'}, {label:'Trades closed', key:'trades'}, {label:'Wins', key:'wins'}, {label:'Max held', key:'max_held'}],
-    r => { const tr=el('tr'); tr.append(td(r.year,'l'), pctCell(r.port_pct), pctCell(r.bench_pct), pctCell(r.excess_pct), td(fR(r.nav_end)), td(r.trades), td(r.wins), td(r.max_held)); return tr; },
+    r => { const tr=el('tr'); tr.append(td(r.year,'l'), pctCell(r.port_pct), pctCell(r.bench_pct), pctCell(r.excess_pct), pctCell(r.bench2_pct), td(fR(r.nav_end)), td(r.trades), td(r.wins), td(r.max_held)); return tr; },
     'No yearly data.', 'year', false));
   M.append(s3);
 
@@ -484,21 +748,28 @@ function renderBacktest(P){
   M.append(s5);
 }
 
-// =============================================================== generic line chart (SVG, hover crosshair)
-function lineChart({title, dates, series, fmt, base, area=false, extra, minPts=2, height=280, yMax, wide=false, padTop=true, padBottom=true}){
+function lineChart({title, dates, series, fmt, base, area=false, extra, minPts=2, height=280, yMax, wide=false, padTop=true, padBottom=true, log=false}){
   const card = el('div', {class:'chart'});
   card.append(el('div', {class:'t'}, el('b', {}, title), el('div', {class:'legend'}, ...series.map(s=>el('span',{}, el('i',{style:`background:${s.color}`}), s.name)))));
   const n = dates.length;
   if(n < minPts){ card.append(el('div',{class:'empty'}, 'The curve appears once there are at least two data points.')); return card; }
   const W=wide?1240:760, Hh=height, pl=wide?70:58, pr=14, pt=14, pb=28;
   const vals = series.flatMap(s=>s.values).filter(v=>v!=null);
-  let lo=Math.min(...vals), hi=Math.max(...vals); if(yMax!=null) hi=Math.max(hi,yMax); if(base!=null){ lo=Math.min(lo,base); hi=Math.max(hi,base);} const pad=(hi-lo)*0.06||1; if(padBottom) lo-=pad; if(padTop) hi+=pad;
+  const useLog = log && vals.every(v=>v>0);
+  const T = useLog ? Math.log : (v=>v), Ti = useLog ? Math.exp : (v=>v);
+  let lo=Math.min(...vals), hi=Math.max(...vals); if(yMax!=null) hi=Math.max(hi,yMax); if(base!=null){ lo=Math.min(lo,base); hi=Math.max(hi,base);}
+  lo=T(lo); hi=T(hi); const pad=(hi-lo)*0.06||1; if(padBottom) lo-=pad; if(padTop) hi+=pad;
   const x = i => pl + (W-pl-pr) * (n===1?0:i/(n-1));
-  const y = v => pt + (Hh-pt-pb) * (1 - (v-lo)/(hi-lo));
+  const y = v => pt + (Hh-pt-pb) * (1 - (T(v)-lo)/(hi-lo));
   const ns = (t, a) => { const e=document.createElementNS('http://www.w3.org/2000/svg', t); for(const [k,v] of Object.entries(a)) e.setAttribute(k,v); return e; };
   const svg = ns('svg', {viewBox:`0 0 ${W} ${Hh}`});
-  const ticks = 4;
-  for(let k=0;k<=ticks;k++){ const v = lo + (hi-lo)*k/ticks; svg.append(ns('line',{x1:pl,x2:W-pr,y1:y(v),y2:y(v),stroke:'var(--border)','stroke-width':1}));
+  let tickVals;
+  if(useLog){ tickVals=[]; const a=Math.exp(lo), b=Math.exp(hi); let e=Math.pow(10, Math.floor(Math.log10(a)));
+    while(e<=b){ for(const m of [1,2,5]){ const v=m*e; if(v>=a && v<=b) tickVals.push(v); } e*=10; }
+    if(tickVals.length>7){ const step=Math.ceil(tickVals.length/7); tickVals=tickVals.filter((_,i)=>i%step===0); }
+    if(tickVals.length<2) tickVals=[0,1,2,3,4].map(k=>Ti(lo+(hi-lo)*k/4)); }
+  else tickVals=[0,1,2,3,4].map(k=>lo+(hi-lo)*k/4);
+  for(const v of tickVals){ svg.append(ns('line',{x1:pl,x2:W-pr,y1:y(v),y2:y(v),stroke:'var(--border)','stroke-width':1}));
     const t = ns('text',{x:pl-8,y:y(v)+4,'text-anchor':'end',fill:'var(--text-3)','font-size':11}); t.textContent=fmt(v); svg.append(t); }
   if(base!=null) svg.append(ns('line',{x1:pl,x2:W-pr,y1:y(base),y2:y(base),stroke:'var(--border-2)','stroke-dasharray':'3 3'}));
   const nx = Math.min(7, n); for(let k=0;k<nx;k++){ const i=Math.round((n-1)*k/(nx-1||1)); const t=ns('text',{x:x(i),y:Hh-8,'text-anchor':k===0?'start':k===nx-1?'end':'middle',fill:'var(--text-3)','font-size':11}); t.textContent = n>40? dates[i].slice(0,7) : dates[i].slice(5); svg.append(t); }
@@ -508,7 +779,7 @@ function lineChart({title, dates, series, fmt, base, area=false, extra, minPts=2
     if(pts.length<2) return;
     const d = pts.map((p,k)=>`${k?'L':'M'}${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(' ');
     if(area && ri===series.length-1){ const gid='g'+Math.random().toString(36).slice(2); const g=ns('linearGradient',{id:gid,x1:0,y1:0,x2:0,y2:1}); g.append(ns('stop',{offset:'0%','stop-color':s.color,'stop-opacity':.35}), ns('stop',{offset:'100%','stop-color':s.color,'stop-opacity':0})); defs.append(g);
-      const yb = y(base!=null ? base : lo); svg.append(ns('path',{d:`${d} L${pts[pts.length-1][0].toFixed(1)},${yb.toFixed(1)} L${pts[0][0].toFixed(1)},${yb.toFixed(1)} Z`, fill:`url(#${gid})`})); }
+      const yb = y(base!=null ? base : Ti(lo)); svg.append(ns('path',{d:`${d} L${pts[pts.length-1][0].toFixed(1)},${yb.toFixed(1)} L${pts[0][0].toFixed(1)},${yb.toFixed(1)} Z`, fill:`url(#${gid})`})); }
     svg.append(ns('path',{d, fill:'none', stroke:s.color, 'stroke-width':2, 'stroke-linejoin':'round'}));
   });
   const cross = ns('line',{x1:0,x2:0,y1:pt,y2:Hh-pb,stroke:'var(--text-3)','stroke-width':1,opacity:0});
@@ -527,30 +798,23 @@ function lineChart({title, dates, series, fmt, base, area=false, extra, minPts=2
 }
 
 // ---------------------------------------------------------------- theme toggle (visual only — no data changes)
-function applyTheme(t){ document.documentElement.setAttribute('data-theme', t); $('#themeLabel').textContent = t==='light' ? 'Light' : 'Dark'; try{ localStorage.setItem('as_theme', t); }catch(e){} }
-applyTheme((()=>{ try{ return localStorage.getItem('as_theme') || 'dark'; }catch(e){ return 'dark'; } })());
+function applyTheme(t){ document.documentElement.setAttribute('data-theme', t); $('#themeLabel').textContent = t==='light' ? 'Light' : 'Dark'; try{ localStorage.setItem('fs_theme', t); }catch(e){} }
+applyTheme((()=>{ try{ return localStorage.getItem('fs_theme') || localStorage.getItem('as_theme') || 'dark'; }catch(e){ return 'dark'; } })());
 $('#theme').addEventListener('click', ()=> applyTheme(document.documentElement.getAttribute('data-theme')==='light' ? 'dark' : 'light'));
 
-// ---------------------------------------------------------------- refresh: re-read the latest GitHub build and say what happened
-// Build schedule (IST): every 15 min 09:30–15:30 Mon–Fri, 15:45 Mon–Fri, 18:00 every day. GitHub's scheduler can run 5–20 min late.
-function nowIST(){ return new Date(Date.now() + 5.5*3600e3); }              // UTC-shifted clock; read fields with getUTC*
+// ---------------------------------------------------------------- refresh with feedback
+function nowIST(){ return new Date(Date.now() + 5.5*3600e3); }
 function nextBuildIST(){
   const n = nowIST(); const dow = n.getUTCDay(); const mins = n.getUTCHours()*60 + n.getUTCMinutes();
-  const slots = [];
-  if(dow>=1 && dow<=5){ for(let m=9*60+30; m<=15*60+30; m+=15) slots.push(m); slots.push(15*60+45); }
-  slots.push(18*60);
-  const nxt = slots.find(m=>m>mins);
-  const d = new Date(n); if(nxt==null){ d.setUTCDate(d.getUTCDate()+1); const dd=d.getUTCDay(); d.setUTCHours(dd>=1&&dd<=5?9:18, dd>=1&&dd<=5?30:0, 0, 0); } else d.setUTCHours(Math.floor(nxt/60), nxt%60, 0, 0);
-  const pad = x=>String(x).padStart(2,'0'); const sameDay = d.getUTCDate()===n.getUTCDate();
-  return `${sameDay?'today':'tomorrow'} ${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())} IST`;
+  const slots = []; if(dow>=1 && dow<=5){ for(let m=9*60+30; m<=15*60+30; m+=15) slots.push(m); slots.push(15*60+45); } slots.push(18*60);
+  const nxt = slots.find(m=>m>mins); const d = new Date(n);
+  if(nxt==null){ d.setUTCDate(d.getUTCDate()+1); const dd=d.getUTCDay(); d.setUTCHours(dd>=1&&dd<=5?9:18, dd>=1&&dd<=5?30:0, 0, 0); } else d.setUTCHours(Math.floor(nxt/60), nxt%60, 0, 0);
+  const pad = x=>String(x).padStart(2,'0'); return `${d.getUTCDate()===n.getUTCDate()?'today':'tomorrow'} ${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())} IST`;
 }
 let toastT; function toast(html){ const t=$('#toast'); t.innerHTML=html; t.style.display='block'; clearTimeout(toastT); toastT=setTimeout(()=>{ t.style.display='none'; }, 6000); }
 async function refreshNow(){
-  const before = DATA && DATA.generated_at_utc;
-  const btn = $('#refresh'); btn.disabled = true; btn.textContent = '↻ Checking…';
-  await load();
-  btn.disabled = false; btn.textContent = '↻ Refresh now';
-  if(!DATA) return;
+  const before = DATA && DATA.generated_at_utc; const btn = $('#refresh'); btn.disabled = true; btn.textContent = '↻ Checking…';
+  await load(); btn.disabled = false; btn.textContent = '↻ Refresh now'; if(!DATA) return;
   const built = DATA.generated_at_ist.slice(11,16);
   if(DATA.generated_at_utc !== before) toast(`<b>Updated.</b> Showing the build from <b>${built} IST</b> (${DATA.market_status}). Next scheduled build ≈ ${nextBuildIST()}.`);
   else toast(`No newer build yet — latest is <b>${built} IST</b> (${DATA.market_status}). GitHub rebuilds every 15 min in market hours; next ≈ ${nextBuildIST()}. Prices come from Yahoo with a ~15 min delay.`);
