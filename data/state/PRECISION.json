@@ -2,7 +2,7 @@
  "portfolio": "PRECISION",
  "inception": "2026-08-31",
  "capital": 2600000.0,
- "cash_units": 42.62245177933419,
+ "cash_units": 44.22005277614052,
  "ranking": true,
  "created": "2026-09-04T03:09:06.855126+05:30",
  "version": 2,
@@ -841,22 +841,22 @@
    "entry_date": "2026-08-31",
    "entry": 1875.0,
    "qty": 34,
-   "qty_open": 34,
+   "qty_open": 0,
    "stop": 1593.75,
    "target": 2437.5,
    "scaled": false,
    "score": 19.644165298664802,
    "rank": 1,
-   "status": "open",
-   "exit_date": null,
-   "exit_price": null,
-   "reason": null,
-   "realised": 0.0,
+   "status": "closed",
+   "exit_date": "2026-10-14",
+   "exit_price": 1065.0,
+   "reason": "Stop (gap)",
+   "realised": -27677.073918799997,
    "scale_date": null,
    "scale_price": null,
    "buy_value": 63750.0,
    "buy_costs": 75.83253749999999,
-   "sell_costs": 0.0
+   "sell_costs": 61.2413813
   }
  ],
  "events": [
@@ -1403,6 +1403,14 @@
    "price": 1875.0,
    "qty": 34,
    "note": "stop 1593.75 target 2437.50"
+  },
+  {
+   "date": "2026-10-14",
+   "type": "SELL",
+   "symbol": "POLICYBZR",
+   "price": 1065.0,
+   "qty": 34,
+   "note": "Stop (gap)"
   }
  ],
  "history": {
@@ -1605,43 +1613,31 @@
   "2026-10-12": {
    "nav": 1476995.74,
    "bench": 21620.5,
-   "bench2": 11345.700770156276,
+   "bench2": 11430.226551426871,
    "cash": 953180.79,
    "inv": 523814.95
   },
   "2026-10-13": {
    "nav": 1502265.2,
-   "bench": 21620.5,
-   "bench2": 11345.700770156276,
+   "bench": 21829.400390625,
+   "bench2": 11430.226551426871,
    "cash": 968465.18,
    "inv": 533800.01
+  },
+  "2026-10-14": {
+   "nav": 1492757.65,
+   "bench": 21821.44921875,
+   "bench2": 11376.437484511136,
+   "cash": 1000562.73,
+   "inv": 492194.92
   }
  },
  "signals_by_month": {
-  "2026-08": [
-   {
-    "symbol": "POLICYBZR",
-    "name": "PB Fintech Ltd.",
-    "close": 1875.0,
-    "score": 19.644165298664802,
-    "wr": -16.229508196721312,
-    "ema5": 1708.3020355184203,
-    "ema15": 1667.5532861972547,
-    "ema50": 1427.8189256066335,
-    "date": "2026-08-31",
-    "rank": 1,
-    "size": 64228.24,
-    "stop": 1593.75,
-    "target": 2437.5,
-    "status": "Taken",
-    "qty": 34,
-    "position_id": "POLICYBZR-0037"
-   }
-  ],
+  "2026-08": [],
   "2026-09": []
  },
  "last_processed_date": "2026-10-13",
  "last_signal_month": "2026-09",
  "seq": 37,
- "last_run": "2026-10-14T00:58:42.275412+05:30"
+ "last_run": "2026-10-14T14:40:56.509889+05:30"
 }
