@@ -2,7 +2,7 @@
  "portfolio": "CORE",
  "inception": "2026-08-31",
  "capital": 2600000.0,
- "cash_units": 85.63699151712652,
+ "cash_units": 89.11813549229936,
  "ranking": false,
  "created": "2026-09-04T03:09:06.855126+05:30",
  "version": 2,
@@ -450,22 +450,22 @@
    "entry_date": "2026-08-31",
    "entry": 9445.0,
    "qty": 10,
-   "qty_open": 10,
+   "qty_open": 0,
    "stop": 8028.25,
    "target": 12278.5,
    "scaled": false,
    "score": 51.64182063821018,
    "rank": 1,
-   "status": "open",
-   "exit_date": null,
-   "exit_price": null,
-   "reason": null,
-   "realised": 0.0,
+   "status": "closed",
+   "exit_date": "2026-10-15",
+   "exit_price": 8028.25,
+   "reason": "SL Hit",
+   "realised": -14386.907175724999,
    "scale_date": null,
    "scale_price": null,
    "buy_value": 94450.0,
    "buy_costs": 112.3511085,
-   "sell_costs": 0.0
+   "sell_costs": 107.05606722499999
   }
  ],
  "events": [
@@ -756,6 +756,14 @@
    "price": 9445.0,
    "qty": 10,
    "note": "stop 8028.25 target 12278.50"
+  },
+  {
+   "date": "2026-10-15",
+   "type": "SELL",
+   "symbol": "POLYCAB",
+   "price": 8028.25,
+   "qty": 10,
+   "note": "SL Hit"
   }
  ],
  "history": {
@@ -965,16 +973,23 @@
   "2026-10-13": {
    "nav": 2305415.59,
    "bench": 23768.30078125,
-   "bench2": 11430.226551426871,
+   "bench2": 11384.121113484043,
    "cash": 1945839.37,
    "inv": 359576.22
   },
   "2026-10-14": {
    "nav": 2297057.7,
    "bench": 23688.44921875,
-   "bench2": 11357.226580026178,
+   "bench2": 11384.121113484043,
    "cash": 1937339.9,
    "inv": 359717.8
+  },
+  "2026-10-15": {
+   "nav": 2328878.81,
+   "bench": 24022.25,
+   "bench2": 11341.858589259286,
+   "cash": 2052510.94,
+   "inv": 276367.87
   }
  },
  "signals_by_month": {
@@ -984,5 +999,5 @@
  "last_processed_date": "2026-10-14",
  "last_signal_month": "2026-09",
  "seq": 20,
- "last_run": "2026-10-14T23:00:59.908792+05:30"
+ "last_run": "2026-10-15T14:13:38.228147+05:30"
 }

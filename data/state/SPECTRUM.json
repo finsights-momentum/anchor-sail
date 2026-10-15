@@ -2,7 +2,7 @@
  "portfolio": "SPECTRUM",
  "inception": "2026-08-31",
  "capital": 2600000.0,
- "cash_units": 0.004190180116266429,
+ "cash_units": 0.39599139161377594,
  "ranking": true,
  "created": "2026-09-04T03:09:06.855126+05:30",
  "version": 2,
@@ -1485,22 +1485,22 @@
    "entry_date": "2026-08-31",
    "entry": 9445.0,
    "qty": 1,
-   "qty_open": 1,
+   "qty_open": 0,
    "stop": 8028.25,
    "target": 12278.5,
    "scaled": false,
    "score": 51.64182063821018,
    "rank": 1,
-   "status": "open",
-   "exit_date": null,
-   "exit_price": null,
-   "reason": null,
-   "realised": 0.0,
+   "status": "closed",
+   "exit_date": "2026-10-15",
+   "exit_price": 8028.25,
+   "reason": "SL Hit",
+   "realised": -1459.9307175725,
    "scale_date": null,
    "scale_price": null,
    "buy_value": 9445.0,
    "buy_costs": 11.23511085,
-   "sell_costs": 0.0
+   "sell_costs": 31.945606722500003
   },
   {
    "id": "POLICYBZR-0066",
@@ -1508,22 +1508,22 @@
    "entry_date": "2026-08-31",
    "entry": 1875.0,
    "qty": 1,
-   "qty_open": 1,
+   "qty_open": 0,
    "stop": 1593.75,
    "target": 2437.5,
    "scaled": false,
    "score": 19.644165298664802,
    "rank": 2,
-   "status": "open",
-   "exit_date": null,
-   "exit_price": null,
-   "reason": null,
-   "realised": 0.0,
+   "status": "closed",
+   "exit_date": "2026-10-15",
+   "exit_price": 1052.0999755859375,
+   "reason": "Stop (gap)",
+   "realised": -849.8240826516834,
    "scale_date": null,
    "scale_price": null,
    "buy_value": 1875.0,
    "buy_costs": 2.23036875,
-   "sell_costs": 0.0
+   "sell_costs": 24.69368948762085
   }
  ],
  "events": [
@@ -2382,6 +2382,22 @@
    "price": 1875.0,
    "qty": 1,
    "note": "stop 1593.75 target 2437.50"
+  },
+  {
+   "date": "2026-10-15",
+   "type": "SELL",
+   "symbol": "POLYCAB",
+   "price": 8028.25,
+   "qty": 1,
+   "note": "SL Hit"
+  },
+  {
+   "date": "2026-10-15",
+   "type": "SELL",
+   "symbol": "POLICYBZR",
+   "price": 1052.1,
+   "qty": 1,
+   "note": "Stop (gap)"
   }
  ],
  "history": {
@@ -2591,16 +2607,23 @@
   "2026-10-13": {
    "nav": 2297255.38,
    "bench": 22090.0,
-   "bench2": 11430.226551426871,
+   "bench2": 11384.121113484043,
    "cash": 95.21,
    "inv": 2297160.17
   },
   "2026-10-14": {
    "nav": 2282656.17,
    "bench": 22038.0,
-   "bench2": 11357.226580026178,
+   "bench2": 11384.121113484043,
    "cash": 94.79,
    "inv": 2282561.38
+  },
+  "2026-10-15": {
+   "nav": 2252338.02,
+   "bench": 22223.5,
+   "bench2": 11341.858589259286,
+   "cash": 9120.22,
+   "inv": 2243217.81
   }
  },
  "signals_by_month": {
@@ -2610,5 +2633,5 @@
  "last_processed_date": "2026-10-14",
  "last_signal_month": "2026-09",
  "seq": 66,
- "last_run": "2026-10-14T23:00:59.908792+05:30"
+ "last_run": "2026-10-15T14:13:38.228147+05:30"
 }
