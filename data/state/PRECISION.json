@@ -2,7 +2,7 @@
  "portfolio": "PRECISION",
  "inception": "2026-08-31",
  "capital": 2600000.0,
- "cash_units": 38.60284214555888,
+ "cash_units": 40.095390221575585,
  "ranking": true,
  "created": "2026-09-04T03:09:06.855126+05:30",
  "version": 2,
@@ -933,22 +933,22 @@
    "entry_date": "2026-08-31",
    "entry": 1875.0,
    "qty": 32,
-   "qty_open": 32,
+   "qty_open": 0,
    "stop": 1593.75,
    "target": 2437.5,
    "scaled": false,
    "score": 19.644165298664802,
    "rank": 1,
-   "status": "open",
-   "exit_date": null,
-   "exit_price": null,
-   "reason": null,
-   "realised": 0.0,
+   "status": "closed",
+   "exit_date": "2026-10-16",
+   "exit_price": 1079.4000244140625,
+   "reason": "Stop (gap)",
+   "realised": -25590.077217386133,
    "scale_date": null,
    "scale_price": null,
    "buy_value": 60000.0,
    "buy_costs": 71.3718,
-   "sell_costs": 0.0
+   "sell_costs": 59.50619863613281
   }
  ],
  "events": [
@@ -1559,6 +1559,14 @@
    "price": 1875.0,
    "qty": 32,
    "note": "stop 1593.75 target 2437.50"
+  },
+  {
+   "date": "2026-10-16",
+   "type": "SELL",
+   "symbol": "POLICYBZR",
+   "price": 1079.4,
+   "qty": 32,
+   "note": "Stop (gap)"
   }
  ],
  "history": {
@@ -1775,16 +1783,23 @@
   "2026-10-14": {
    "nav": 1399075.98,
    "bench": 21820.400390625,
-   "bench2": 11384.121113484043,
+   "bench2": 11357.226580026178,
    "cash": 873300.49,
    "inv": 525775.5
   },
   "2026-10-15": {
    "nav": 1414892.32,
    "bench": 21756.349609375,
-   "bench2": 11307.279694007433,
+   "bench2": 11357.226580026178,
    "cash": 887763.06,
    "inv": 527129.26
+  },
+  "2026-10-16": {
+   "nav": 1420902.66,
+   "bench": 21757.69921875,
+   "bench2": 11353.384399129185,
+   "cash": 926295.76,
+   "inv": 494606.89
   }
  },
  "signals_by_month": {
@@ -1794,5 +1809,5 @@
  "last_processed_date": "2026-10-15",
  "last_signal_month": "2026-09",
  "seq": 41,
- "last_run": "2026-10-15T22:47:00.090607+05:30"
+ "last_run": "2026-10-16T14:08:54.486414+05:30"
 }
