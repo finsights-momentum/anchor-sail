@@ -635,6 +635,19 @@ def main(mock: bool = False, offline: bool = False):
                 sp["state"] = "—"
             uni_rows.append(sp)
 
+        closed_trades = []
+        for p in book.positions:
+            if p["status"] != "closed":
+                continue
+            closed_trades.append({"symbol": p["symbol"], "name": names.get(p["symbol"], ""), "entry_date": p["entry_date"], "entry": fnum(p["entry"]),
+                                  "qty": p["qty"], "exit_date": p["exit_date"], "exit_price": fnum(p["exit_price"]), "reason": p["reason"], "scaled": bool(p["scaled"]),
+                                  "scale_date": p.get("scale_date"), "scale_price": fnum(p["scale_price"]) if p.get("scale_price") else None,
+                                  "pnl_pct": fnum((p["exit_price"] / p["entry"] - 1) * 100) if p["exit_price"] else None,
+                                  "realised": fnum(p["realised"]), "costs": fnum(p["buy_costs"] + p["sell_costs"]),
+                                  "buy_value": fnum(p["buy_value"]), "rank": p.get("rank"), "score": fnum(p.get("score")),
+                                  "months": (pd.Timestamp(p["exit_date"]).year - pd.Timestamp(p["entry_date"]).year) * 12 + pd.Timestamp(p["exit_date"]).month - pd.Timestamp(p["entry_date"]).month,
+                                  "days": (pd.Timestamp(p["exit_date"]) - pd.Timestamp(p["entry_date"])).days})
+        closed_trades.sort(key=lambda r: r["exit_date"], reverse=True)
         realised_total = sum(p["realised"] for p in book.positions if p["status"] == "closed")
         realised_total += sum(p["realised"] for p in book.positions if p["status"] == "open")   # scale-out cash
         unreal = sum((r["unrealised"] or 0) for r in open_pos)
@@ -657,7 +670,7 @@ def main(mock: bool = False, offline: bool = False):
             },
             "history": [{"date": k, "nav": v["nav"], "bench": v["bench"], "bench2": v.get("bench2")} for k, v in hist],
             "exits": exits, "entries": entries, "signal_month": sig_month,
-            "open_positions": open_pos, "watch_entry": wl_entry, "watch_exit": wl_exit,
+            "open_positions": open_pos, "closed_trades": closed_trades, "watch_entry": wl_entry, "watch_exit": wl_exit,
             "universe": uni_rows,
             "events": state["events"][-200:],
             "backtest": run_backtest(pname, uni, cfg["ranking"], monthly, entries_by_month, nsei_m, month_last_day,
