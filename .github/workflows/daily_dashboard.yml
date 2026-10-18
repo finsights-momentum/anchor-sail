@@ -7,6 +7,7 @@ on:
     - cron: "0,15,30,45 4-9 * * 1-5"   # every 15 min, 09:30–15:15 IST, Mon–Fri — live stop monitoring
     - cron: "0,15 10 * * 1-5"          # 15:30 and 15:45 IST Mon–Fri — closing bar
     - cron: "30 12 * * *"              # 18:00 IST every day — final end-of-day build
+    - cron: "17 * * * *"               # hourly, round the clock — keeps the news and global-market pages fresh outside NSE hours
 
 concurrency:
   group: anchor-sail-build
@@ -46,6 +47,9 @@ jobs:
 
       - name: Build dashboard data
         run: python engine/build.py 2>&1 | tee run.log
+
+      - name: Fetch news feeds (best effort)
+        run: python engine/news.py 2>&1 | tee -a run.log || echo "news step failed — dashboard still publishes" | tee -a run.log
 
       # The dashboard (docs/) is published straight to GitHub Pages from this run — data.json is
       # NOT committed any more, so 25 builds a day do not bloat the repository.
