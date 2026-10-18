@@ -4,8 +4,8 @@ on:
   workflow_dispatch:          # "Run workflow" button
   schedule:
     # Times are UTC. IST = UTC + 5:30. GitHub's scheduler may run 5–20 minutes late.
-    - cron: "0,15,30,45 4-9 * * 1-5"   # every 15 min, 09:30–15:15 IST, Mon–Fri — live stop monitoring
-    - cron: "0,15 10 * * 1-5"          # 15:30 and 15:45 IST Mon–Fri — closing bar
+    - cron: "*/5 3-9 * * 1-5"          # every 5 min, 08:30–15:25 IST, Mon–Fri — live stop monitoring & market snapshot
+    - cron: "0,5,10,15 10 * * 1-5"     # 15:30–15:45 IST Mon–Fri — closing bar
     - cron: "30 12 * * *"              # 18:00 IST every day — final end-of-day build
     - cron: "17 * * * *"               # hourly, round the clock — keeps the news and global-market pages fresh outside NSE hours
 
@@ -46,6 +46,9 @@ jobs:
             prices-
 
       - name: Build dashboard data
+        env:
+          DHAN_CLIENT_ID: ${{ secrets.DHAN_CLIENT_ID }}
+          DHAN_ACCESS_TOKEN: ${{ secrets.DHAN_ACCESS_TOKEN }}
         run: python engine/build.py 2>&1 | tee run.log
 
       - name: Fetch news feeds (best effort)
