@@ -38,7 +38,7 @@ INCEPTION_MONTH = os.environ.get("AS_INCEPTION_MONTH", "2026-08")   # capital co
 WARMUP_BARS = S.WR_LEN             # signals once %R(14) is computable (the reference treats indicators as valid when non-NaN)
 BACKTEST_START = "2016-01"         # backtest: capital committed at the previous month-end close, first entries on this month's close
 CLOSE_HHMM = (15, 35)              # after this IST time the day's bar is treated as final
-LEDGER_VERSION = 2                 # bump when the signal engine changes; ledgers with an older version are rebuilt
+LEDGER_VERSION = 3                 # bump when the signal engine changes; ledgers with an older version are rebuilt
                                    # deterministically from the inception close (only safe while the book is young)
 
 PORTFOLIOS = {
@@ -506,7 +506,7 @@ def main(mock: bool = False, offline: bool = False):
             # month-end entries on a completed month
             mk = month_key(d)
             if mk <= completed_key and d == month_last_day.get(mk) and mk >= INCEPTION_MONTH \
-                    and state.get("last_signal_month") != mk:
+                    and mk not in state["signals_by_month"]:
                 cands = [entries_by_month.get(mk, {})[s] for s in uni if s in entries_by_month.get(mk, {})]
                 closes_all = {s: float(prices[s].loc[d, "Close"]) for s in uni_set
                               if s in prices and d in prices[s].index}

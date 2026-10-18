@@ -282,8 +282,8 @@ class Book:
                      ranking: bool):
         """candidates: [{symbol, close, score, wr, ema5, ema15, ema50}] whose ticker-level entry fired
         on this completed month. closes: {symbol: close} for marking the corpus."""
-        if self.s.get("last_signal_month") == month_key:
-            return self.s["signals_by_month"].get(month_key, [])
+        if month_key in self.s["signals_by_month"]:                 # a month's entries are taken exactly once —
+            return self.s["signals_by_month"][month_key]            # never re-taken when the calendar is replayed
         held = self.held_symbols()
         cands = [c for c in candidates if c["symbol"] not in held]
         if ranking:
