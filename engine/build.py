@@ -722,6 +722,14 @@ def main(mock: bool = False, offline: bool = False):
                                          "max_dd_pct": bt["max_dd_pct"], "sharpe": bt["sharpe"], "win_rate_pct": bt["win_rate_pct"],
                                          "final_value": bt["final_value"], "trades": bt["closed_trades"]}})
 
+    # ---- market snapshot for the Live-markets page (Yahoo + optional Dhan)
+    from quotes import build_quotes  # noqa: E402  (engine/ is on sys.path)
+    try:
+        quotes = build_quotes(log=log, mock=mock)
+        warnings += quotes.get("warnings", [])
+    except Exception as e:  # noqa: BLE001
+        quotes = {"as_of_utc": None, "groups": {}, "sources": {"yahoo": f"failed: {type(e).__name__}", "dhan": "n/a"}, "warnings": []}
+        warnings.append(f"Market snapshot failed: {type(e).__name__}")
     payload = {
         "brand": BRAND,
         "generated_at_ist": now_ist.strftime("%Y-%m-%d %H:%M:%S IST"),
@@ -737,6 +745,7 @@ def main(mock: bool = False, offline: bool = False):
         "portfolios": out_portfolios,
         "momentum": momentum_out,
         "summary": summary,
+        "quotes": quotes,
         "bench2_label": mom30_label,
         "runtime_sec": round(time.time() - t0, 1),
     }
