@@ -235,7 +235,7 @@ table.hm td.e{background:var(--surface-2);opacity:.5}
     <div class="meta" id="meta"></div>
     <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
       <span class="mut" id="autoref" style="font-size:12px"></span>
-      <button id="refresh" title="Re-reads the latest build published by GitHub. Strategy data updates when GitHub rebuilds (every 15 min in market hours).">↻ Refresh now</button>
+      <button id="refresh" title="Re-reads the latest build published by GitHub. Strategy data updates when GitHub rebuilds (every 5 min in market hours).">↻ Refresh now</button>
       <button class="iconbtn" id="theme" title="Switch light / dark theme" aria-label="Switch theme">
         <svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
         <svg class="moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
@@ -315,19 +315,17 @@ function tvWidget(script, config, height){
   s.textContent = JSON.stringify({colorTheme: theme(), isTransparent:true, locale:'en', ...config});
   w.append(s); box.append(w); return box;
 }
-const TV = {
-  indiaIdx: [["NSE:NIFTY","Nifty 50"],["BSE:SENSEX","Sensex"],["NSE:BANKNIFTY","Bank Nifty"],["NSE:CNXFINANCE","Nifty Financial Services"],["NSE:CNXIT","Nifty IT"],["NSE:NIFTY_MID_SELECT","Nifty Midcap Select"],["NSE:CNXMIDCAP","Nifty Midcap 100"],["NSE:CNXSMALLCAP","Nifty Smallcap 100"],["NSE:CNX100","Nifty 100"],["NSE:CNX200","Nifty 200"],["NSE:CNX500","Nifty 500"],["NSE:INDIAVIX","India VIX"]],
-  indiaSect: [["NSE:CNXAUTO","Nifty Auto"],["NSE:CNXPHARMA","Nifty Pharma"],["NSE:CNXFMCG","Nifty FMCG"],["NSE:CNXMETAL","Nifty Metal"],["NSE:CNXENERGY","Nifty Energy"],["NSE:CNXREALTY","Nifty Realty"],["NSE:CNXPSUBANK","Nifty PSU Bank"],["NSE:CNXINFRA","Nifty Infra"],["NSE:CNXMEDIA","Nifty Media"],["NSE:CNXCONSUMPTION","Nifty Consumption"]],
-  worldIdx: [["TVC:SPX","S&P 500"],["TVC:NDQ","Nasdaq 100"],["TVC:DJI","Dow Jones"],["TVC:RUT","Russell 2000"],["TVC:UKX","FTSE 100"],["TVC:DEU40","DAX"],["TVC:CAC40","CAC 40"],["TVC:NI225","Nikkei 225"],["TVC:HSI","Hang Seng"],["TVC:SHCOMP","Shanghai Composite"],["TVC:KOSPI","KOSPI"],["TVC:STI","Straits Times"],["TVC:VIX","VIX"]],
-  mcx: [["MCX:GOLD1!","Gold (MCX)"],["MCX:GOLDM1!","Gold Mini"],["MCX:SILVER1!","Silver (MCX)"],["MCX:SILVERM1!","Silver Mini"],["MCX:CRUDEOIL1!","Crude Oil (MCX)"],["MCX:NATURALGAS1!","Natural Gas (MCX)"],["MCX:COPPER1!","Copper (MCX)"],["MCX:ZINC1!","Zinc (MCX)"],["MCX:ALUMINIUM1!","Aluminium (MCX)"],["MCX:LEAD1!","Lead (MCX)"]],
-  worldCmd: [["TVC:GOLD","Gold spot ($/oz)"],["TVC:SILVER","Silver spot ($/oz)"],["TVC:PLATINUM","Platinum"],["TVC:USOIL","WTI Crude"],["TVC:UKOIL","Brent Crude"],["NYMEX:NG1!","Natural Gas (Henry Hub)"],["COMEX:HG1!","Copper (COMEX)"],["CBOT:ZW1!","Wheat"],["CBOT:ZC1!","Corn"],["CBOT:ZS1!","Soybeans"],["ICEUS:KC1!","Coffee"],["ICEUS:SB1!","Sugar"],["ICEUS:CT1!","Cotton"]],
-  fx: [["FX_IDC:USDINR","USD / INR"],["FX_IDC:EURINR","EUR / INR"],["TVC:DXY","Dollar Index"],["FX:EURUSD","EUR / USD"],["FX:USDJPY","USD / JPY"],["TVC:US10Y","US 10Y yield"],["TVC:IN10Y","India 10Y yield"],["BITSTAMP:BTCUSD","Bitcoin"]],
+const TV = {   // TradingView's free widgets may only show CFD / FX / crypto data (exchange licensing) — NSE, MCX and TVC index symbols are blocked in widgets
+  indiaCfd: [["OANDA:IN50USD","India 50 (Nifty 50 CFD)"]],
+  worldIdx: [["FOREXCOM:SPXUSD","S&P 500"],["FOREXCOM:NSXUSD","Nasdaq 100"],["FOREXCOM:DJI","Dow Jones"],["CAPITALCOM:RTY","Russell 2000"],["FOREXCOM:UKXGBP","FTSE 100"],["CAPITALCOM:DE40","DAX 40"],["CAPITALCOM:FR40","CAC 40"],["CAPITALCOM:EU50","Euro Stoxx 50"],["CAPITALCOM:J225","Nikkei 225"],["CAPITALCOM:HK50","Hang Seng"],["CAPITALCOM:CN50","China A50"],["CAPITALCOM:AU200","ASX 200"],["CAPITALCOM:VIX","VIX"]],
+  worldCmd: [["OANDA:XAUUSD","Gold spot ($/oz)"],["OANDA:XAGUSD","Silver spot ($/oz)"],["OANDA:XPTUSD","Platinum ($/oz)"],["OANDA:XPDUSD","Palladium ($/oz)"],["OANDA:WTICOUSD","WTI Crude ($/bbl)"],["OANDA:BCOUSD","Brent Crude ($/bbl)"],["OANDA:NATGASUSD","Natural Gas"],["OANDA:XCUUSD","Copper ($/lb)"],["OANDA:WHEATUSD","Wheat"],["OANDA:CORNUSD","Corn"],["OANDA:SOYBNUSD","Soybeans"],["OANDA:SUGARUSD","Sugar"]],
+  fx: [["FX_IDC:USDINR","USD / INR"],["FX_IDC:EURINR","EUR / INR"],["FX_IDC:GBPINR","GBP / INR"],["FX_IDC:JPYINR","JPY / INR"],["CAPITALCOM:DXY","Dollar Index"],["FX:EURUSD","EUR / USD"],["FX:GBPUSD","GBP / USD"],["FX:USDJPY","USD / JPY"],["BITSTAMP:BTCUSD","Bitcoin"],["BITSTAMP:ETHUSD","Ethereum"]],
 };
 const tvSyms = list => list.map(([s,d])=>({name:s, displayName:d}));
 const tvTabs = list => list.map(([s,d])=>({s, d}));
 function renderTape(){
   const t = $('#tape'); t.replaceChildren();
-  const syms = [...TV.indiaIdx.slice(0,3), TV.indiaIdx[11], TV.worldIdx[0], TV.worldIdx[1], TV.worldIdx[7], TV.worldIdx[8], TV.mcx[0], TV.mcx[2], TV.mcx[4], TV.worldCmd[0], TV.worldCmd[4], TV.fx[0], TV.fx[2]];
+  const syms = [TV.indiaCfd[0], TV.worldIdx[0], TV.worldIdx[1], TV.worldIdx[2], TV.worldIdx[8], TV.worldIdx[9], TV.worldCmd[0], TV.worldCmd[1], TV.worldCmd[4], TV.worldCmd[5], TV.fx[0], TV.fx[4], TV.fx[8]];
   t.append(tvWidget('embed-widget-ticker-tape.js', {symbols: syms.map(([s,d])=>({proName:s, title:d})), showSymbolLogo:false, displayMode:'adaptive'}, 46));
 }
 
@@ -376,7 +374,7 @@ function render(){
   } else { location.hash='#overview'; return; }
   $('#foot').innerHTML = `<b>Anchor & Sail</b> (Bharat Wealth Portfolio, Precision, Frontier, Udaan): monthly bars · Williams %R(14) armed &lt; −40, trigger ≥ −20 · EMA 5 &gt; 15 &gt; 50 · stop −15% · target +30% (50% scale-out, stop to breakeven, then trails previous month's low) · 25 slots · size = corpus/25 · idle cash in Nifty 50 ETF · ₹26 L each.<br>
   <b>Alpha Leaders</b> (S1) and <b>Wealth Vriddhi</b> (S4+): monthly rebalance on the last session's close · momentum score = mean rank of 12-1m return, 6m return, 12m Sharpe · hold 20, keep names inside the top 30, max 5 per NSE sector, liquidity ≥ ₹5 cr/day · S4+ adds rising 200-DMA + below-median downside capture, 50% exposure when Nifty &lt; 200-DMA (×0.8 in a vol spike), 50/50 inverse-vol blend · idle cash in a 7% liquid fund · ₹10 L each.<br>
-  <b>Data freshness:</b> strategy signals, stops and books are recomputed by the engine every 15 minutes during NSE hours (09:30–15:45 IST) and hourly otherwise, on Yahoo Finance prices (≈15 min delayed); the ticker tape, Live-markets page and the live-quote panels are TradingView streams rendered in your browser (NSE real-time; MCX / global futures as per exchange policy). News feeds are refreshed on every build. All figures net of itemised delivery costs, before tax; universes are today's NSE index members applied to history (survivorship bias). Common yardstick: ${D.bench2_label}. Build time ${D.runtime_sec}s.`;
+  <b>Data freshness:</b> strategy signals, stops, books and the market snapshot are recomputed by the engine every 5 minutes during NSE hours (08:30–15:45 IST) and hourly otherwise, on Yahoo Finance prices (≈15 min delayed) — or Dhan prices for Indian indices and MCX when the Dhan secrets are configured. The ticker tape and the TradingView panels on the Live-markets page are real-time CFD / FX streams rendered in your browser; NSE, MCX and TradingView's own index symbols are not licensed for free widgets. News feeds are refreshed on every build. All figures net of itemised delivery costs, before tax; universes are today's NSE index members applied to history (survivorship bias). Common yardstick: ${D.bench2_label}. Build time ${D.runtime_sec}s.`;
   window.scrollTo(0,0);
 }
 function jumpBar(items){
@@ -439,29 +437,43 @@ function liveSummary(M, c){
   M.append(s);
 }
 
-// ---------------------------------------------------------------- LIVE MARKETS page (TradingView streams)
+// ---------------------------------------------------------------- LIVE MARKETS page (engine snapshot + TradingView CFD streams)
+function quoteTable(rows, {showExpiry=false}={}){
+  const cols = [{label:'Instrument', left:true, key:'name'}, {label:'Last', key:'last'}, {label:'Change', key:'chg'}, {label:'Change %', key:'chg_pct'}, {label:'Open', key:'open'}, {label:'High', key:'high'}, {label:'Low', key:'low'}, {label:'Prev close', key:'prev_close'}];
+  if(showExpiry) cols.push({label:'Contract', key:'expiry'});
+  cols.push({label:'As of', key:'time', left:true}, {label:'Source', key:'source', left:true});
+  return tableCard(rows, cols, r => { const tr=el('tr'); tr.append(el('td',{class:'sym'}, r.name, el('small',{}, r.symbol)), td(r.last==null?'—':inr2.format(r.last), 'strong'), td(r.chg==null?'—':(r.chg>0?'+':'')+inr2.format(r.chg), cls(r.chg)), pctCell(r.chg_pct), td(fP(r.open)), td(fP(r.high)), td(fP(r.low)), td(fP(r.prev_close)));
+    if(showExpiry) tr.append(td(r.expiry||'—')); tr.append(td(r.time||'—','l mut'), td(r.source,'l mut')); return tr; }, 'No data in this build.', null, false);
+}
 function renderMarkets(M){
   M.replaceChildren();
-  const D = DATA;
-  M.append(pageHead('Live markets', 'Indian and global indices, Indian (MCX) and global commodities, currencies and rates — streamed by TradingView into this page. Hover any row for the day\'s chart; click a symbol to open its full TradingView chart.'));
-  M.append(el('div',{class:'srcnote'}, el('span',{class:'pill live'},'LIVE'), 'NSE / BSE cash indices stream real-time; MCX and overseas futures follow each exchange\'s free-data policy (typically 10–15 min delay).', el('span',{class:'pill closed'}, `Engine snapshot: Nifty 50 ${fP(D.nifty.close)} (${fPct(D.nifty.chg_pct)}) as of ${D.data_date}`)));
+  const D = DATA, Q = D.quotes || {groups:{}, sources:{}}, G = Q.groups || {};
+  const asof = Q.as_of_utc ? new Date(Q.as_of_utc).toLocaleString('en-IN',{dateStyle:'medium', timeStyle:'short', timeZone:'Asia/Kolkata'}) + ' IST' : '—';
+  const dhanOn = Q.sources && Q.sources.dhan==='ok';
+  M.append(pageHead('Live markets', 'Indian and global indices, Indian (MCX) and world commodities, currencies and rates. Two layers: the engine snapshot (refreshed every build — 5 minutes in NSE hours) and TradingView real-time streams for the markets its free widgets are allowed to show.'));
+  M.append(el('div',{class:'srcnote'}, el('span',{class:'pill '+(D.market_status.startsWith('LIVE')?'live':'closed')}, D.market_status), el('span',{}, `Engine snapshot ${asof} · Indian indices ${dhanOn? 'from Dhan (real-time at fetch)':'from Yahoo (≈15 min delayed)'} · world indices, futures & FX from Yahoo`), el('span',{class:'pill '+(dhanOn?'live':'stale')}, dhanOn? 'DHAN FEED ON' : 'DHAN FEED OFF — MCX unavailable'),
+    el('span',{class:'pill live'}, 'TRADINGVIEW STREAMS'), el('span',{class:'mut'}, 'CFD / FX quotes update tick by tick; NSE, MCX and TVC index symbols are not licensed for free widgets, so those come from the engine snapshot.')));
   M.append(jumpBar([['1','Indian indices','mk-in'],['2','Global indices','mk-wd'],['3','Commodities — India (MCX)','mk-mcx'],['4','Commodities — world','mk-cmd'],['5','Currencies & rates','mk-fx'],['6','Charts','mk-ch']]));
-  const block = (n, id, title, desc, syms, h) => { const s = sec(n,id); s.append(secHead(n, title, desc)); s.append(tvWidget('embed-widget-market-quotes.js', {width:'100%', height:h, symbolsGroups:[{name:title, symbols:tvSyms(syms)}], showSymbolLogo:false}, h)); M.append(s); };
-  const g = el('div',{class:'tvgrid'});
-  const s1 = sec(1,'mk-in'); s1.append(secHead('1','Indian indices','benchmark and sector indices · NSE / BSE'));
-  s1.append(el('div',{class:'tvgrid'}, tvWidget('embed-widget-market-quotes.js', {width:'100%', height:520, symbolsGroups:[{name:'Benchmark indices', symbols:tvSyms(TV.indiaIdx)}], showSymbolLogo:false}, 520),
-                                        tvWidget('embed-widget-market-quotes.js', {width:'100%', height:520, symbolsGroups:[{name:'Sector indices', symbols:tvSyms(TV.indiaSect)}], showSymbolLogo:false}, 520)));
+  const s1 = sec(1,'mk-in'); s1.append(secHead('1','Indian indices', dhanOn? 'Dhan market quotes at the time of the build · benchmark and sector indices' : 'Yahoo Finance at the time of the build (≈15 min delayed) · benchmark and sector indices'));
+  s1.append(quoteTable(G.india||[]));
+  s1.append(el('h3',{}, 'Real-time proxy — TradingView CFD (India 50 tracks the Nifty 50; trades almost round the clock)'), tvWidget('embed-widget-market-quotes.js', {width:'100%', height:120, symbolsGroups:[{name:'India CFD', symbols:tvSyms(TV.indiaCfd)}], showSymbolLogo:false}, 120));
   M.append(s1);
-  block('2','mk-wd','Global indices','US, Europe and Asia', TV.worldIdx, 560);
-  const s3 = sec(3,'mk-mcx'); s3.append(secHead('3','Commodities — India (MCX)','front-month MCX futures · bullion, energy, base metals'));
-  const s4 = sec(4,'mk-cmd'); s4.append(secHead('4','Commodities — world','spot bullion, crude, gas, metals and agri futures'));
-  s3.append(tvWidget('embed-widget-market-quotes.js', {width:'100%', height:460, symbolsGroups:[{name:'MCX', symbols:tvSyms(TV.mcx)}], showSymbolLogo:false}, 460));
-  s4.append(tvWidget('embed-widget-market-quotes.js', {width:'100%', height:560, symbolsGroups:[{name:'World', symbols:tvSyms(TV.worldCmd)}], showSymbolLogo:false}, 560));
-  M.append(s3, s4);
-  block('5','mk-fx','Currencies & rates','rupee, dollar index, majors, bond yields', TV.fx, 380);
-  const s6 = sec(6,'mk-ch'); s6.append(secHead('6','Charts','one-day mini charts by group — switch the tab inside the panel'));
+  const s2 = sec(2,'mk-wd'); s2.append(secHead('2','Global indices','real-time CFD stream (TradingView) on the left · exchange index closes/levels from the engine snapshot on the right'));
+  s2.append(el('div',{class:'tvgrid'}, tvWidget('embed-widget-market-quotes.js', {width:'100%', height:560, symbolsGroups:[{name:'Index CFDs — real-time', symbols:tvSyms(TV.worldIdx)}], showSymbolLogo:false}, 560), quoteTable(G.world||[])));
+  M.append(s2);
+  const s3 = sec(3,'mk-mcx'); s3.append(secHead('3','Commodities — India (MCX)', 'front-month MCX futures · bullion, energy, base metals · source: Dhan market quotes'));
+  if((G.mcx||[]).length) s3.append(quoteTable(G.mcx, {showExpiry:true}));
+  else s3.append(el('div',{class:'hero'}, el('b',{}, 'MCX quotes need the Dhan feed.'), ' MCX does not license its data to Yahoo or to TradingView\'s free widgets, so the only clean source is your Dhan Data API. Add two repository secrets — ', el('b',{}, 'DHAN_CLIENT_ID'), ' and ', el('b',{}, 'DHAN_ACCESS_TOKEN'), ' — (Settings → Secrets and variables → Actions) and the next build fills this table with gold, silver, crude, natural gas, copper, zinc, aluminium, lead and nickel front-month futures, and switches the Indian indices above to Dhan prices. Until then, the world commodity prices below are the closest reference.'));
+  M.append(s3);
+  const s4 = sec(4,'mk-cmd'); s4.append(secHead('4','Commodities — world','real-time spot / CFD stream (TradingView) on the left · exchange futures from the engine snapshot on the right'));
+  s4.append(el('div',{class:'tvgrid'}, tvWidget('embed-widget-market-quotes.js', {width:'100%', height:520, symbolsGroups:[{name:'Spot & CFD — real-time', symbols:tvSyms(TV.worldCmd)}], showSymbolLogo:false}, 520), quoteTable(G.commodities||[])));
+  M.append(s4);
+  const s5 = sec(5,'mk-fx'); s5.append(secHead('5','Currencies & rates','rupee crosses, dollar index, majors, US 10-year yield, crypto'));
+  s5.append(el('div',{class:'tvgrid'}, tvWidget('embed-widget-market-quotes.js', {width:'100%', height:440, symbolsGroups:[{name:'FX & crypto — real-time', symbols:tvSyms(TV.fx)}], showSymbolLogo:false}, 440), quoteTable(G.fx||[])));
+  M.append(s5);
+  const s6 = sec(6,'mk-ch'); s6.append(secHead('6','Charts','one-day mini charts by group — switch the tab inside the panel (TradingView CFD streams)'));
   s6.append(tvWidget('embed-widget-market-overview.js', {width:'100%', height:620, dateRange:'1D', showChart:true, showSymbolLogo:false, showFloatingTooltip:true, plotLineColorGrowing:'rgba(45,212,191,1)', plotLineColorFalling:'rgba(251,113,133,1)', gridLineColor:'rgba(120,140,190,.12)', scaleFontColor:'rgba(163,177,207,1)', belowLineFillColorGrowing:'rgba(45,212,191,.12)', belowLineFillColorFalling:'rgba(251,113,133,.12)', belowLineFillColorGrowingBottom:'rgba(45,212,191,0)', belowLineFillColorFallingBottom:'rgba(251,113,133,0)', symbolActiveColor:'rgba(56,189,248,.14)',
-    tabs:[{title:'India', symbols:tvTabs(TV.indiaIdx.slice(0,8))}, {title:'World', symbols:tvTabs(TV.worldIdx.slice(0,10))}, {title:'MCX', symbols:tvTabs(TV.mcx.slice(0,8))}, {title:'Commodities', symbols:tvTabs(TV.worldCmd.slice(0,10))}, {title:'FX & rates', symbols:tvTabs(TV.fx)}]}, 620));
+    tabs:[{title:'India & world', symbols:tvTabs([...TV.indiaCfd, ...TV.worldIdx.slice(0,9)])}, {title:'Commodities', symbols:tvTabs(TV.worldCmd.slice(0,10))}, {title:'FX & crypto', symbols:tvTabs(TV.fx)}]}, 620));
   M.append(s6);
 }
 
@@ -482,7 +494,7 @@ function renderNews(C, M){
   M.append(pageHead('News', 'Indian market and stock news, stories on every stock held in the live books, global markets, and SEBI / RBI updates. Every headline opens the original article in a new browser tab.'));
   if(!NEWS){ M.append(el('div',{class:'empty'}, 'The news feed has not been published yet — it is generated by the same GitHub build as the strategy data. Run the workflow once and reload.')); return; }
   const when = new Date(NEWS.generated_at_utc).toLocaleString('en-IN',{dateStyle:'medium', timeStyle:'short', timeZone:'Asia/Kolkata'});
-  M.append(el('div',{class:'srcnote'}, el('span',{class:'pill live'}, 'FEEDS'), `fetched ${when} IST · ${timeAgo(NEWS.generated_at_utc)} · refreshed on every engine build (15 min in market hours, hourly otherwise)`, NEWS.failed && NEWS.failed.length? el('span',{class:'mut'}, `· ${NEWS.failed.length} feed${NEWS.failed.length>1?'s':''} unavailable this build`):null));
+  M.append(el('div',{class:'srcnote'}, el('span',{class:'pill live'}, 'FEEDS'), `fetched ${when} IST · ${timeAgo(NEWS.generated_at_utc)} · refreshed on every engine build (5 min in market hours, hourly otherwise)`, NEWS.failed && NEWS.failed.length? el('span',{class:'mut'}, `· ${NEWS.failed.length} feed${NEWS.failed.length>1?'s':''} unavailable this build`):null));
   const grid = el('div',{class:'newsgrid'}); const left = el('div'); const right = el('div');
   const body = el('div'); left.append(body);
   let q='';
@@ -856,7 +868,7 @@ function renderMomentumLive(Sx, U, M){
   const unreal = unrealisedOf(L.holdings);
   M.append(pageHead(Sx.name, `${Sx.style} · ${U.universe_label} · benchmark ${U.benchmark} · yardstick ${D.bench2_short}`, [{text:Sx.name, color}, {text:Sx.code}, {text:`LIVE since ${L.inception}`}]));
   M.append(jumpBar([['1','Live book & regime','st-book0'],['2','Current portfolio','st-book'],['3','Performance','st-perf'],['4','Exited trades & rebalances','st-exits'],['5','Next rebalance preview','st-watch'],['6','Universe','st-uni']]));
-  M.append(el('div',{class:'srcnote'}, el('span',{class:'pill '+(D.market_status.startsWith('LIVE')?'live':'closed')}, D.market_status), `Ranks, exposure and P&L recomputed by the engine at ${D.generated_at_ist.slice(11,16)} IST on Yahoo prices (≈15 min delayed) · rebalance orders are generated on the last session of the month at the close · the live-quote panel streams real-time NSE prices from TradingView`, el('button',{style:'padding:4px 10px;font-size:12px', onclick:()=>go('overview', Sx.code==='S1'?'S1':'S4PLUS', U.universe)}, 'Backtest & full report →')));
+  M.append(el('div',{class:'srcnote'}, el('span',{class:'pill '+(D.market_status.startsWith('LIVE')?'live':'closed')}, D.market_status), `Ranks, exposure and P&L recomputed by the engine at ${D.generated_at_ist.slice(11,16)} IST on Yahoo prices (≈15 min delayed) · rebuilt every 5 minutes during NSE hours · rebalance orders are generated on the last session of the month at the close`, el('button',{style:'padding:4px 10px;font-size:12px', onclick:()=>go('overview', Sx.code==='S1'?'S1':'S4PLUS', U.universe)}, 'Backtest & full report →')));
   const s1 = sec('1','st-book0');
   s1.append(secHead('1', `Live book — ${Sx.name} · ${U.universe_label}`, `${Sx.style} · ₹${inr.format(D.momentum.capital)} committed at the ${L.inception} close · rebalances on the last trading day of each month · next ≈ ${L.next_rebalance}`));
   const kp = el('div',{class:'kpis'});
@@ -885,7 +897,7 @@ function renderMomentumLive(Sx, U, M){
     r => { const tr=el('tr'); tr.append(symCell(r), td(r.industry,'l'), td(inr.format(r.shares)), td(fP(r.avg_entry)), td(r.entry_date), td(fP(r.ltp)), td(fR(r.value)), td(fPct(r.weight_pct,false)), pctCell(r.pnl_pct), td(fR(r.unrealised), cls(r.unrealised)),
         td(r.rank_now ?? '—'), td(fN(r.score_now,1)), el('td',{class:'l'}, r.rank_now==null? el('span',{class:'tag exit'},'INELIGIBLE') : r.rank_now<=D.momentum.rules.hold? el('span',{class:'tag entry'},'TOP 20') : r.in_buffer? el('span',{class:'tag scale'},'BUFFER 21–30') : el('span',{class:'tag exit'},'WOULD SELL'))); return tr; },
     L.started? 'No holdings (fully in the liquid fund).' : `The book starts with the first rebalance on the ${L.inception} close.`, 'weight_pct', true));
-  if(L.holdings.length){ s1b.append(el('h3',{}, 'Live quotes — TradingView (real-time NSE) for the current portfolio'), liveQuotes(L.holdings.map(h=>h.symbol))); }
+  s1b.append(el('div',{class:'note'}, `LTP, P&L and ranks above are from the engine build at ${D.generated_at_ist.slice(11,16)} IST (Yahoo, ≈15 min delayed, rebuilt every 5 minutes in market hours). NSE stock prices cannot be streamed into this page by TradingView's free widgets (exchange licensing).`));
   // last rebalance orders
   if(L.last_rebalance){
     s1b.append(el('h3',{}, `Last rebalance orders — ${L.last_rebalance.date} · exposure ${L.last_rebalance.exposure_pct}%${L.last_rebalance.derisk?' · DE-RISK':''}${L.last_rebalance.volspike?' · VOL SPIKE':''}`));
@@ -973,7 +985,7 @@ function renderPortfolio(P, M){
   const D = DATA, pf = P.performance, color = SCOL[P.name] || 'var(--s1)';
   M.append(pageHead(P.display, `Anchor & Sail · ${P.universe_label} (${P.universe_size} stocks) · ranking ${P.ranking?'ON':'OFF'} · ₹${inr.format(P.capital)} committed ${P.inception} · benchmark ${P.benchmark} · yardstick ${D.bench2_short}`, [{text:P.display, color}, {text:P.name}, {text:`LIVE since ${P.inception}`}]));
   M.append(jumpBar([['1','Exit signals','st-exit'],['2','Entry signals','st-entry'],['3','Open book','st-book'],['4','Performance','st-perf'],['5','Exited trades','st-exits'],['6','Watchlist','st-watch'],['7','Universe','st-uni']]));
-  M.append(el('div',{class:'srcnote'}, el('span',{class:'pill '+(D.market_status.startsWith('LIVE')?'live':'closed')}, D.market_status), `Signals, stops and P&L recomputed by the engine at ${D.generated_at_ist.slice(11,16)} IST on Yahoo prices (≈15 min delayed) · the live-quote panel in the Open book streams real-time NSE prices from TradingView`, el('button',{style:'padding:4px 10px;font-size:12px', onclick:()=>go('overview', P.name)}, 'Backtest & full report →')));
+  M.append(el('div',{class:'srcnote'}, el('span',{class:'pill '+(D.market_status.startsWith('LIVE')?'live':'closed')}, D.market_status), `Signals, stops and P&L recomputed by the engine at ${D.generated_at_ist.slice(11,16)} IST on Yahoo prices (≈15 min delayed) · rebuilt every 5 minutes during NSE hours, hourly otherwise`, el('button',{style:'padding:4px 10px;font-size:12px', onclick:()=>go('overview', P.name)}, 'Backtest & full report →')));
 
   const s1 = sec('1','st-exit');
   s1.append(secHead('1', `Exit signals — stops / targets hit this month${P.exits.some(e=>e.today)?' · TODAY highlighted':''}`, 'open ≤ stop → out at open (gap) · low ≤ stop → out at stop · high ≥ target → 50% scale-out, stop to breakeven'));
@@ -1005,7 +1017,7 @@ function renderPortfolio(P, M){
   const s1c = sec('3','st-book');
   s1c.append(secHead('3', `Open book — ${pf.open_positions} of ${pf.slots} slots`, `live stop levels · sorted by distance to stop · ${lakh(pf.invested)} invested, ${lakh(pf.cash)} in the Nifty ETF`));
   s1c.append(openBookTable(P.open_positions, true));
-  if(P.open_positions.length){ s1c.append(el('h3',{}, 'Live quotes — TradingView (real-time NSE) for the open book'), liveQuotes(P.open_positions.map(p=>p.symbol))); }
+  s1c.append(el('div',{class:'note'}, `LTP, P&L and distance-to-stop above are from the engine build at ${D.generated_at_ist.slice(11,16)} IST (Yahoo, ≈15 min delayed, rebuilt every 5 minutes in market hours). NSE stock prices cannot be streamed into this page by TradingView's free widgets (exchange licensing).`));
   M.append(s1c);
 
   const s2 = sec('4','st-perf');
@@ -1255,7 +1267,7 @@ $('#theme').addEventListener('click', ()=>{ applyTheme(document.documentElement.
 function nowIST(){ return new Date(Date.now() + 5.5*3600e3); }
 function nextBuildIST(){
   const n = nowIST(); const dow = n.getUTCDay(); const mins = n.getUTCHours()*60 + n.getUTCMinutes();
-  const slots = []; if(dow>=1 && dow<=5){ for(let m=9*60+30; m<=15*60+30; m+=15) slots.push(m); slots.push(15*60+45); } slots.push(18*60); for(let h=0;h<24;h++) slots.push(h*60+47); slots.sort((a,b)=>a-b);
+  const slots = []; if(dow>=1 && dow<=5){ for(let m=8*60+30; m<=15*60+45; m+=5) slots.push(m); } slots.push(18*60); for(let h=0;h<24;h++) slots.push(h*60+47); slots.sort((a,b)=>a-b);
   const nxt = slots.find(m=>m>mins); const d = new Date(n);
   if(nxt==null){ d.setUTCDate(d.getUTCDate()+1); d.setUTCHours(0, 47, 0, 0); } else d.setUTCHours(Math.floor(nxt/60), nxt%60, 0, 0);
   const pad = x=>String(x).padStart(2,'0'); return `${d.getUTCDate()===n.getUTCDate()?'today':'tomorrow'} ${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())} IST`;
@@ -1266,7 +1278,7 @@ async function refreshNow(){
   await load(); btn.disabled = false; btn.textContent = '↻ Refresh now'; if(!DATA) return;
   const built = DATA.generated_at_ist.slice(11,16);
   if(DATA.generated_at_utc !== before) toast(`<b>Updated.</b> Showing the build from <b>${built} IST</b> (${DATA.market_status}). Next scheduled build ≈ ${nextBuildIST()}.`);
-  else toast(`No newer build yet — latest is <b>${built} IST</b> (${DATA.market_status}). GitHub rebuilds every 15 min in market hours and hourly otherwise; next ≈ ${nextBuildIST()}. Prices come from Yahoo with a ~15 min delay.`);
+  else toast(`No newer build yet — latest is <b>${built} IST</b> (${DATA.market_status}). GitHub rebuilds every 5 min in market hours and hourly otherwise; next ≈ ${nextBuildIST()}. Prices come from Yahoo with a ~15 min delay.`);
   secs = 300;
 }
 $('#refresh').addEventListener('click', refreshNow);
