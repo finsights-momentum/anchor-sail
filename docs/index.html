@@ -5,40 +5,46 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>FINSIGHTS by Himanshu Arora — Live Strategy Dashboard</title>
 <style>
-/* ---------- DARK (default): deep navy, data colours tuned for dark surfaces ---------- */
+/* ---------- DARK (default): deep navy → indigo/mauve → teal, data colours tuned for dark glass surfaces ---------- */
 :root{
   color-scheme: dark;
-  --bg:#0a0e1a; --bg2:#0d1326; --surface:#111a2e; --surface-2:#16213a; --surface-3:#1b2742; --border:#1f2b47; --border-2:#2a3a5e;
-  --text:#e8eefb; --text-2:#9fb0cc; --text-3:#6b7a99; --strong:#ffffff;
-  --teal:#2dd4bf; --cyan:#38bdf8; --pink:#f472b6; --rose:#fb7185; --green:#34d399; --amber:#fbbf24; --violet:#a78bfa; --blue:#60a5fa; --lime:#a3e635;
+  --bg:#0b1020; --bg2:#0d1326; --surface:rgba(19,27,49,.72); --surface-solid:#141c33; --surface-2:rgba(28,38,66,.75); --surface-3:rgba(38,50,84,.85); --border:rgba(120,140,190,.16); --border-2:rgba(140,160,210,.30);
+  --text:#e9eefb; --text-2:#a3b1cf; --text-3:#6f7e9e; --strong:#ffffff;
+  --teal:#2dd4bf; --cyan:#38bdf8; --pink:#f472b6; --rose:#fb7185; --green:#34d399; --amber:#fbbf24; --violet:#a78bfa; --blue:#60a5fa; --lime:#a3e635; --mauve:#c084fc;
   --good:#34d399; --bad:#fb7185; --warn:#fbbf24;
-  --good-bg:rgba(52,211,153,.13); --bad-bg:rgba(251,113,133,.14); --warn-bg:rgba(251,191,36,.14); --teal-bg:rgba(45,212,191,.14); --pink-bg:rgba(244,114,182,.14); --violet-bg:rgba(167,139,250,.16); --grey-bg:rgba(159,176,204,.12); --cyan-bg:rgba(56,189,248,.14);
-  /* chart series: strategy / primary benchmark / common benchmark / extra */
-  --s1:#2dd4bf; --s2:#f472b6; --s3:#fbbf24; --s4:#38bdf8; --s5:#a78bfa; --s6:#a3e635; --s7:#fb7185;
-  --hero-grad: linear-gradient(135deg, rgba(45,212,191,.16), rgba(56,189,248,.10) 50%, rgba(244,114,182,.12));
-  --shadow: 0 10px 40px rgba(0,0,0,.35);
+  --good-bg:rgba(52,211,153,.14); --bad-bg:rgba(251,113,133,.15); --warn-bg:rgba(251,191,36,.14); --teal-bg:rgba(45,212,191,.15); --pink-bg:rgba(244,114,182,.15); --violet-bg:rgba(167,139,250,.17); --grey-bg:rgba(163,177,207,.12); --cyan-bg:rgba(56,189,248,.15);
+  --s1:#2dd4bf; --s2:#f472b6; --s3:#fbbf24; --s4:#38bdf8; --s5:#c084fc; --s6:#a3e635; --s7:#fb7185;
+  --good-rgb:52,211,153; --bad-rgb:251,113,133; --hm-alpha:.78;
+  --hero-grad: linear-gradient(135deg, rgba(192,132,252,.18), rgba(56,189,248,.12) 45%, rgba(45,212,191,.16));
+  --shadow: 0 14px 44px rgba(0,0,0,.38);
+  --page-grad: linear-gradient(112deg, #2b2457 0%, #1b1f45 18%, #0e1530 38%, #0a1326 55%, #0b2231 74%, #0f3b3c 100%);
+  --blob1: rgba(236,72,153,.22); --blob2: rgba(99,102,241,.26); --blob3: rgba(45,212,191,.20); --blob4: rgba(192,132,252,.18);
+  --tv-theme: dark;
 }
-/* ---------- LIGHT: cool paper, saturated-but-darker data colours for white surfaces ---------- */
+/* ---------- LIGHT: pastel pinks / mauves / blues / greens on white glass ---------- */
 :root[data-theme="light"]{
   color-scheme: light;
-  --bg:#f4f6fb; --bg2:#eef2f9; --surface:#ffffff; --surface-2:#f3f6fb; --surface-3:#e9eef7; --border:#dfe5f0; --border-2:#c6d0e2;
-  --text:#0f172a; --text-2:#475569; --text-3:#7b8aa5; --strong:#0b1120;
-  --teal:#0f766e; --cyan:#0369a1; --pink:#be185d; --rose:#dc2626; --green:#15803d; --amber:#b45309; --violet:#6d28d9; --blue:#1d4ed8; --lime:#4d7c0f;
+  --bg:#f4f3fb; --bg2:#eef0fa; --surface:rgba(255,255,255,.74); --surface-solid:#ffffff; --surface-2:rgba(245,246,252,.9); --surface-3:rgba(232,236,247,.95); --border:rgba(90,100,150,.14); --border-2:rgba(90,100,150,.28);
+  --text:#121a33; --text-2:#4b5675; --text-3:#7f8aa8; --strong:#0a1024;
+  --teal:#0f766e; --cyan:#0369a1; --pink:#be185d; --rose:#dc2626; --green:#15803d; --amber:#b45309; --violet:#6d28d9; --blue:#1d4ed8; --lime:#4d7c0f; --mauve:#7e22ce;
   --good:#15803d; --bad:#dc2626; --warn:#b45309;
   --good-bg:rgba(21,128,61,.10); --bad-bg:rgba(220,38,38,.09); --warn-bg:rgba(180,83,9,.10); --teal-bg:rgba(15,118,110,.10); --pink-bg:rgba(190,24,93,.09); --violet-bg:rgba(109,40,217,.10); --grey-bg:rgba(71,85,105,.09); --cyan-bg:rgba(3,105,161,.10);
-  --s1:#0f766e; --s2:#be185d; --s3:#b45309; --s4:#0369a1; --s5:#6d28d9; --s6:#4d7c0f; --s7:#dc2626;
-  --hero-grad: linear-gradient(135deg, rgba(15,118,110,.10), rgba(3,105,161,.07) 50%, rgba(190,24,93,.08));
-  --shadow: 0 10px 30px rgba(15,23,42,.10);
+  --s1:#0f766e; --s2:#be185d; --s3:#b45309; --s4:#0369a1; --s5:#7e22ce; --s6:#4d7c0f; --s7:#dc2626;
+  --good-rgb:21,128,61; --bad-rgb:220,38,38; --hm-alpha:.55;
+  --hero-grad: linear-gradient(135deg, rgba(126,34,206,.09), rgba(3,105,161,.07) 45%, rgba(15,118,110,.09));
+  --shadow: 0 12px 34px rgba(30,30,80,.12);
+  --page-grad: linear-gradient(112deg, #f6e6f7 0%, #ece8fb 20%, #e7eefc 42%, #e9f4f8 62%, #e6f6f1 82%, #f3eef9 100%);
+  --blob1: rgba(244,114,182,.22); --blob2: rgba(129,140,248,.22); --blob3: rgba(94,234,212,.22); --blob4: rgba(216,180,254,.26);
+  --tv-theme: light;
 }
 *{box-sizing:border-box}
-html,body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif}
-body{background:
-  radial-gradient(900px 520px at -10% -10%, rgba(56,189,248,.14), transparent 60%),
-  radial-gradient(800px 520px at 110% 0%, rgba(167,139,250,.14), transparent 60%),
-  radial-gradient(700px 500px at 50% 120%, rgba(244,114,182,.08), transparent 60%), var(--bg); min-height:100vh}
-:root[data-theme="light"] body{background:
-  radial-gradient(900px 520px at -10% -10%, rgba(3,105,161,.07), transparent 60%),
-  radial-gradient(800px 520px at 110% 0%, rgba(109,40,217,.06), transparent 60%), var(--bg)}
+html,body{margin:0;color:var(--text);font:14px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif}
+body{min-height:100vh;background:var(--page-grad) fixed;position:relative}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:
+  radial-gradient(820px 520px at 8% 0%, var(--blob1), transparent 62%),
+  radial-gradient(900px 600px at 92% 8%, var(--blob2), transparent 62%),
+  radial-gradient(760px 520px at 85% 95%, var(--blob3), transparent 62%),
+  radial-gradient(700px 480px at 20% 100%, var(--blob4), transparent 62%)}
 a{color:var(--cyan)}
 .wrap{max-width:1560px;margin:0 auto;padding:14px 22px 70px}
 header{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center;justify-content:space-between;padding:10px 0 14px;border-bottom:1px solid var(--border)}
@@ -55,47 +61,61 @@ h1 small{display:block;letter-spacing:0;text-transform:none;font-weight:500;colo
 .pill.stale{background:var(--warn-bg);color:var(--amber)}
 button{font:inherit;cursor:pointer;border:1px solid var(--border-2);background:var(--surface);color:var(--text);border-radius:9px;padding:7px 13px}
 button:hover{border-color:var(--teal);color:var(--strong)}
-.theme{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border-2);background:var(--surface);border-radius:999px;padding:4px 6px 4px 10px;font-size:12px;color:var(--text-2);cursor:pointer;user-select:none}
-.theme .knob{width:34px;height:20px;border-radius:999px;background:var(--surface-3);position:relative;border:1px solid var(--border-2)}
-.theme .knob::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--cyan));transition:left .15s}
-:root[data-theme="light"] .theme .knob::after{left:16px;background:linear-gradient(135deg,var(--amber),#f59e0b)}
-.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--surface-3);color:var(--text);border:1px solid var(--border-2);border-radius:10px;padding:10px 16px;font-size:13px;box-shadow:var(--shadow);z-index:9;display:none;max-width:90vw;text-align:center}
+.iconbtn{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;padding:0;background:var(--surface);border:1px solid var(--border-2)}
+.iconbtn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.iconbtn .sun{display:none;color:var(--amber)} .iconbtn .moon{display:block;color:var(--mauve)}
+:root[data-theme="light"] .iconbtn .sun{display:block} :root[data-theme="light"] .iconbtn .moon{display:none}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--surface-3);color:var(--text);border:1px solid var(--border-2);border-radius:10px;padding:10px 16px;font-size:13px;box-shadow:var(--shadow);z-index:9;display:none;max-width:90vw;text-align:center;backdrop-filter:blur(10px)}
 .toast b{color:var(--strong)}
 .banner{margin:14px 0 0;padding:10px 14px;border-radius:12px;background:var(--warn-bg);border:1px solid rgba(251,191,36,.35);font-size:13px}
 .banner summary{cursor:pointer;font-weight:600;color:var(--amber)}
 .banner ul{margin:8px 0 0;padding-left:18px;color:var(--text-2)}
 .banner.err{background:var(--bad-bg);border-color:rgba(251,113,133,.4)} .banner.err summary{color:var(--rose)}
+/* ticker tape */
+#tape{margin:10px 0 0}
 /* navigation */
-nav.pages{display:flex;gap:6px;flex-wrap:wrap;margin:16px 0 6px;border-bottom:1px solid var(--border);padding-bottom:10px}
+nav.pages{display:flex;gap:10px 22px;flex-wrap:wrap;align-items:flex-end;margin:16px 0 6px;border-bottom:1px solid var(--border);padding-bottom:12px}
+.navgroup{display:flex;flex-direction:column;gap:6px}
+.navgroup .gh{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-3);font-weight:800;padding-left:4px}
+.navgroup .gb{display:flex;gap:6px;flex-wrap:wrap}
 nav.pages button{border:1px solid transparent;background:transparent;color:var(--text-2);padding:8px 14px;border-radius:10px;font-weight:700;letter-spacing:.02em;font-size:13px;display:flex;flex-direction:column;align-items:flex-start;gap:1px}
 nav.pages button small{font-weight:500;font-size:10.5px;color:var(--text-3);letter-spacing:.02em}
 nav.pages button:hover{background:var(--surface);color:var(--text)}
 nav.pages button.on{background:var(--surface);color:var(--strong);border-color:var(--border-2);box-shadow:0 0 0 1px var(--teal) inset}
 nav.pages button.on small{color:var(--teal)}
-nav.pages .sep{width:1px;background:var(--border-2);margin:6px 6px}
-.controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:8px 0 4px}
+nav.pages button .dot{margin-right:0}
+.controls{display:flex;gap:14px;align-items:flex-end;flex-wrap:wrap;margin:10px 0 4px}
+.controls .lbl{display:block;font-size:10.5px;color:var(--text-3);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}
 .switch{display:flex;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:5px;width:max-content}
 .switch button{border:none;background:transparent;color:var(--text-2);padding:8px 16px;border-radius:9px;font-weight:700;letter-spacing:.03em;font-size:12.5px}
 .switch button.on{background:linear-gradient(135deg,var(--teal),var(--cyan));color:#04121a}
 :root[data-theme="light"] .switch button.on{color:#ffffff}
 .switch button small{display:block;font-weight:500;letter-spacing:0;font-size:11px;opacity:.85}
+select{font:inherit;padding:9px 34px 9px 12px;border:1px solid var(--border-2);border-radius:10px;background:var(--surface-solid) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8'><path d='M1 1l5 5 5-5' fill='none' stroke='%239fb0cc' stroke-width='1.6'/></svg>") no-repeat right 12px center;color:var(--text);font-weight:700;min-width:280px;appearance:none;cursor:pointer}
+select:focus{outline:none;border-color:var(--teal)}
+/* section jump bar */
+.jumps{position:sticky;top:0;z-index:4;display:flex;gap:6px;flex-wrap:wrap;padding:8px 10px;margin:12px 0 4px;background:var(--surface);border:1px solid var(--border);border-radius:12px;backdrop-filter:blur(12px)}
+.jumps button{border:1px solid transparent;background:transparent;color:var(--text-2);padding:5px 11px;border-radius:999px;font-size:12px;font-weight:600}
+.jumps button:hover{background:var(--surface-2);color:var(--strong)}
+.jumps button b{color:var(--teal);margin-right:5px}
 .pos{color:var(--green)} .neg{color:var(--rose)} .mut{color:var(--text-3)} td.strong{font-weight:800}
-section{margin-top:26px}
+section{margin-top:26px;scroll-margin-top:64px}
 .sec-h{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 10px}
 .sec-h .num{width:28px;height:28px;border-radius:8px;background:var(--teal-bg);color:var(--teal);font-weight:800;display:grid;place-items:center;font-size:13px;box-shadow:0 0 0 1px rgba(45,212,191,.35) inset}
 .sec-h h2{font-size:18px;margin:0;font-weight:800}
 .sec-h .desc{font-size:12px;color:var(--text-2)}
 h3{font-size:11.5px;margin:18px 0 8px;text-transform:uppercase;letter-spacing:.1em;color:var(--text-2);font-weight:700}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:0;overflow:hidden}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:0;overflow:hidden;backdrop-filter:blur(10px)}
 .tblwrap{overflow-x:auto;max-height:640px;overflow-y:auto}
+.tblwrap.nomax{max-height:none}
 table{border-collapse:collapse;width:100%;font-size:13px}
 th,td{padding:8px 10px;border-bottom:1px solid var(--border);text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
-th{position:sticky;top:0;background:var(--surface-2);color:var(--text-2);font-weight:700;font-size:11px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;user-select:none;z-index:1}
+th{position:sticky;top:0;background:var(--surface-3);color:var(--text-2);font-weight:700;font-size:11px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;user-select:none;z-index:1;backdrop-filter:blur(8px)}
 th.l,td.l{text-align:left}
 th:hover{color:var(--teal)}
 th .arrow{opacity:.7;font-size:9px;margin-left:3px;color:var(--teal)}
 tr:last-child td{border-bottom:none}
-tbody tr:hover td{background:rgba(56,189,248,.06)}
+tbody tr:hover td{background:rgba(56,189,248,.07)}
 td.sym{font-weight:700;text-align:left;color:var(--strong)}
 td.sym small{display:block;font-weight:400;color:var(--text-3);font-size:11px;max-width:230px;overflow:hidden;text-overflow:ellipsis}
 .empty{padding:18px;color:var(--text-3);font-size:13px;text-align:center}
@@ -105,7 +125,7 @@ td.sym small{display:block;font-weight:400;color:var(--text-3);font-size:11px;ma
 .tag.grey{background:var(--grey-bg);color:var(--text-2)} .tag.today{background:var(--rose);color:#fff} .tag.noslot{background:var(--grey-bg);color:var(--text-2)} .tag.cyan{background:var(--cyan-bg);color:var(--cyan)}
 .ok{color:var(--green);font-weight:700} .no{color:var(--text-3)}
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:12px}
-.kpi{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;backdrop-filter:blur(10px)}
 .kpi .v{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.01em;color:var(--strong)}
 .kpi .k{font-size:10.5px;color:var(--text-3);text-transform:uppercase;letter-spacing:.1em;margin-top:6px;font-weight:700}
 .kpi .d{font-size:11.5px;color:var(--text-2);margin-top:3px}
@@ -113,20 +133,20 @@ td.sym small{display:block;font-weight:400;color:var(--text-3);font-size:11px;ma
 .perf{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:12px}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media (max-width:1000px){.perf,.two{grid-template-columns:1fr}}
-.chart{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px 8px}
+.chart{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px 8px;backdrop-filter:blur(10px)}
 .chart .t{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px;margin-bottom:4px}
 .chart .t b{font-size:13.5px}
 .legend{display:flex;gap:14px;font-size:12px;color:var(--text-2);flex-wrap:wrap}
 .legend i{display:inline-block;width:14px;height:3px;vertical-align:middle;margin-right:6px;border-radius:2px}
 svg{display:block;width:100%;height:auto}
-.tt{position:absolute;pointer-events:none;background:var(--surface-3);border:1px solid var(--border-2);border-radius:9px;padding:7px 10px;font-size:12px;box-shadow:var(--shadow);display:none;z-index:5;white-space:nowrap;color:var(--text)}
-.stats{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:6px 16px}
+.tt{position:absolute;pointer-events:none;background:var(--surface-3);border:1px solid var(--border-2);border-radius:9px;padding:7px 10px;font-size:12px;box-shadow:var(--shadow);display:none;z-index:5;white-space:nowrap;color:var(--text);backdrop-filter:blur(10px)}
+.stats{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:6px 16px;backdrop-filter:blur(10px)}
 .stats div{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
 .stats div:last-child{border-bottom:none}
 .stats span:first-child{color:var(--text-2)}
 .stats span:last-child{font-variant-numeric:tabular-nums;font-weight:700;color:var(--strong)}
 .toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:0 0 10px}
-.toolbar input{font:inherit;padding:7px 12px;border:1px solid var(--border-2);border-radius:9px;background:var(--surface);color:var(--text);min-width:240px}
+.toolbar input{font:inherit;padding:7px 12px;border:1px solid var(--border-2);border-radius:9px;background:var(--surface-solid);color:var(--text);min-width:240px}
 .toolbar input:focus{outline:none;border-color:var(--teal)}
 .toolbar .chips{display:flex;gap:6px;flex-wrap:wrap}
 .chip{border:1px solid var(--border-2);background:var(--surface);border-radius:999px;padding:4px 11px;font-size:12px;cursor:pointer;color:var(--text-2)}
@@ -137,57 +157,16 @@ footer{margin-top:34px;color:var(--text-3);font-size:12px;border-top:1px solid v
 .stopbar{display:inline-block;width:70px;height:6px;background:var(--surface-3);border-radius:3px;vertical-align:middle;margin-left:6px;position:relative;overflow:hidden}
 .stopbar i{position:absolute;left:0;top:0;bottom:0;border-radius:3px}
 #loading{padding:60px;text-align:center;color:var(--text-2);line-height:1.7}
-.hero{background:var(--hero-grad);border:1px solid var(--border-2);border-radius:14px;padding:14px 18px;margin-bottom:12px;font-size:13.5px;color:var(--text-2)}
+.hero{background:var(--hero-grad);border:1px solid var(--border-2);border-radius:14px;padding:14px 18px;margin-bottom:12px;font-size:13.5px;color:var(--text-2);backdrop-filter:blur(10px)}
 .hero b{color:var(--strong)}
-/* overview */
-.ov-hero{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:14px;margin-top:16px}
-@media (max-width:1000px){.ov-hero{grid-template-columns:1fr}}
-.ov-title{background:var(--hero-grad);border:1px solid var(--border-2);border-radius:16px;padding:22px 24px}
-.ov-title h2{margin:0 0 6px;font-size:26px;letter-spacing:-.01em;color:var(--strong)}
-.ov-title p{margin:0;color:var(--text-2);font-size:13.5px;line-height:1.6;max-width:70ch}
-.ov-title .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
-.ov-title .row span{background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:4px 12px;font-size:12px;color:var(--text-2)}
-.ov-title .row span b{color:var(--strong)}
-.alerts{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px 18px}
-.alerts h4{margin:0 0 10px;font-size:11.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--text-2)}
-.alerts .a{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
-.alerts .a:last-child{border-bottom:none}
-.alerts .a b{color:var(--strong)}
-.gridcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
-.scard{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;cursor:pointer;transition:all .15s;position:relative;overflow:hidden}
-.scard::before{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:linear-gradient(90deg,var(--teal),var(--cyan),var(--pink))}
-.scard:hover{border-color:var(--border-2);transform:translateY(-1px);box-shadow:var(--shadow)}
-.scard .n{font-weight:800;font-size:15px;color:var(--strong);display:flex;justify-content:space-between;gap:8px;align-items:baseline}
-.scard .n small{font-size:10.5px;color:var(--text-3);font-weight:600;letter-spacing:.04em;text-transform:uppercase}
-.scard .u{color:var(--text-2);font-size:12px;margin-top:2px}
-.scard .m{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
-.scard .m div{background:var(--surface-2);border-radius:10px;padding:8px 10px}
-.scard .m b{display:block;font-size:16px;font-variant-numeric:tabular-nums;color:var(--strong)}
-.scard .m span{font-size:10.5px;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em}
-.bars{display:grid;gap:8px}
-.bar{display:grid;grid-template-columns:200px 1fr 70px;gap:10px;align-items:center;font-size:12.5px}
-.bar .lbl{color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.bar .track{height:12px;background:var(--surface-3);border-radius:6px;overflow:hidden;position:relative}
-.bar .track i{position:absolute;left:0;top:0;bottom:0;border-radius:6px}
-.bar .val{text-align:right;font-variant-numeric:tabular-nums;font-weight:700;color:var(--strong)}
-@media (max-width:700px){.bar{grid-template-columns:120px 1fr 60px}}
-
-/* comparison / analytics additions */
-:root{--good-rgb:52,211,153; --bad-rgb:251,113,133; --hm-alpha:.78}
-:root[data-theme="light"]{--good-rgb:21,128,61; --bad-rgb:220,38,38; --hm-alpha:.55}
 .pagehead{margin:16px 0 4px}
 .pagehead h2{margin:0 0 4px;font-size:24px;letter-spacing:-.01em;color:var(--strong)}
 .pagehead .tag2{font-size:12.5px;color:var(--text-2)}
 .badges{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
-.sbadge{font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--surface-3);padding:3px 10px;border-radius:999px}
-:root[data-theme="dark"] .sbadge, :root:not([data-theme="light"]) .sbadge{color:#06101c}
-.sbadge:not([style]){color:var(--text-2)!important;border:1px solid var(--border-2)}
-.controls .lbl{display:block;font-size:10.5px;color:var(--text-3);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}
-select{font:inherit;padding:9px 34px 9px 12px;border:1px solid var(--border-2);border-radius:10px;background:var(--surface) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8'><path d='M1 1l5 5 5-5' fill='none' stroke='%239fb0cc' stroke-width='1.6'/></svg>") no-repeat right 12px center;color:var(--text);font-weight:700;min-width:260px;appearance:none;cursor:pointer}
-select:focus{outline:none;border-color:var(--teal)}
+.sbadge{font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#06101c;background:var(--surface-3);padding:3px 10px;border-radius:999px}
+.sbadge:not([style]){color:var(--text-2);border:1px solid var(--border-2);background:transparent}
 i.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px;vertical-align:middle}
 tr.best td{background:var(--good-bg)} tr.bench td{background:var(--warn-bg)} tr.sel td{background:var(--teal-bg)} tr.sel td:first-child{box-shadow:inset 3px 0 0 var(--teal)}
-.tblwrap.nomax{max-height:none}
 td.best{color:var(--green);font-weight:800} td.bench, th.bench{background:var(--warn-bg)}
 table.metrics th small{display:block;font-weight:500;font-size:10px;letter-spacing:0;text-transform:none;color:var(--text-3)}
 table.metrics td:first-child{color:var(--text-2);font-weight:600}
@@ -197,9 +176,53 @@ table.hm th{position:static;background:var(--surface-2);color:var(--text-2);padd
 table.hm td{padding:6px 5px;text-align:center;border-radius:5px;border:none;min-width:40px;font-weight:600;color:var(--strong)}
 table.hm td.y{background:var(--surface-3);font-weight:800;color:var(--text)}
 table.hm td.e{background:var(--surface-2);opacity:.5}
-.scard::before{background:var(--accent, linear-gradient(90deg,var(--teal),var(--cyan),var(--pink)))}
-.scard .m{grid-template-columns:repeat(3,1fr)}
-.scard .m b{font-size:15px}
+/* overview */
+.ov-hero{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:14px;margin-top:16px}
+@media (max-width:1000px){.ov-hero{grid-template-columns:1fr}}
+.ov-title{background:var(--hero-grad);border:1px solid var(--border-2);border-radius:16px;padding:22px 24px;backdrop-filter:blur(10px)}
+.ov-title h2{margin:0 0 6px;font-size:26px;letter-spacing:-.01em;color:var(--strong)}
+.ov-title p{margin:0;color:var(--text-2);font-size:13.5px;line-height:1.6;max-width:70ch}
+.ov-title .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.ov-title .row span{background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:4px 12px;font-size:12px;color:var(--text-2)}
+.ov-title .row span b{color:var(--strong)}
+.alerts{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px 18px;backdrop-filter:blur(10px)}
+.alerts h4{margin:0 0 10px;font-size:11.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--text-2)}
+.alerts .a{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
+.alerts .a:last-child{border-bottom:none}
+.alerts .a b{color:var(--strong)}
+.gridcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+.scard{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;cursor:pointer;transition:all .15s;position:relative;overflow:hidden;backdrop-filter:blur(10px)}
+.scard::before{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:var(--accent, linear-gradient(90deg,var(--teal),var(--cyan),var(--pink)))}
+.scard:hover{border-color:var(--border-2);transform:translateY(-1px);box-shadow:var(--shadow)}
+.scard .n{font-weight:800;font-size:15px;color:var(--strong);display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.scard .n small{font-size:10.5px;color:var(--text-3);font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.scard .u{color:var(--text-2);font-size:12px;margin-top:2px}
+.scard .m{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.scard .m div{background:var(--surface-2);border-radius:10px;padding:8px 10px}
+.scard .m b{display:block;font-size:15px;font-variant-numeric:tabular-nums;color:var(--strong)}
+.scard .m span{font-size:10.5px;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em}
+/* markets */
+.tvbox{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;min-height:46px;position:relative}
+.tvbox .ph{position:absolute;inset:0;display:grid;place-items:center;color:var(--text-3);font-size:12.5px;pointer-events:none}
+.tvgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:1100px){.tvgrid{grid-template-columns:1fr}}
+.srcnote{display:flex;gap:10px;flex-wrap:wrap;align-items:center;font-size:12px;color:var(--text-2);margin:6px 0 12px}
+.srcnote .pill{font-size:11px}
+/* news */
+.newsgrid{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:14px}
+@media (max-width:1100px){.newsgrid{grid-template-columns:1fr}}
+.nitem{display:grid;grid-template-columns:1fr auto;gap:6px 14px;padding:12px 16px;border-bottom:1px solid var(--border)}
+.nitem:last-child{border-bottom:none}
+.nitem a.t{color:var(--strong);font-weight:700;text-decoration:none;font-size:13.5px;line-height:1.4}
+.nitem a.t:hover{color:var(--teal);text-decoration:underline}
+.nitem .s{font-size:12px;color:var(--text-2);margin-top:3px;line-height:1.45}
+.nitem .m{font-size:11px;color:var(--text-3);margin-top:4px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.nitem .m .src{background:var(--surface-2);border-radius:6px;padding:1px 7px;color:var(--text-2);font-weight:700}
+.nitem a.go{align-self:center;white-space:nowrap;font-size:12px;font-weight:700;color:var(--cyan);text-decoration:none;border:1px solid var(--border-2);border-radius:999px;padding:5px 11px}
+.nitem a.go:hover{border-color:var(--teal);color:var(--teal)}
+.nstock{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;padding:12px 16px 4px;border-bottom:1px solid var(--border)}
+.nstock b{font-size:14px;color:var(--strong)} .nstock span{font-size:11.5px;color:var(--text-3)}
+.nstock .tag{margin-left:0}
 </style>
 </head>
 <body>
@@ -207,15 +230,19 @@ table.hm td.e{background:var(--surface-2);opacity:.5}
   <header>
     <div class="brand">
       <div class="logo">FIN</div>
-      <h1>FINSIGHTS <em>by Himanshu Arora</em><small>live strategy dashboard · six model portfolios · live books, realised &amp; unrealised P&amp;L, 2016→today backtests</small></h1>
+      <h1>FINSIGHTS <em>by Himanshu Arora</em><small>live strategy dashboard · six model portfolios · live markets · news</small></h1>
     </div>
     <div class="meta" id="meta"></div>
     <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
       <span class="mut" id="autoref" style="font-size:12px"></span>
-      <button id="refresh" title="Re-reads the latest build published by GitHub. Prices update when GitHub rebuilds (every 15 min in market hours).">↻ Refresh now</button>
-      <span class="theme" id="theme" title="Switch light / dark theme"><span id="themeLabel">Dark</span><span class="knob"></span></span>
+      <button id="refresh" title="Re-reads the latest build published by GitHub. Strategy data updates when GitHub rebuilds (every 15 min in market hours).">↻ Refresh now</button>
+      <button class="iconbtn" id="theme" title="Switch light / dark theme" aria-label="Switch theme">
+        <svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+        <svg class="moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
+      </button>
     </div>
   </header>
+  <div id="tape"></div>
   <div id="warnings"></div>
   <div id="loading">Loading latest data…</div>
   <nav class="pages" id="nav" hidden></nav>
@@ -242,12 +269,26 @@ const pctCell = v => { const t=document.createElement('td'); t.className=cls(v);
 const yesno = b => b==null ? '—' : b ? '✓' : '·';
 const lakh = v => v==null ? '—' : (v<0?'−':'') + '₹' + (Math.abs(v)>=1e7 ? (Math.abs(v)/1e7).toFixed(2)+' Cr' : (Math.abs(v)/1e5).toFixed(1)+' L');
 
-// ---------------------------------------------------------------- state & routing (hash: #overview | #CORE/live | #S1/NIFTY200/bt)
-let DATA=null;
-const ROUTE = {page:'overview', view:'live', uni:null};
+// ---------------------------------------------------------------- state & routing
+// hashes:  #overview | #overview/CORE | #overview/S1/NIFTY200 | #markets | #news/<tab> | #CORE | #S1/NIFTY200
+let DATA=null, NEWS=null;
+const ROUTE = {page:'overview', sel:'ALL', uni:null, tab:'all'};
 const isMom = p => /^S\d/.test(p);
-function readHash(){ const h=(location.hash||'#overview').slice(1).split('/'); ROUTE.page=h[0]||'overview'; if(isMom(ROUTE.page)){ ROUTE.uni=h[1]||null; ROUTE.view=h[2]||'live'; } else { ROUTE.view=h[1]||'live'; } }
-function go(page, a, b){ location.hash = isMom(page) ? `#${page}/${a||ROUTE.uni||DATA.momentum.default_universe}/${b||'live'}` : `#${page}/${a||'live'}`; }
+let secOffset = 0;                                      // section numbering offset when a block is embedded in a longer page
+function readHash(){
+  const h=(location.hash||'#overview').slice(1).split('/').filter(Boolean);
+  const p=h[0]||'overview';
+  if(p==='overview'){ ROUTE.page='overview'; ROUTE.sel=h[1]||'ALL'; ROUTE.uni = isMom(ROUTE.sel)? (h[2]||null) : null; }
+  else if(p==='markets'){ ROUTE.page='markets'; }
+  else if(p==='news'){ ROUTE.page='news'; ROUTE.tab=h[1]||'all'; }
+  else { ROUTE.page=p; if(isMom(p)){ ROUTE.uni=h[1]||null; if(h[2]==='bt'){ location.replace(`#overview/${p}/${h[1]||''}`); } } else if(h[1]==='bt'){ location.replace(`#overview/${p}`); } }
+}
+function go(page, a, b){
+  if(page==='overview') location.hash = a && a!=='ALL' ? (isMom(a)? `#overview/${a}/${b||ROUTE.uni||DATA.momentum.default_universe}` : `#overview/${a}`) : '#overview';
+  else if(page==='news') location.hash = `#news/${a||'all'}`;
+  else if(page==='markets') location.hash = '#markets';
+  else location.hash = isMom(page) ? `#${page}/${a||ROUTE.uni||DATA.momentum.default_universe}` : `#${page}`;
+}
 window.addEventListener('hashchange', ()=>{ readHash(); if(DATA) render(); });
 
 async function load(){
@@ -256,21 +297,50 @@ async function load(){
     if(!r.ok) throw new Error('HTTP '+r.status);
     DATA = await r.json();
     DATA.bench2_short = 'Nifty 200 Mom 30';
+    try{ const n = await fetch('news.json?t=' + Date.now(), {cache:'no-store'}); NEWS = n.ok ? await n.json() : null; }catch(e){ NEWS = null; }
     render();
   }catch(e){
     $('#loading').innerHTML = '<b>No data yet</b> (' + e.message + ').<br><br>If this is a fresh setup: go to the repository → <b>Actions</b> → <b>Run workflow</b>, wait ~6 minutes, then reload this page.<br>If you opened index.html from your disk, open the GitHub Pages URL instead — a browser cannot read data.json from a local file.';
   }
 }
+const theme = () => document.documentElement.getAttribute('data-theme')==='light' ? 'light' : 'dark';
 
+// ---------------------------------------------------------------- TradingView embeds (real-time quotes rendered in the browser)
+function tvWidget(script, config, height){
+  const box = el('div',{class:'tvbox', style: height? `height:${height}px`:''});
+  box.append(el('div',{class:'ph'}, 'Loading live data from TradingView… (needs internet access to tradingview.com)'));
+  const w = el('div',{class:'tradingview-widget-container', style:'height:100%;width:100%'});
+  w.append(el('div',{class:'tradingview-widget-container__widget', style:'height:100%;width:100%'}));
+  const s = document.createElement('script'); s.type='text/javascript'; s.async=true; s.src='https://s3.tradingview.com/external-embedding/'+script;
+  s.textContent = JSON.stringify({colorTheme: theme(), isTransparent:true, locale:'en', ...config});
+  w.append(s); box.append(w); return box;
+}
+const TV = {
+  indiaIdx: [["NSE:NIFTY","Nifty 50"],["BSE:SENSEX","Sensex"],["NSE:BANKNIFTY","Bank Nifty"],["NSE:CNXFINANCE","Nifty Financial Services"],["NSE:CNXIT","Nifty IT"],["NSE:NIFTY_MID_SELECT","Nifty Midcap Select"],["NSE:CNXMIDCAP","Nifty Midcap 100"],["NSE:CNXSMALLCAP","Nifty Smallcap 100"],["NSE:CNX100","Nifty 100"],["NSE:CNX200","Nifty 200"],["NSE:CNX500","Nifty 500"],["NSE:INDIAVIX","India VIX"]],
+  indiaSect: [["NSE:CNXAUTO","Nifty Auto"],["NSE:CNXPHARMA","Nifty Pharma"],["NSE:CNXFMCG","Nifty FMCG"],["NSE:CNXMETAL","Nifty Metal"],["NSE:CNXENERGY","Nifty Energy"],["NSE:CNXREALTY","Nifty Realty"],["NSE:CNXPSUBANK","Nifty PSU Bank"],["NSE:CNXINFRA","Nifty Infra"],["NSE:CNXMEDIA","Nifty Media"],["NSE:CNXCONSUMPTION","Nifty Consumption"]],
+  worldIdx: [["TVC:SPX","S&P 500"],["TVC:NDQ","Nasdaq 100"],["TVC:DJI","Dow Jones"],["TVC:RUT","Russell 2000"],["TVC:UKX","FTSE 100"],["TVC:DEU40","DAX"],["TVC:CAC40","CAC 40"],["TVC:NI225","Nikkei 225"],["TVC:HSI","Hang Seng"],["TVC:SHCOMP","Shanghai Composite"],["TVC:KOSPI","KOSPI"],["TVC:STI","Straits Times"],["TVC:VIX","VIX"]],
+  mcx: [["MCX:GOLD1!","Gold (MCX)"],["MCX:GOLDM1!","Gold Mini"],["MCX:SILVER1!","Silver (MCX)"],["MCX:SILVERM1!","Silver Mini"],["MCX:CRUDEOIL1!","Crude Oil (MCX)"],["MCX:NATURALGAS1!","Natural Gas (MCX)"],["MCX:COPPER1!","Copper (MCX)"],["MCX:ZINC1!","Zinc (MCX)"],["MCX:ALUMINIUM1!","Aluminium (MCX)"],["MCX:LEAD1!","Lead (MCX)"]],
+  worldCmd: [["TVC:GOLD","Gold spot ($/oz)"],["TVC:SILVER","Silver spot ($/oz)"],["TVC:PLATINUM","Platinum"],["TVC:USOIL","WTI Crude"],["TVC:UKOIL","Brent Crude"],["NYMEX:NG1!","Natural Gas (Henry Hub)"],["COMEX:HG1!","Copper (COMEX)"],["CBOT:ZW1!","Wheat"],["CBOT:ZC1!","Corn"],["CBOT:ZS1!","Soybeans"],["ICEUS:KC1!","Coffee"],["ICEUS:SB1!","Sugar"],["ICEUS:CT1!","Cotton"]],
+  fx: [["FX_IDC:USDINR","USD / INR"],["FX_IDC:EURINR","EUR / INR"],["TVC:DXY","Dollar Index"],["FX:EURUSD","EUR / USD"],["FX:USDJPY","USD / JPY"],["TVC:US10Y","US 10Y yield"],["TVC:IN10Y","India 10Y yield"],["BITSTAMP:BTCUSD","Bitcoin"]],
+};
+const tvSyms = list => list.map(([s,d])=>({name:s, displayName:d}));
+const tvTabs = list => list.map(([s,d])=>({s, d}));
+function renderTape(){
+  const t = $('#tape'); t.replaceChildren();
+  const syms = [...TV.indiaIdx.slice(0,3), TV.indiaIdx[11], TV.worldIdx[0], TV.worldIdx[1], TV.worldIdx[7], TV.worldIdx[8], TV.mcx[0], TV.mcx[2], TV.mcx[4], TV.worldCmd[0], TV.worldCmd[4], TV.fx[0], TV.fx[2]];
+  t.append(tvWidget('embed-widget-ticker-tape.js', {symbols: syms.map(([s,d])=>({proName:s, title:d})), showSymbolLogo:false, displayMode:'adaptive'}, 46));
+}
+
+// ---------------------------------------------------------------- page frame
 function render(){
   const D = DATA; readHash();
   $('#loading').hidden = true;
   const live = D.market_status.startsWith('LIVE');
   $('#meta').replaceChildren(
-    el('span', {}, 'Data as of ', el('b', {}, D.data_date)), el('span', {class:'pill ' + (live?'live':(D.market_status.startsWith('Closed')?'closed':'stale'))}, D.market_status),
+    el('span', {}, 'Strategy data as of ', el('b', {}, D.data_date)), el('span', {class:'pill ' + (live?'live':(D.market_status.startsWith('Closed')?'closed':'stale'))}, D.market_status),
     el('span', {}, 'Nifty 50 ', el('b', {}, fP(D.nifty.close)), ' ', el('span', {class:cls(D.nifty.chg_pct)}, fPct(D.nifty.chg_pct))),
     el('span', {}, 'Signal month ', el('b', {}, D.completed_month), ' · running ', el('b', {}, D.running_month)),
-    el('span', {}, 'Built ', el('b', {}, D.generated_at_ist)));
+    el('span', {}, 'Engine build ', el('b', {}, D.generated_at_ist)));
   const W = $('#warnings'); W.replaceChildren();
   if(D.warnings && D.warnings.length){
     const mock = D.warnings.some(w=>w.startsWith('MOCK'));
@@ -278,38 +348,170 @@ function render(){
     det.append(el('summary', {}, `${D.warnings.length} data warning${D.warnings.length>1?'s':''} — click to expand`), el('ul', {}, ...D.warnings.map(w=>el('li', {}, w))));
     W.append(det);
   }
-  // navigation
+  // navigation — grouped buttons with headings
   const N = $('#nav'); N.hidden=false; N.replaceChildren();
-  const navBtn = (key, label, sub) => el('button', {class: ROUTE.page===key?'on':'', onclick:()=>{ if(key==='overview') location.hash='#overview'; else go(key, isMom(key)? (ROUTE.uni||D.momentum.default_universe):'live', 'live'); }}, label, el('small',{}, sub));
-  N.append(navBtn('overview','Overview','all strategies'));
-  N.append(el('span',{class:'sep'}));
-  for(const [k,P] of Object.entries(D.portfolios)) N.append(navBtn(k, P.display, `Anchor & Sail · ${P.universe_label.split(' (')[0]}`));
-  N.append(el('span',{class:'sep'}));
-  for(const [k,Sx] of Object.entries(D.momentum.strategies)) N.append(navBtn(k, Sx.name, Sx.style));
+  const navBtn = (on, label, sub, fn, color) => el('button', {class: on?'on':'', onclick:fn}, el('span',{}, color? el('i',{class:'dot', style:`background:${color}`}):null, label), el('small',{}, sub));
+  const group = (title, ...btns) => el('div',{class:'navgroup'}, el('div',{class:'gh'}, title), el('div',{class:'gb'}, ...btns));
+  N.append(group('Dashboard',
+    navBtn(ROUTE.page==='overview', 'Overview', 'strategy returns · live & backtest', ()=>go('overview','ALL')),
+    navBtn(ROUTE.page==='markets', 'Live markets', 'indices · commodities · FX', ()=>go('markets'))));
+  N.append(group('Strategies — live books',
+    ...Object.entries(D.portfolios).map(([k,P])=> navBtn(ROUTE.page===k, P.display, `Anchor & Sail · ${P.universe_label.split(' (')[0]}`, ()=>go(k), SCOL[k])),
+    ...Object.entries(D.momentum.strategies).map(([k,Sx])=> navBtn(ROUTE.page===k, Sx.name, Sx.style, ()=>go(k, ROUTE.uni||D.momentum.default_universe), SCOL[k]))));
+  const nNews = NEWS ? (NEWS.sections.india.length + NEWS.sections.world.length + NEWS.sections.regulatory.length + NEWS.portfolio.reduce((s,p)=>s+p.items.length,0)) : 0;
+  N.append(group('Newsroom', navBtn(ROUTE.page==='news', 'News', NEWS? `${nNews} stories · markets · portfolio · regulatory` : 'markets · portfolio · regulatory', ()=>go('news','all'))));
   // controls + page
   const C = $('#controls'); C.replaceChildren();
   const M = $('#main');
-  if(ROUTE.page==='overview'){ renderOverview(M); }
-  else if(D.portfolios[ROUTE.page]){
-    const P = D.portfolios[ROUTE.page];
-    C.append(viewSwitch(v=>go(ROUTE.page, v), ROUTE.view, `since ${P.inception} · daily stops`, P.backtest? `${P.backtest.start} → ${P.backtest.as_of}`:'n/a'));
-    if(ROUTE.view==='bt' && P.backtest) renderBacktest(P, M); else renderPortfolio(P, M);
-  } else if(D.momentum.strategies[ROUTE.page]){
-    const Sx = D.momentum.strategies[ROUTE.page]; const uni = ROUTE.uni && Sx.universes[ROUTE.uni] ? ROUTE.uni : D.momentum.default_universe;
-    const U = Sx.universes[uni];
-    const us = el('div',{class:'switch'}); for(const [uk,UU] of Object.entries(Sx.universes)) us.append(el('button',{class: uk===uni?'on':'', onclick:()=>go(ROUTE.page, uk, ROUTE.view)}, UU.universe_label, el('small',{}, `${UU.universe_size} stocks`)));
-    C.append(us, viewSwitch(v=>go(ROUTE.page, uni, v), ROUTE.view, `since ${U.live.inception} · monthly rebalance`, `${U.backtest.metrics.start} → ${U.backtest.metrics.as_of}`));
-    if(ROUTE.view==='bt') renderMomentumBacktest(Sx, U, M); else renderMomentumLive(Sx, U, M);
+  secOffset = 0;
+  if(ROUTE.page==='overview') renderOverviewPage(C, M);
+  else if(ROUTE.page==='markets') renderMarkets(M);
+  else if(ROUTE.page==='news') renderNews(C, M);
+  else if(D.portfolios[ROUTE.page]) renderPortfolio(D.portfolios[ROUTE.page], M);
+  else if(D.momentum.strategies[ROUTE.page]){
+    const Sx = D.momentum.strategies[ROUTE.page]; const uni = ROUTE.uni && Sx.universes[ROUTE.uni] ? ROUTE.uni : D.momentum.default_universe; ROUTE.uni = uni;
+    const us = el('div',{}, el('label',{class:'lbl'},'Universe'), el('div',{class:'switch'}, ...Object.entries(Sx.universes).map(([uk,UU])=>el('button',{class: uk===uni?'on':'', onclick:()=>go(ROUTE.page, uk)}, UU.universe_label, el('small',{}, `${UU.universe_size} stocks`)))));
+    C.append(us);
+    renderMomentumLive(Sx, Sx.universes[uni], M);
   } else { location.hash='#overview'; return; }
   $('#foot').innerHTML = `<b>Anchor & Sail</b> (Bharat Wealth Portfolio, Precision, Frontier, Udaan): monthly bars · Williams %R(14) armed &lt; −40, trigger ≥ −20 · EMA 5 &gt; 15 &gt; 50 · stop −15% · target +30% (50% scale-out, stop to breakeven, then trails previous month's low) · 25 slots · size = corpus/25 · idle cash in Nifty 50 ETF · ₹26 L each.<br>
   <b>Alpha Leaders</b> (S1) and <b>Wealth Vriddhi</b> (S4+): monthly rebalance on the last session's close · momentum score = mean rank of 12-1m return, 6m return, 12m Sharpe · hold 20, keep names inside the top 30, max 5 per NSE sector, liquidity ≥ ₹5 cr/day · S4+ adds rising 200-DMA + below-median downside capture, 50% exposure when Nifty &lt; 200-DMA (×0.8 in a vol spike), 50/50 inverse-vol blend · idle cash in a 7% liquid fund · ₹10 L each.<br>
-  All figures net of itemised delivery costs, before tax. Universes are today's NSE index members applied to history (survivorship bias). Prices: Yahoo Finance via yfinance (adjusted, ~15 min delayed). Common yardstick: ${D.bench2_label}. Build time ${D.runtime_sec}s.`;
+  <b>Data freshness:</b> strategy signals, stops and books are recomputed by the engine every 15 minutes during NSE hours (09:30–15:45 IST) and hourly otherwise, on Yahoo Finance prices (≈15 min delayed); the ticker tape, Live-markets page and the live-quote panels are TradingView streams rendered in your browser (NSE real-time; MCX / global futures as per exchange policy). News feeds are refreshed on every build. All figures net of itemised delivery costs, before tax; universes are today's NSE index members applied to history (survivorship bias). Common yardstick: ${D.bench2_label}. Build time ${D.runtime_sec}s.`;
+  window.scrollTo(0,0);
+}
+function jumpBar(items){
+  const j = el('div',{class:'jumps'});
+  items.forEach(([n, label, id])=> j.append(el('button',{onclick:()=>{ const t=document.getElementById(id); if(t) t.scrollIntoView({behavior:'smooth', block:'start'}); }}, el('b',{}, n), label)));
+  return j;
+}
+function sec(n, id){ const s = el('section',{id}); s.dataset.n = n; return s; }
+
+// ---------------------------------------------------------------- OVERVIEW page: dropdown → one strategy (live + backtest) or the all-strategy comparison
+function renderOverviewPage(C, M){
+  const D = DATA;
+  const opts = [['ALL','All strategies — comparison']];
+  for(const [k,P] of Object.entries(D.portfolios)) opts.push([k, `${P.display} — Anchor & Sail · ${P.universe_label.split(' (')[0]}`]);
+  for(const [k,Sx] of Object.entries(D.momentum.strategies)) opts.push([k, `${Sx.name} — ${Sx.style}`]);
+  const sel = el('select'); for(const [v,l] of opts){ const o=el('option',{value:v}, l); if(v===ROUTE.sel) o.selected=true; sel.append(o); }
+  sel.addEventListener('change', ()=> go('overview', sel.value, isMom(sel.value)? (ROUTE.uni||D.momentum.default_universe) : null));
+  C.append(el('div',{}, el('label',{class:'lbl'},'Strategy'), sel));
+  if(isMom(ROUTE.sel)){
+    const Sx = D.momentum.strategies[ROUTE.sel]; const uni = ROUTE.uni && Sx.universes[ROUTE.uni] ? ROUTE.uni : D.momentum.default_universe; ROUTE.uni = uni;
+    C.append(el('div',{}, el('label',{class:'lbl'},'Universe'), el('div',{class:'switch'}, ...Object.entries(Sx.universes).map(([uk,UU])=>el('button',{class: uk===uni?'on':'', onclick:()=>go('overview', ROUTE.sel, uk)}, UU.universe_label, el('small',{}, `${UU.universe_size} stocks`))))));
+  }
+  if(ROUTE.sel==='ALL' || !(D.portfolios[ROUTE.sel] || D.momentum.strategies[ROUTE.sel])){ renderComparison(M); return; }
+  M.replaceChildren();
+  if(D.portfolios[ROUTE.sel]){
+    const P = D.portfolios[ROUTE.sel], pf = P.performance, color = SCOL[P.name];
+    M.append(pageHead(P.display, `Anchor & Sail · ${P.universe_label} · ranking ${P.ranking?'ON':'OFF'} · benchmark ${P.benchmark} · yardstick ${D.bench2_short}`, [{text:P.display, color}, {text:P.name}, {text:`LIVE since ${P.inception}`}, {text:`BACKTEST ${P.backtest.start.slice(0,4)} → ${P.backtest.as_of}`}]));
+    M.append(jumpBar([['1','Live performance','ov-live'],['2','Backtest — key metrics','ov-bt1'],['3','Growth & drawdown','ov-bt2'],['4','Monthly heat-map','ov-bt3'],['5','Quarterly & out-performance','ov-bt4'],['6','Top / weakest trades','ov-bt5'],['7','Year by year','ov-bt6'],['8','Holdings today','ov-bt7'],['9','Trade log','ov-bt8']]));
+    liveSummary(M, {name:P.display, color, capital:P.capital, benchName:P.benchmark, H:P.history, pf, inception:P.inception, kind:'anchor', P,
+      open:()=>go(P.name), positionsLabel:`${pf.open_positions} of ${pf.slots} slots`, cashLabel:'Nifty 50 ETF (idle cash)', realised:pf.realised, unrealised:pf.unrealised, closed:pf.closed_trades, wins:pf.wins});
+    secOffset = 1; renderBacktest(P, M, true); secOffset = 0;
+  } else {
+    const Sx = D.momentum.strategies[ROUTE.sel], U = Sx.universes[ROUTE.uni], L = U.live, pf = L.performance, color = SCOL[ROUTE.sel];
+    M.append(pageHead(Sx.name, `${Sx.style} · ${U.universe_label} · benchmark ${U.benchmark} · yardstick ${D.bench2_short}`, [{text:Sx.name, color}, {text:Sx.code}, {text:`LIVE since ${L.inception}`}, {text:`BACKTEST ${U.backtest.metrics.start.slice(0,4)} → ${U.backtest.metrics.as_of}`}]));
+    M.append(jumpBar([['1','Live performance','ov-live'],['2','Backtest — key metrics','ov-bt1'],['3','Growth & drawdown','ov-bt2'],['4','Monthly heat-map','ov-bt3'],['5','Quarterly & out-performance','ov-bt4'],['6','Top / weakest trades','ov-bt5'],['7','Year by year','ov-bt6'],['8','Holdings today','ov-bt7'],['9','Trade log','ov-bt8']]));
+    liveSummary(M, {name:Sx.name, color, capital:D.momentum.capital, benchName:U.benchmark, H:L.history, pf, inception:L.inception, kind:'momentum', open:()=>go(ROUTE.sel, ROUTE.uni),
+      positionsLabel:`${pf.holdings} of ${D.momentum.rules.hold}`, cashLabel:'liquid fund (7% p.a.)', realised:pf.realised, unrealised:unrealisedOf(L.holdings), closed:L.trades.length, wins:L.trades.filter(t=>(t.net_pnl||0)>0).length, exposure:pf.exposure_pct, nextReb:L.next_rebalance});
+    secOffset = 1; renderMomentumBacktest(Sx, U, M, true); secOffset = 0;
+  }
+}
+// live block shared by both engines on the Overview page
+function liveSummary(M, c){
+  const D = DATA, pf = c.pf, total = pf.nav - c.capital, cashleg = total - (c.realised||0) - (c.unrealised||0);
+  const s = sec(1,'ov-live'); s.append(secHead('1', `Live performance — since ${c.inception}`, `${pf.days} day${pf.days===1?'':'s'} live · marked to the latest engine prices · open the strategy page for signals, book and trades`));
+  const kp = el('div',{class:'kpis'});
+  kp.append(kpi(fR(pf.nav),'Book value',`on ₹${inr.format(c.capital)}`,'amber'), kpi(fPct(pf.return_pct),'Return since inception', pf.cagr_pct!=null? `CAGR ${fPct(pf.cagr_pct)}`:'absolute', signCol(pf.return_pct)),
+    kpi(fPct(pf.bench_return_pct), c.benchName, 'same window', signCol(pf.bench_return_pct)), kpi(fPct((pf.return_pct!=null&&pf.bench_return_pct!=null)? pf.return_pct-pf.bench_return_pct:null),'Excess return',`vs ${c.benchName}`, signCol((pf.return_pct||0)-(pf.bench_return_pct||0))),
+    kpi(fPct(pf.bench2_return_pct), D.bench2_short, 'common yardstick', signCol(pf.bench2_return_pct)),
+    kpi(fR(c.realised),'Realised P&L',`${c.closed} closed · ${c.wins} win${c.wins===1?'':'s'} · net of charges`, signCol(c.realised)), kpi(fR(c.unrealised),'Unrealised P&L','open positions at today\'s prices', signCol(c.unrealised)),
+    kpi(fR(total),'Total P&L',`book value − capital · cash leg ${fR(cashleg)} (${c.cashLabel})`, signCol(total)), kpi(fPct(pf.max_dd_pct,false),'Max drawdown','daily NAV', pf.max_dd_pct<0?'rose':''),
+    kpi(c.positionsLabel.replace(' of ','/').replace(' slots',''),'Positions', c.exposure!=null? `target exposure ${c.exposure}% · next rebalance ${c.nextReb}` : `${lakh(pf.invested)} invested · ${lakh(pf.cash)} cash leg`,'cyan'));
+  s.append(kp);
+  const H = c.H.filter(h=>h.nav!=null); const nav0 = H.length? H[0].nav:1; const b0 = H.find(h=>h.bench!=null)?.bench; const b20 = H.find(h=>h.bench2!=null)?.bench2;
+  const two = el('div',{class:'two'});
+  two.append(lineChart({title:`Growth of 100 — ${c.name} vs ${c.benchName} and ${D.bench2_short}`, dates:H.map(h=>h.date), series:[{name:c.name, color:c.color, values:H.map(h=>h.nav/nav0*100)}, {name:c.benchName, color:OWNB_COL, values:H.map(h=>(b0&&h.bench!=null)?h.bench/b0*100:null)}, {name:D.bench2_short, color:BENCH2_COL, values:H.map(h=>(b20&&h.bench2!=null)?h.bench2/b20*100:null)}], fmt:v=>v.toFixed(2), base:100, extra:(i)=>`(${fR(H[i].nav)})`, minPts:2, height:300}));
+  const mm = monthly(H); const rb = rets(mm.bench);
+  two.append(el('div',{}, el('h3',{style:'margin-top:0'},'Monthly returns so far (%)'), heatMonthly(mm.ym, rets(mm.nav)), el('h3',{}, `Out-performance vs ${c.benchName} (%)`), heatMonthly(mm.ym, rets(mm.nav).map((v,i)=> (v==null||rb[i]==null)? null : v-rb[i]), {yearCol:false})));
+  s.append(two);
+  s.append(el('div',{style:'margin-top:10px'}, el('button',{onclick:c.open}, `Open the ${c.name} live page → signals, open book, exited trades, watchlist`)));
+  M.append(s);
 }
 
-function viewSwitch(onpick, cur, liveSub, btSub){
-  return el('div',{class:'switch'},
-    el('button',{class: cur!=='bt'?'on':'', onclick:()=>onpick('live')}, 'LIVE BOOK', el('small',{}, liveSub)),
-    el('button',{class: cur==='bt'?'on':'', onclick:()=>onpick('bt')}, 'BACKTEST', el('small',{}, btSub)));
+// ---------------------------------------------------------------- LIVE MARKETS page (TradingView streams)
+function renderMarkets(M){
+  M.replaceChildren();
+  const D = DATA;
+  M.append(pageHead('Live markets', 'Indian and global indices, Indian (MCX) and global commodities, currencies and rates — streamed by TradingView into this page. Hover any row for the day\'s chart; click a symbol to open its full TradingView chart.'));
+  M.append(el('div',{class:'srcnote'}, el('span',{class:'pill live'},'LIVE'), 'NSE / BSE cash indices stream real-time; MCX and overseas futures follow each exchange\'s free-data policy (typically 10–15 min delay).', el('span',{class:'pill closed'}, `Engine snapshot: Nifty 50 ${fP(D.nifty.close)} (${fPct(D.nifty.chg_pct)}) as of ${D.data_date}`)));
+  M.append(jumpBar([['1','Indian indices','mk-in'],['2','Global indices','mk-wd'],['3','Commodities — India (MCX)','mk-mcx'],['4','Commodities — world','mk-cmd'],['5','Currencies & rates','mk-fx'],['6','Charts','mk-ch']]));
+  const block = (n, id, title, desc, syms, h) => { const s = sec(n,id); s.append(secHead(n, title, desc)); s.append(tvWidget('embed-widget-market-quotes.js', {width:'100%', height:h, symbolsGroups:[{name:title, symbols:tvSyms(syms)}], showSymbolLogo:false}, h)); M.append(s); };
+  const g = el('div',{class:'tvgrid'});
+  const s1 = sec(1,'mk-in'); s1.append(secHead('1','Indian indices','benchmark and sector indices · NSE / BSE'));
+  s1.append(el('div',{class:'tvgrid'}, tvWidget('embed-widget-market-quotes.js', {width:'100%', height:520, symbolsGroups:[{name:'Benchmark indices', symbols:tvSyms(TV.indiaIdx)}], showSymbolLogo:false}, 520),
+                                        tvWidget('embed-widget-market-quotes.js', {width:'100%', height:520, symbolsGroups:[{name:'Sector indices', symbols:tvSyms(TV.indiaSect)}], showSymbolLogo:false}, 520)));
+  M.append(s1);
+  block('2','mk-wd','Global indices','US, Europe and Asia', TV.worldIdx, 560);
+  const s3 = sec(3,'mk-mcx'); s3.append(secHead('3','Commodities — India (MCX)','front-month MCX futures · bullion, energy, base metals'));
+  const s4 = sec(4,'mk-cmd'); s4.append(secHead('4','Commodities — world','spot bullion, crude, gas, metals and agri futures'));
+  s3.append(tvWidget('embed-widget-market-quotes.js', {width:'100%', height:460, symbolsGroups:[{name:'MCX', symbols:tvSyms(TV.mcx)}], showSymbolLogo:false}, 460));
+  s4.append(tvWidget('embed-widget-market-quotes.js', {width:'100%', height:560, symbolsGroups:[{name:'World', symbols:tvSyms(TV.worldCmd)}], showSymbolLogo:false}, 560));
+  M.append(s3, s4);
+  block('5','mk-fx','Currencies & rates','rupee, dollar index, majors, bond yields', TV.fx, 380);
+  const s6 = sec(6,'mk-ch'); s6.append(secHead('6','Charts','one-day mini charts by group — switch the tab inside the panel'));
+  s6.append(tvWidget('embed-widget-market-overview.js', {width:'100%', height:620, dateRange:'1D', showChart:true, showSymbolLogo:false, showFloatingTooltip:true, plotLineColorGrowing:'rgba(45,212,191,1)', plotLineColorFalling:'rgba(251,113,133,1)', gridLineColor:'rgba(120,140,190,.12)', scaleFontColor:'rgba(163,177,207,1)', belowLineFillColorGrowing:'rgba(45,212,191,.12)', belowLineFillColorFalling:'rgba(251,113,133,.12)', belowLineFillColorGrowingBottom:'rgba(45,212,191,0)', belowLineFillColorFallingBottom:'rgba(251,113,133,0)', symbolActiveColor:'rgba(56,189,248,.14)',
+    tabs:[{title:'India', symbols:tvTabs(TV.indiaIdx.slice(0,8))}, {title:'World', symbols:tvTabs(TV.worldIdx.slice(0,10))}, {title:'MCX', symbols:tvTabs(TV.mcx.slice(0,8))}, {title:'Commodities', symbols:tvTabs(TV.worldCmd.slice(0,10))}, {title:'FX & rates', symbols:tvTabs(TV.fx)}]}, 620));
+  M.append(s6);
+}
+
+// ---------------------------------------------------------------- NEWS page
+function timeAgo(iso){ if(!iso) return ''; const d=(Date.now()-new Date(iso).getTime())/6e4; if(d<1) return 'just now'; if(d<60) return `${Math.round(d)} min ago`; if(d<48*60) return `${Math.round(d/60)} h ago`; return `${Math.round(d/1440)} d ago`; }
+function newsItem(x, extra){
+  return el('div',{class:'nitem'}, el('div',{}, el('a',{class:'t', href:x.link, target:'_blank', rel:'noopener noreferrer'}, x.title), x.summary? el('div',{class:'s'}, x.summary):null,
+    el('div',{class:'m'}, el('span',{class:'src'}, x.source||'—'), el('span',{}, timeAgo(x.published)), x.published? el('span',{}, new Date(x.published).toLocaleString('en-IN',{dateStyle:'medium', timeStyle:'short', timeZone:'Asia/Kolkata'})+' IST'):null, extra||null)),
+    el('a',{class:'go', href:x.link, target:'_blank', rel:'noopener noreferrer'}, 'Open ↗'));
+}
+function renderNews(C, M){
+  M.replaceChildren();
+  const D = DATA;
+  const tabs = [['all','All'],['india','Indian markets'],['portfolio','My portfolio stocks'],['world','Global markets'],['regulatory','Regulatory & policy']];
+  const sw = el('div',{class:'switch'}); for(const [k,l] of tabs){ let n=''; if(NEWS){ n = k==='all'? '' : k==='portfolio'? `${NEWS.portfolio.reduce((s,p)=>s+p.items.length,0)} stories` : `${NEWS.sections[k].length} stories`; } sw.append(el('button',{class: ROUTE.tab===k?'on':'', onclick:()=>go('news',k)}, l, n? el('small',{}, n):null)); }
+  C.append(el('div',{}, el('label',{class:'lbl'},'Section'), sw));
+  const inp = el('input',{placeholder:'Search headlines…', type:'search'}); C.append(el('div',{}, el('label',{class:'lbl'},'Filter'), el('div',{class:'toolbar', style:'margin:0'}, inp)));
+  M.append(pageHead('News', 'Indian market and stock news, stories on every stock held in the live books, global markets, and SEBI / RBI updates. Every headline opens the original article in a new browser tab.'));
+  if(!NEWS){ M.append(el('div',{class:'empty'}, 'The news feed has not been published yet — it is generated by the same GitHub build as the strategy data. Run the workflow once and reload.')); return; }
+  const when = new Date(NEWS.generated_at_utc).toLocaleString('en-IN',{dateStyle:'medium', timeStyle:'short', timeZone:'Asia/Kolkata'});
+  M.append(el('div',{class:'srcnote'}, el('span',{class:'pill live'}, 'FEEDS'), `fetched ${when} IST · ${timeAgo(NEWS.generated_at_utc)} · refreshed on every engine build (15 min in market hours, hourly otherwise)`, NEWS.failed && NEWS.failed.length? el('span',{class:'mut'}, `· ${NEWS.failed.length} feed${NEWS.failed.length>1?'s':''} unavailable this build`):null));
+  const grid = el('div',{class:'newsgrid'}); const left = el('div'); const right = el('div');
+  const body = el('div'); left.append(body);
+  let q='';
+  const match = x => !q || x.title.toLowerCase().includes(q) || (x.summary||'').toLowerCase().includes(q) || (x.source||'').toLowerCase().includes(q);
+  const listCard = (items, empty) => { const c=el('div',{class:'card'}); const f=items.filter(match); if(!f.length){ c.append(el('div',{class:'empty'}, empty)); return c; } f.forEach(x=>c.append(newsItem(x))); return c; };
+  const sectionBlock = (n, id, title, desc, items) => { const s=sec(n,id); s.append(secHead(n,title,desc), listCard(items, 'No stories match.')); return s; };
+  const portfolioBlock = (n) => {
+    const s = sec(n,'nw-portfolio'); const held = NEWS.portfolio;
+    s.append(secHead(n, 'My portfolio stocks', `${held.length} stocks currently held across the live books · Google News, last 10 days`));
+    if(!held.length){ s.append(el('div',{class:'empty'}, 'No open positions right now.')); return s; }
+    const chips = el('div',{class:'chips', style:'margin-bottom:10px'}); let pick='ALL';
+    const holder = el('div');
+    const drawP = () => { holder.replaceChildren(); for(const p of held){ if(pick!=='ALL' && pick!==p.symbol) continue; const its=p.items.filter(match); if(!its.length && (pick==='ALL')) continue;
+        const c=el('div',{class:'card', style:'margin-bottom:10px'}); c.append(el('div',{class:'nstock'}, el('b',{}, p.symbol), el('span',{}, p.name), ...p.books.map(b=>el('span',{class:'tag held'}, b)), el('a',{href:`https://news.google.com/search?q=${encodeURIComponent('"'+p.name+'" stock')}&hl=en-IN&gl=IN&ceid=IN:en`, target:'_blank', rel:'noopener noreferrer', style:'margin-left:auto;font-size:12px'}, 'more on Google News ↗')));
+        if(!its.length) c.append(el('div',{class:'empty'}, 'No recent stories.')); its.forEach(x=>c.append(newsItem(x))); holder.append(c); }
+      if(!holder.children.length) holder.append(el('div',{class:'empty'}, 'No stories match.')); };
+    for(const k of ['ALL', ...held.map(p=>p.symbol)]) chips.append(el('button',{class:'chip'+(k===pick?' on':''), onclick:()=>{ pick=k; chips.querySelectorAll('.chip').forEach(x=>x.classList.toggle('on', x.textContent===k)); drawP(); }}, k));
+    s.append(chips, holder); drawP(); return s;
+  };
+  const draw = () => { body.replaceChildren();
+    const t = ROUTE.tab;
+    if(t==='all'){ body.append(sectionBlock('1','nw-india','Indian markets','Economic Times, Moneycontrol, Mint, Business Standard, CNBC-TV18, Google News', NEWS.sections.india.slice(0,25)), portfolioBlock('2'), sectionBlock('3','nw-world','Global markets','CNBC, MarketWatch, BBC, Google News', NEWS.sections.world.slice(0,25)), sectionBlock('4','nw-reg','Regulatory & policy','SEBI, RBI press releases & notifications, Google News', NEWS.sections.regulatory.slice(0,25))); }
+    else if(t==='portfolio') body.append(portfolioBlock('1'));
+    else body.append(sectionBlock('1','nw-'+t, tabs.find(x=>x[0]===t)[1], t==='india'? 'Economic Times, Moneycontrol, Mint, Business Standard, CNBC-TV18, Google News' : t==='world'? 'CNBC, MarketWatch, BBC, Google News' : 'SEBI, RBI press releases & notifications, Google News', NEWS.sections[t])); };
+  inp.addEventListener('input', ()=>{ q=inp.value.trim().toLowerCase(); draw(); }); draw();
+  const r1 = sec(9,'nw-wire'); r1.append(secHead('·','Live wire — TradingView','streaming headlines for the Nifty 50 · real-time, independent of the build cycle'));
+  r1.append(tvWidget('embed-widget-timeline.js', {feedMode:'symbol', symbol:'NSE:NIFTY', displayMode:'regular', width:'100%', height:900}, 900));
+  right.append(r1);
+  grid.append(left, right); M.append(grid);
 }
 
 function sortable(table, rows, cols, renderRow, defaultKey, defaultDesc){
@@ -339,7 +541,7 @@ function tableCard(rows, cols, renderRow, emptyMsg, sortKey, sortDesc){
 }
 function symCell(r){ const td=el('td',{class:'sym'}, r.symbol); if(r.name) td.append(el('small',{}, r.name)); return td; }
 function td(v, c){ const t=el('td', {class:c||''}); t.textContent = v; return t; }
-function secHead(n, title, desc){ return el('div', {class:'sec-h'}, el('span',{class:'num'}, n), el('h2', {}, title), desc? el('span', {class:'desc'}, desc):null); }
+function secHead(n, title, desc){ const num = /^\d+$/.test(String(n)) ? String(Number(n)+secOffset) : n; return el('div', {class:'sec-h'}, el('span',{class:'num'}, num), el('h2', {}, title), desc? el('span', {class:'desc'}, desc):null); }
 const kpi = (v, k, d, c) => el('div', {class:'kpi'}, el('div',{class:'v '+(c||'')},v), el('div',{class:'k'},k), d? el('div',{class:'d'},d):null);
 const signCol = v => v==null ? '' : v>0 ? 'green' : v<0 ? 'rose' : '';
 
@@ -502,7 +704,7 @@ const normMom = t => ({symbol:t.symbol, name:t.name, entry_date:t.entry_date, ex
 function btAnalytics(M, ctx){
   const {name, color, capital, benchName, H, eng, trades, mddDaily, interest, charges, start, asOf, extraKpis=[]} = ctx;
   const m = monthly(H), S = stats(m.dates, m.nav, m.bench), S2 = stats(m.dates, m.nav, m.bench2);
-  const s1 = el('section'); s1.append(secHead('1','Key metrics', `${start} → ${asOf} · month-end basis for return/risk statistics · trade statistics from the ledger`));
+  const s1 = sec('1','ov-bt1'); s1.append(secHead('1','Key metrics', `${start} → ${asOf} · month-end basis for return/risk statistics · trade statistics from the ledger`));
   const kp = el('div',{class:'kpis'});
   kp.append(kpi(fPct(S.cagr,false),'CAGR',`${S.years? S.years.toFixed(1):'—'} years`,'amber'), kpi(fPct(S.excess_cagr),`Excess vs ${benchName}`, S.bench? `${benchName} CAGR ${fPct(S.bench.cagr,false)}`:'', signCol(S.excess_cagr)),
     kpi(fPct(S2.excess_cagr),`Excess vs ${DATA.bench2_short}`, S2.bench? `${DATA.bench2_short} CAGR ${fPct(S2.bench.cagr,false)}`:'', signCol(S2.excess_cagr)),
@@ -513,7 +715,7 @@ function btAnalytics(M, ctx){
     kpi(fR(eng.final_value),'Final value',`on ₹${inr.format(capital)} · ${fPct(S.total_return,false)}`,'teal'), kpi(fR(charges),'Charges paid', interest!=null? `interest earned ${fR(interest)}`:'STT, txn, stamp, SEBI, GST, DP','amber'),
     kpi(fPct(S.pos_months,false),'Positive months',`best ${fPct(S.best_month)} · worst ${fPct(S.worst_month)}`,''), ...extraKpis);
   s1.append(kp); M.append(s1);
-  const s2 = el('section'); s2.append(secHead('2','Growth and drawdown', `₹${inr.format(capital)} from ${start}; benchmarks rebased to the same starting capital`));
+  const s2 = sec('2','ov-bt2'); s2.append(secHead('2','Growth and drawdown', `₹${inr.format(capital)} from ${start}; benchmarks rebased to the same starting capital`));
   const two = el('div',{class:'two'});
   two.append(lineChart({title:`Growth vs ${benchName} and ${DATA.bench2_short} (log scale)`, dates:m.dates, series:[{name, color, values:m.nav}, {name:benchName, color:OWNB_COL, values:rebase(m.bench, m.nav[0])}, {name:DATA.bench2_short, color:BENCH2_COL, values:rebase(m.bench2, m.nav[0])}], fmt:v=>lakh(v), base:capital, area:true, minPts:2, height:330, log:true}),
     lineChart({title:'Drawdown (underwater, month-end %)', dates:m.dates, series:[{name, color, values:drawdown(m.nav)}, {name:benchName, color:OWNB_COL, values:drawdown(m.bench)}], fmt:v=>v.toFixed(1)+'%', area:true, base:0, minPts:2, height:330, padTop:false}));
@@ -521,13 +723,13 @@ function btAnalytics(M, ctx){
   const two2 = el('div',{class:'two', style:'margin-top:12px'});
   two2.append(lineChart({title:'Rolling 12-month return (%)', dates:m.dates, series:[{name, color, values:rolling(m.nav,12).map(v=>v==null?null:v*100)}, {name:benchName, color:OWNB_COL, values:rolling(m.bench,12).map(v=>v==null?null:v*100)}], fmt:v=>v.toFixed(0)+'%', base:0, minPts:13, height:260}), ctx.rightChart(m));
   s2.append(two2); M.append(s2);
-  const s3 = el('section'); s3.append(secHead('3','Monthly returns heat-map (%)', 'month-end to month-end, net of charges · right-hand column = calendar year'));
+  const s3 = sec('3','ov-bt3'); s3.append(secHead('3','Monthly returns heat-map (%)', 'month-end to month-end, net of charges · right-hand column = calendar year'));
   s3.append(heatMonthly(m.ym, rets(m.nav))); M.append(s3);
-  const s4 = el('section'); s4.append(secHead('4','Quarterly returns and monthly out-performance', `quarterly compounding of the monthly figures · out-performance = ${name} monthly return − ${benchName} monthly return`));
+  const s4 = sec('4','ov-bt4'); s4.append(secHead('4','Quarterly returns and monthly out-performance', `quarterly compounding of the monthly figures · out-performance = ${name} monthly return − ${benchName} monthly return`));
   const two3 = el('div',{class:'two'}); const rb = rets(m.bench); const opp = rets(m.nav).map((v,i)=> (v==null||rb[i]==null)? null : v-rb[i]);
   two3.append(el('div',{}, el('h3',{style:'margin-top:0'},'Quarterly returns (%)'), heatQuarterly(m.ym, rets(m.nav))), el('div',{}, el('h3',{style:'margin-top:0'},`Monthly out-performance vs ${benchName} (%)`), heatMonthly(m.ym, opp, {yearCol:false})));
   s4.append(two3); M.append(s4);
-  const s5 = el('section'); s5.append(secHead('5','Top and weakest trades', `by net return on the position · ${trades.length} closed positions`));
+  const s5 = sec('5','ov-bt5'); s5.append(secHead('5','Top and weakest trades', `by net return on the position · ${trades.length} closed positions`));
   const sorted = trades.filter(t=>t.pnl_pct!=null).slice().sort((a,b)=>b.pnl_pct-a.pnl_pct);
   const two4 = el('div',{class:'two'}); two4.append(el('div',{}, el('h3',{style:'margin-top:0'},'Top 10 trades'), tradeTable(sorted.slice(0,10))), el('div',{}, el('h3',{style:'margin-top:0'},'Weakest 10 trades'), tradeTable(sorted.slice(-10).reverse())));
   s5.append(two4); M.append(s5);
@@ -540,31 +742,32 @@ function liveRows(){
   for(const [k,P] of Object.entries(D.portfolios)){ const pf=P.performance;
     rows.push({key:k, type:'anchor', name:P.display, alias:k, color:SCOL[k], engine:'Anchor & Sail', universe:P.universe_label, benchmark:P.benchmark, inception:P.inception, capital:P.capital,
       nav:pf.nav, return_pct:pf.return_pct, bench_return_pct:pf.bench_return_pct, bench2_return_pct:pf.bench2_return_pct, realised:pf.realised, unrealised:pf.unrealised, max_dd_pct:pf.max_dd_pct,
-      positions:pf.open_positions, slots:pf.slots, today:`${P.exits.filter(e=>e.today).length} exit${P.exits.filter(e=>e.today).length===1?'':'s'} today`, H:P.history, open:()=>go(k,'live'), openBt:()=>go(k,'bt'),
+      positions:pf.open_positions, slots:pf.slots, today:`${P.exits.filter(e=>e.today).length} exit${P.exits.filter(e=>e.today).length===1?'':'s'} today`, H:P.history, open:()=>go(k), openBt:()=>go('overview', k),
       bt:P.backtest? {cagr:P.backtest.metrics.cagr_pct, trades:P.backtest.metrics.total_trades}:null}); }
   for(const [k,Sx] of Object.entries(D.momentum.strategies)) for(const [uk,U] of Object.entries(Sx.universes)){ const pf=U.live.performance;
     rows.push({key:`${k}:${uk}`, type:'momentum', name:Sx.name, alias:`${Sx.code} · ${U.universe_label}` + (uk===D.momentum.default_universe?' · default':''), color:SCOL[k], engine:Sx.style, universe:U.universe_label, benchmark:U.benchmark, inception:U.live.inception, capital:D.momentum.capital,
       nav:pf.nav, return_pct:pf.return_pct, bench_return_pct:pf.bench_return_pct, bench2_return_pct:pf.bench2_return_pct, realised:pf.realised, unrealised:unrealisedOf(U.live.holdings), max_dd_pct:pf.max_dd_pct,
-      positions:pf.holdings, slots:D.momentum.rules.hold, today:`exposure ${pf.exposure_pct??'—'}%`, H:U.live.history, open:()=>go(k,uk,'live'), openBt:()=>go(k,uk,'bt'), uni:uk, bt:{cagr:U.backtest.metrics.cagr_pct, trades:U.backtest.metrics.closed_trades}}); }
+      positions:pf.holdings, slots:D.momentum.rules.hold, today:`exposure ${pf.exposure_pct??'—'}%`, H:U.live.history, open:()=>go(k,uk), openBt:()=>go('overview', k, uk), uni:uk, bt:{cagr:U.backtest.metrics.cagr_pct, trades:U.backtest.metrics.closed_trades}}); }
   return rows;
 }
-function renderOverview(M){
+function renderComparison(M){
   M.replaceChildren();
   const D = DATA; const cmp = comparisonSet(); const rows = liveRows();
   // alerts
   const alerts = [];
   for(const [k,P] of Object.entries(D.portfolios)){
-    for(const e of P.exits.filter(e=>e.today)) alerts.push({strategy:P.display, text:`${e.type==='EXIT'?'Exit':'Scale-out'} ${e.symbol} — ${e.reason}`, kind:'exit', href:`#${k}/live`});
+    for(const e of P.exits.filter(e=>e.today)) alerts.push({strategy:P.display, text:`${e.type==='EXIT'?'Exit':'Scale-out'} ${e.symbol} — ${e.reason}`, kind:'exit', href:`#${k}`});
     const near = P.open_positions.filter(p=>p.to_stop_pct!=null && p.to_stop_pct<=3);
-    if(near.length) alerts.push({strategy:P.display, text:`${near.length} holding${near.length>1?'s':''} within 3% of stop: ${near.slice(0,4).map(p=>p.symbol).join(', ')}${near.length>4?'…':''}`, kind:'warn', href:`#${k}/live`});
+    if(near.length) alerts.push({strategy:P.display, text:`${near.length} holding${near.length>1?'s':''} within 3% of stop: ${near.slice(0,4).map(p=>p.symbol).join(', ')}${near.length>4?'…':''}`, kind:'warn', href:`#${k}`});
   }
   for(const [k,Sx] of Object.entries(D.momentum.strategies)){
     const U = Sx.universes[cmp.uni]; const lr = U.live.last_rebalance;
-    if(lr && lr.date >= D.data_date.slice(0,8)+'01') alerts.push({strategy:`${Sx.name} · ${U.universe_label}`, text:`Rebalanced ${lr.date}: ${lr.orders.filter(o=>o.side==='BUY').length} buys, ${lr.orders.filter(o=>o.side==='SELL').length} sells · exposure ${lr.exposure_pct}%`, kind:'info', href:`#${k}/${cmp.uni}/live`});
-    if(k==='S4PLUS' && U.live.regime && U.live.regime.nifty_vs_200dma_pct!=null && U.live.regime.nifty_vs_200dma_pct<0) alerts.push({strategy:Sx.name, text:`Nifty is ${fPct(U.live.regime.nifty_vs_200dma_pct)} vs its 200-DMA — de-risk regime (50% exposure) at the next rebalance`, kind:'warn', href:`#${k}/${cmp.uni}/live`});
+    if(lr && lr.date >= D.data_date.slice(0,8)+'01') alerts.push({strategy:`${Sx.name} · ${U.universe_label}`, text:`Rebalanced ${lr.date}: ${lr.orders.filter(o=>o.side==='BUY').length} buys, ${lr.orders.filter(o=>o.side==='SELL').length} sells · exposure ${lr.exposure_pct}%`, kind:'info', href:`#${k}/${cmp.uni}`});
+    if(k==='S4PLUS' && U.live.regime && U.live.regime.nifty_vs_200dma_pct!=null && U.live.regime.nifty_vs_200dma_pct<0) alerts.push({strategy:Sx.name, text:`Nifty is ${fPct(U.live.regime.nifty_vs_200dma_pct)} vs its 200-DMA — de-risk regime (50% exposure) at the next rebalance`, kind:'warn', href:`#${k}/${cmp.uni}`});
   }
   const nextReb = Object.values(D.momentum.strategies)[0].universes[cmp.uni].live.next_rebalance;
-  M.append(pageHead('Strategy comparison', `Six model portfolios · four Anchor & Sail books and two momentum books · live since inception, backtested from January 2016 · common yardstick: ${D.bench2_short}`));
+  M.append(pageHead('All strategies — comparison', `Four Anchor & Sail books and two momentum books · live since inception, backtested from January 2016 · common yardstick: ${D.bench2_short} · pick a single strategy in the dropdown above for its full live + backtest report`));
+  M.append(jumpBar([['1','At a glance','ov-cards'],['2','Live books','ov-livetbl'],['3','Backtest comparison','ov-cmp']]));
   const hero = el('div',{class:'ov-hero'},
     el('div',{class:'ov-title'}, el('h2',{}, 'All strategies, one page.'),
       el('p',{}, `Every book is run live from its inception date and re-backtested from January 2016 on every build, against its own index and against the ${D.bench2_short}. Click any card, bar or row to open the strategy's page.`),
@@ -574,7 +777,7 @@ function renderOverview(M){
   M.append(hero);
 
   // 1 — cards
-  const s1 = el('section'); s1.append(secHead('1','Strategies at a glance', 'live return, realised and unrealised P&L, backtest CAGR — click a card to open its page'));
+  const s1 = sec('1','ov-cards'); s1.append(secHead('1','Strategies at a glance', 'live return, realised and unrealised P&L, backtest CAGR — click a card to open its page'));
   const cards = el('div',{class:'gridcards'});
   for(const r of rows.filter(r=>r.type==='anchor' || r.uni===cmp.uni)){
     cards.append(el('div',{class:'scard', style:`--accent:${r.color}`, onclick:r.open},
@@ -590,7 +793,7 @@ function renderOverview(M){
   s1.append(cards); M.append(s1);
 
   // 2 — live table + live growth
-  const s2 = el('section'); s2.append(secHead('2','Live books', `every book from its inception, marked to the latest prices · realised = closed positions net of charges · unrealised = today's mark on open positions · cash leg = Nifty ETF gain or liquid-fund interest (less charges) · total = book value − capital`));
+  const s2 = sec('2','ov-livetbl'); s2.append(secHead('2','Live books', `every book from its inception, marked to the latest prices · realised = closed positions net of charges · unrealised = today's mark on open positions · cash leg = Nifty ETF gain or liquid-fund interest (less charges) · total = book value − capital`));
   s2.append(tableCard(rows, [
       {label:'Strategy', left:true, key:'name'}, {label:'Universe', left:true, key:'universe'}, {label:'Since', key:'inception'}, {label:'Capital', key:'capital'}, {label:'Value', key:'nav'},
       {label:'Return', key:'return_pct'}, {label:'Benchmark', key:'bench_return_pct'}, {label:'Excess', key:'_ex'}, {label:D.bench2_short, key:'bench2_return_pct'},
@@ -609,15 +812,15 @@ function renderOverview(M){
   M.append(s2);
 
   // 3 — backtest comparison (reference layout)
-  const s3 = el('section'); s3.append(secHead('3','Backtest comparison 2016 → today', 'identical engines run from January 2016 on today\'s index members, net of costs · return and risk statistics on month-end NAV so every book and the benchmark are compared on an identical basis'));
+  const s3 = sec('3','ov-cmp'); s3.append(secHead('3','Backtest comparison 2016 → today', 'identical engines run from January 2016 on today\'s index members, net of costs · return and risk statistics on month-end NAV so every book and the benchmark are compared on an identical basis'));
   const ctl = el('div',{class:'controls', style:'margin:0 0 12px'});
   const sel = el('select'); for(const m of METS){ const o=el('option',{value:m[0]}, m[1].replace('__B2__', D.bench2_short)); if(m[0]===OV.metric) o.selected=true; sel.append(o); }
-  sel.addEventListener('change', ()=>{ OV.metric=sel.value; renderOverview(M); window.scrollTo(0, s3.offsetTop-10); });
-  const us = el('div',{class:'switch'}); for(const [uk,UU] of Object.entries(D.momentum.strategies.S1.universes)) us.append(el('button',{class: uk===cmp.uni?'on':'', onclick:()=>{ OV.uni=uk; renderOverview(M); window.scrollTo(0, s3.offsetTop-10); }}, UU.universe_label, el('small',{}, 'momentum books')));
+  sel.addEventListener('change', ()=>{ OV.metric=sel.value; renderComparison(M); window.scrollTo(0, s3.offsetTop-10); });
+  const us = el('div',{class:'switch'}); for(const [uk,UU] of Object.entries(D.momentum.strategies.S1.universes)) us.append(el('button',{class: uk===cmp.uni?'on':'', onclick:()=>{ OV.uni=uk; renderComparison(M); window.scrollTo(0, s3.offsetTop-10); }}, UU.universe_label, el('small',{}, 'momentum books')));
   ctl.append(el('div',{}, el('label',{class:'lbl'},'Compare by metric'), sel), el('div',{}, el('label',{class:'lbl'},'Momentum universe shown'), us));
   s3.append(ctl);
   const met = OV.metric, MD = MET[met], label = MD.label.replace('__B2__', D.bench2_short);
-  const items = cmp.recs.map(r=>({label:r.name, value:r.vals[met], color:r.color, open:()=> isMom(r.key)? go(r.key, cmp.uni, 'bt') : go(r.key,'bt')}));
+  const items = cmp.recs.map(r=>({label:r.name, value:r.vals[met], color:r.color, open:()=> isMom(r.key)? go(r.key, cmp.uni, 'bt') : go('overview', r.key)}));
   if(MD.bench && cmp.bench.vals[met]!=null) items.push({label:D.bench2_short, value:cmp.bench.vals[met], color:BENCH2_COL, bench:true});
   const grid = el('div',{class:'perf'});
   grid.append(barChart({title:`${label} — all strategies${MD.bench?' vs '+D.bench2_short:''}`, sub: MD.src==='stat'? 'month-end basis':'from the trade ledger', items, fmt:v=>fmtM(v,met), height:330}));
@@ -637,7 +840,7 @@ function renderOverview(M){
   // full metrics table
   const ft = el('table',{class:'metrics'}); const hr = el('tr',{}, el('th',{class:'l'},'Metric')); for(const r of cmp.recs) hr.append(el('th',{}, el('i',{class:'dot', style:`background:${r.color}`}), r.name, el('small',{}, r.alias))); hr.append(el('th',{class:'bench'}, D.bench2_short)); ft.append(el('thead',{}, hr));
   const fb = el('tbody');
-  for(const mm of METS){ const key=mm[0]; const tr=el('tr',{class: key===met?'sel':'', style:'cursor:pointer', onclick:()=>{ OV.metric=key; renderOverview(M); window.scrollTo(0, s3.offsetTop-10); }}); tr.append(td(mm[1].replace('__B2__', D.bench2_short),'l'));
+  for(const mm of METS){ const key=mm[0]; const tr=el('tr',{class: key===met?'sel':'', style:'cursor:pointer', onclick:()=>{ OV.metric=key; renderComparison(M); window.scrollTo(0, s3.offsetTop-10); }}); tr.append(td(mm[1].replace('__B2__', D.bench2_short),'l'));
     const vals = cmp.recs.map(r=>r.vals[key]); const valid = vals.filter(v=>v!=null); const best = valid.length? (MET[key].better==='low'? Math.min(...valid):Math.max(...valid)) : null;
     cmp.recs.forEach((r,i)=>{ const v=vals[i]; const c = v!=null && v===best ? 'best' : (MET[key].unit==='₹' || key==='excess_cagr' || key==='excess_own' ? cls(v) : ''); tr.append(td(fmtM(v,key), c)); });
     tr.append(td(MET[key].bench? fmtM(cmp.bench.vals[key],key):'—','bench')); fb.append(tr); }
@@ -652,7 +855,9 @@ function renderMomentumLive(Sx, U, M){
   const D = DATA, L = U.live, pf = L.performance, R = L.regime || {}, isS4 = Sx.code==='S4PLUS', color = SCOL[isS4?'S4PLUS':'S1'];
   const unreal = unrealisedOf(L.holdings);
   M.append(pageHead(Sx.name, `${Sx.style} · ${U.universe_label} · benchmark ${U.benchmark} · yardstick ${D.bench2_short}`, [{text:Sx.name, color}, {text:Sx.code}, {text:`LIVE since ${L.inception}`}]));
-  const s1 = el('section');
+  M.append(jumpBar([['1','Live book & regime','st-book0'],['2','Current portfolio','st-book'],['3','Performance','st-perf'],['4','Exited trades & rebalances','st-exits'],['5','Next rebalance preview','st-watch'],['6','Universe','st-uni']]));
+  M.append(el('div',{class:'srcnote'}, el('span',{class:'pill '+(D.market_status.startsWith('LIVE')?'live':'closed')}, D.market_status), `Ranks, exposure and P&L recomputed by the engine at ${D.generated_at_ist.slice(11,16)} IST on Yahoo prices (≈15 min delayed) · rebalance orders are generated on the last session of the month at the close · the live-quote panel streams real-time NSE prices from TradingView`, el('button',{style:'padding:4px 10px;font-size:12px', onclick:()=>go('overview', Sx.code==='S1'?'S1':'S4PLUS', U.universe)}, 'Backtest & full report →')));
+  const s1 = sec('1','st-book0');
   s1.append(secHead('1', `Live book — ${Sx.name} · ${U.universe_label}`, `${Sx.style} · ₹${inr.format(D.momentum.capital)} committed at the ${L.inception} close · rebalances on the last trading day of each month · next ≈ ${L.next_rebalance}`));
   const kp = el('div',{class:'kpis'});
   kp.append(kpi(fR(pf.nav),'Book value',`on ₹${inr.format(D.momentum.capital)}`,'amber'), kpi(fPct(pf.return_pct),'Return since inception',`${pf.days} days`, signCol(pf.return_pct)),
@@ -671,30 +876,33 @@ function renderMomentumLive(Sx, U, M){
     el('div',{}, el('span',{},'Eligible stocks today (liquidity + trend gate)'), el('span',{}, `${R.eligible_now ?? '—'} of ${U.universe_size}`)),
     el('div',{}, el('span',{},'Last rebalance'), el('span',{}, L.last_rebalance? `${L.last_rebalance.date} · ${L.last_rebalance.orders.length} orders · exposure ${L.last_rebalance.exposure_pct}%` : 'not yet — first rebalance at the inception close')),
   ));
-  s1.append(el('h3',{}, `Current portfolio · ${L.holdings.length} stocks`));
-  s1.append(tableCard(L.holdings, [
+  M.append(s1);
+  const s1b = sec('2','st-book');
+  s1b.append(secHead('2', `Current portfolio · ${L.holdings.length} stocks`, `${lakh(pf.invested)} invested · ${lakh(pf.cash)} in the liquid fund · status = where each holding ranks if the month closed today`));
+  s1b.append(tableCard(L.holdings, [
       {label:'Stock', left:true, key:'symbol'}, {label:'Sector', left:true, key:'industry'}, {label:'Shares', key:'shares'}, {label:'Avg entry ₹', key:'avg_entry'}, {label:'Since', key:'entry_date'}, {label:'LTP ₹', key:'ltp'},
       {label:'Value ₹', key:'value'}, {label:'Weight', key:'weight_pct'}, {label:'P&L %', key:'pnl_pct'}, {label:'Unrealised ₹', key:'unrealised'}, {label:'Rank today', key:'rank_now', desc:false, title:'Momentum rank in the universe if the month closed today'}, {label:'Score', key:'score_now'}, {label:'Status today', key:'in_buffer', left:true}],
     r => { const tr=el('tr'); tr.append(symCell(r), td(r.industry,'l'), td(inr.format(r.shares)), td(fP(r.avg_entry)), td(r.entry_date), td(fP(r.ltp)), td(fR(r.value)), td(fPct(r.weight_pct,false)), pctCell(r.pnl_pct), td(fR(r.unrealised), cls(r.unrealised)),
         td(r.rank_now ?? '—'), td(fN(r.score_now,1)), el('td',{class:'l'}, r.rank_now==null? el('span',{class:'tag exit'},'INELIGIBLE') : r.rank_now<=D.momentum.rules.hold? el('span',{class:'tag entry'},'TOP 20') : r.in_buffer? el('span',{class:'tag scale'},'BUFFER 21–30') : el('span',{class:'tag exit'},'WOULD SELL'))); return tr; },
     L.started? 'No holdings (fully in the liquid fund).' : `The book starts with the first rebalance on the ${L.inception} close.`, 'weight_pct', true));
+  if(L.holdings.length){ s1b.append(el('h3',{}, 'Live quotes — TradingView (real-time NSE) for the current portfolio'), liveQuotes(L.holdings.map(h=>h.symbol))); }
   // last rebalance orders
   if(L.last_rebalance){
-    s1.append(el('h3',{}, `Last rebalance orders — ${L.last_rebalance.date} · exposure ${L.last_rebalance.exposure_pct}%${L.last_rebalance.derisk?' · DE-RISK':''}${L.last_rebalance.volspike?' · VOL SPIKE':''}`));
-    s1.append(tableCard(L.last_rebalance.orders, [
+    s1b.append(el('h3',{}, `Last rebalance orders — ${L.last_rebalance.date} · exposure ${L.last_rebalance.exposure_pct}%${L.last_rebalance.derisk?' · DE-RISK':''}${L.last_rebalance.volspike?' · VOL SPIKE':''}`));
+    s1b.append(tableCard(L.last_rebalance.orders, [
         {label:'Side', key:'side', left:true}, {label:'Stock', left:true, key:'symbol'}, {label:'Qty', key:'qty'}, {label:'Price ₹', key:'price'}, {label:'Value ₹', key:'value'}, {label:'Rank', key:'rank'}, {label:'Target weight', key:'weight_pct'}],
       r => { const tr=el('tr'); tr.append(el('td',{class:'l'}, el('span',{class:'tag '+(r.side==='BUY'?'entry':r.side==='SELL'?'exit':r.side==='TRIM'?'scale':'cyan')}, r.side)), el('td',{class:'sym'}, r.symbol), td(inr.format(r.qty)), td(fP(r.price)), td(fR(r.value)), td(r.rank ?? '—'), td(r.weight_pct!=null? fPct(r.weight_pct,false):'—')); return tr; },
       'No orders at the last rebalance (portfolio unchanged).', null, false));
     if(L.last_rebalance.skipped && L.last_rebalance.skipped.length){
-      s1.append(el('div',{class:'empty', style:'text-align:left;margin-top:8px'}, el('b',{}, `${L.last_rebalance.skipped.length} target${L.last_rebalance.skipped.length>1?'s':''} not bought: `),
+      s1b.append(el('div',{class:'empty', style:'text-align:left;margin-top:8px'}, el('b',{}, `${L.last_rebalance.skipped.length} target${L.last_rebalance.skipped.length>1?'s':''} not bought: `),
         L.last_rebalance.skipped.map(k=>`${k.symbol} (rank ${k.rank}${k.price? ', ₹'+inr.format(k.price)+' vs ₹'+inr.format(k.target_value)+' target':''}) — ${k.reason.toLowerCase()}`).join(' · '),
         '. The unspent allocation stays in the liquid fund until the next rebalance.'));
     }
   }
-  M.append(s1);
+  M.append(s1b);
 
   // performance
-  const s2 = el('section'); s2.append(secHead('2', `Performance vs ${U.benchmark} and ${D.bench2_short}`, `since ${L.inception} · benchmark source: ${U.benchmark_source}`));
+  const s2 = sec('3','st-perf'); s2.append(secHead('3', `Performance vs ${U.benchmark} and ${D.bench2_short}`, `since ${L.inception} · benchmark source: ${U.benchmark_source}`));
   const H = L.history; const nav0 = H.length? H[0].nav:1; const b0 = H.find(h=>h.bench!=null)?.bench; const b20 = H.find(h=>h.bench2!=null)?.bench2;
   const grid = el('div',{class:'perf'});
   grid.append(lineChart({title:`Growth of 100 — ${Sx.name} vs benchmarks`, dates:H.map(h=>h.date), series:[
@@ -709,12 +917,25 @@ function renderMomentumLive(Sx, U, M){
       el('div',{}, el('span',{},'Weighting'), el('span',{}, isS4? '50% inverse-vol + 50% equal':'equal weight')),
       el('div',{}, el('span',{},'Sector cap'), el('span',{}, `max ${D.momentum.rules.sector_cap} per NSE sector`))));
   s2.append(grid);
-  if(H.length){ const mm = monthly(H); const rb = rets(mm.bench); s2.append(el('h3',{}, 'Monthly returns so far (%)'), el('div',{class:'two'}, el('div',{}, heatMonthly(mm.ym, rets(mm.nav))), el('div',{}, el('div',{class:'note', style:'margin:0 0 6px'}, `Out-performance vs ${U.benchmark} (%)`), heatMonthly(mm.ym, rets(mm.nav).map((v,i)=> (v==null||rb[i]==null)? null : v-rb[i]), {yearCol:false})))); }
+  if(H.length){ const mm = monthly(H); const rb = rets(mm.bench); s2.append(el('h3',{}, 'Monthly returns so far (%)'), el('div',{class:'two'}, el('div',{}, heatMonthly(mm.ym, rets(mm.nav))), el('div',{}, el('h3',{style:'margin-top:0'}, `Out-performance vs ${U.benchmark} (%)`), heatMonthly(mm.ym, rets(mm.nav).map((v,i)=> (v==null||rb[i]==null)? null : v-rb[i]), {yearCol:false})))); }
   M.append(s2);
 
+  // exited trades + rebalance history
+  const s2b = sec('4','st-exits');
+  s2b.append(secHead('4', `Exited trades — ${L.trades.length} closed position${L.trades.length===1?'':'s'} since inception`, `realised ${fR(pf.realised)} net of charges · a position closes when it drops out of the top 30 at a month-end rebalance`));
+  s2b.append(tableCard(L.trades, [{label:'Stock', left:true, key:'symbol'}, {label:'Entry', key:'entry_date'}, {label:'Avg entry ₹', key:'avg_entry'}, {label:'Exit', key:'exit_date'}, {label:'Avg exit ₹', key:'avg_exit'}, {label:'Shares', key:'shares'}, {label:'Invested ₹', key:'invested'}, {label:'Months', key:'months'}, {label:'Return %', key:'return_pct'}, {label:'Net P&L ₹', key:'net_pnl'}, {label:'Costs ₹', key:'costs'}, {label:'Reason', key:'reason', left:true}],
+    r => { const tr=el('tr'); tr.append(el('td',{class:'sym'}, r.symbol), td(r.entry_date), td(fP(r.avg_entry)), td(r.exit_date), td(fP(r.avg_exit)), td(inr.format(r.shares)), td(fR(r.invested)), td(r.months), pctCell(r.return_pct), td(fR(r.net_pnl), cls(r.net_pnl)), td(fR(r.costs)), td(r.reason,'l')); return tr; },
+    'No position has been closed yet — the first exits can only happen at a month-end rebalance.', 'exit_date', true));
+  s2b.append(el('h3',{}, `Rebalance history · ${L.rebalances.length}`));
+  s2b.append(tableCard(L.rebalances.slice().reverse(), [{label:'Date', left:true, key:'date'}, {label:'Exposure', key:'exposure_pct'}, {label:'Regime', key:'derisk', left:true}, {label:'Targets', key:'_t'}, {label:'Buys', key:'_b'}, {label:'Sells', key:'_s'}, {label:'Trims / top-ups', key:'_x'}, {label:'Not bought', key:'_k'}, {label:'Eligible', key:'eligible'}, {label:'Book value ₹', key:'nav'}, {label:'Cash ₹', key:'cash'}],
+    r => { r._t=r.targets.length; r._b=r.orders.filter(o=>o.side==='BUY').length; r._s=r.orders.filter(o=>o.side==='SELL').length; r._x=r.orders.filter(o=>o.side==='TRIM'||o.side==='TOP-UP').length; r._k=(r.skipped||[]).length;
+      const tr=el('tr'); tr.append(td(r.date,'l'), td(fPct(r.exposure_pct,false)), el('td',{class:'l'}, r.derisk? el('span',{class:'tag exit'},'DE-RISK'):el('span',{class:'tag entry'},'FULL'), r.volspike? el('span',{class:'tag scale', style:'margin-left:4px'},'VOL SPIKE'):null), td(r._t), td(r._b), td(r._s), td(r._x), td(r._k), td(`${r.eligible} of ${r.universe}`), td(fR(r.nav)), td(fR(r.cash))); return tr; },
+    'No rebalance yet.', 'date', true));
+  M.append(s2b);
+
   // next rebalance preview
-  const s3 = el('section'); const P = L.provisional;
-  s3.append(secHead('3', 'Next rebalance preview', `what the ${L.next_rebalance} rebalance would do if the month closed today — ranks move daily until then`));
+  const s3 = sec('5','st-watch'); const P = L.provisional;
+  s3.append(secHead('5', 'Next rebalance preview — watchlist', `what the ${L.next_rebalance} rebalance would do if the month closed today — ranks move daily until then`));
   if(P){
     s3.append(el('div',{class:'hero'}, el('b',{}, `Exposure ${P.exposure_pct}%`), P.derisk? ' — Nifty below its 200-DMA, de-risk regime.' : ' — full exposure.', P.volspike? ' Vol spike: ×0.8 applied.':'', ` Target list: `, el('b',{}, `${P.targets.filter(t=>t.action==='BUY').length} new buys`), `, `, el('b',{}, `${P.targets.filter(t=>t.action==='HOLD').length} holds`), `, `, el('b',{}, `${P.would_sell.length} sells`), '.'));
     s3.append(el('h3',{}, 'Target portfolio if rebalanced today'));
@@ -732,7 +953,7 @@ function renderMomentumLive(Sx, U, M){
   M.append(s3);
 
   // universe
-  const s4 = el('section'); s4.append(secHead('4', `Universe — ${U.universe_label}`, `${U.universe_size} stocks ranked on today's momentum score; eligibility = liquidity ≥ ₹${D.momentum.rules.liq_min_cr} cr/day + above 200-DMA${isS4?' + rising 200-DMA + below-median downside capture':''}`));
+  const s4 = sec('6','st-uni'); s4.append(secHead('6', `Universe — ${U.universe_label}`, `${U.universe_size} stocks ranked on today's momentum score; eligibility = liquidity ≥ ₹${D.momentum.rules.liq_min_cr} cr/day + above 200-DMA${isS4?' + rising 200-DMA + below-median downside capture':''}`));
   const tb = el('div',{class:'toolbar'}); const inp = el('input',{placeholder:'Filter symbol / name / sector…', type:'search'}); const holder = el('div'); let q='', f='ALL';
   const chips = el('div',{class:'chips'});
   const draw = () => { const rows = U.universe_rows.filter(r => (!q || r.symbol.toLowerCase().includes(q) || (r.name||'').toLowerCase().includes(q) || (r.industry||'').toLowerCase().includes(q)) && (f==='ALL' || (f==='HELD'&&r.held) || (f==='TOP 20'&&r.rank&&r.rank<=20) || (f==='TOP 30'&&r.rank&&r.rank<=30) || (f==='ELIGIBLE'&&r.eligible) || (f==='INELIGIBLE'&&!r.eligible)));
@@ -750,11 +971,12 @@ function renderMomentumLive(Sx, U, M){
 function renderPortfolio(P, M){
   M.replaceChildren();
   const D = DATA, pf = P.performance, color = SCOL[P.name] || 'var(--s1)';
-  M.append(pageHead(P.display, `Anchor & Sail · ${P.universe_label} · ranking ${P.ranking?'ON':'OFF'} · benchmark ${P.benchmark} · yardstick ${D.bench2_short}`, [{text:P.display, color}, {text:P.name}, {text:`LIVE since ${P.inception}`}]));
+  M.append(pageHead(P.display, `Anchor & Sail · ${P.universe_label} (${P.universe_size} stocks) · ranking ${P.ranking?'ON':'OFF'} · ₹${inr.format(P.capital)} committed ${P.inception} · benchmark ${P.benchmark} · yardstick ${D.bench2_short}`, [{text:P.display, color}, {text:P.name}, {text:`LIVE since ${P.inception}`}]));
+  M.append(jumpBar([['1','Exit signals','st-exit'],['2','Entry signals','st-entry'],['3','Open book','st-book'],['4','Performance','st-perf'],['5','Exited trades','st-exits'],['6','Watchlist','st-watch'],['7','Universe','st-uni']]));
+  M.append(el('div',{class:'srcnote'}, el('span',{class:'pill '+(D.market_status.startsWith('LIVE')?'live':'closed')}, D.market_status), `Signals, stops and P&L recomputed by the engine at ${D.generated_at_ist.slice(11,16)} IST on Yahoo prices (≈15 min delayed) · the live-quote panel in the Open book streams real-time NSE prices from TradingView`, el('button',{style:'padding:4px 10px;font-size:12px', onclick:()=>go('overview', P.name)}, 'Backtest & full report →')));
 
-  const s1 = el('section');
-  s1.append(secHead('1', `Signals — ${P.display}`, `${P.universe_label} (${P.universe_size} stocks) · ranking ${P.ranking?'ON':'OFF'} · ₹${inr.format(P.capital)} committed ${P.inception}`));
-  s1.append(el('h3', {}, `Exit signals — stops / targets hit (this month${P.exits.some(e=>e.today)?', today highlighted':''})`));
+  const s1 = sec('1','st-exit');
+  s1.append(secHead('1', `Exit signals — stops / targets hit this month${P.exits.some(e=>e.today)?' · TODAY highlighted':''}`, 'open ≤ stop → out at open (gap) · low ≤ stop → out at stop · high ≥ target → 50% scale-out, stop to breakeven'));
   s1.append(tableCard(P.exits, [
       {label:'Stock', left:true, key:'symbol'}, {label:'Action', key:'type'}, {label:'Date', key:'date'}, {label:'Reason', key:'reason', left:true},
       {label:'Entry date', key:'entry_date'}, {label:'Entry ₹', key:'entry'}, {label:'Qty', key:'qty'}, {label:'Exit ₹', key:'price'},
@@ -764,9 +986,11 @@ function renderPortfolio(P, M){
         td(r.date), td(r.reason,'l'), td(r.entry_date), td(fP(r.entry)), td(inr.format(r.qty)), td(fP(r.price)), td(fP(r.stop)), pctCell(r.pnl_pct),
         td(r.realised==null?'—':fR(r.realised), cls(r.realised))); return tr; },
     'No stop or target has been hit this month. Open positions and their live stop levels are listed below.', 'date', true));
+  M.append(s1);
 
-  s1.append(el('h3', {}, `Entry signals — ${P.signal_month || D.completed_month} month-end close · every qualifying stock, whether or not a slot was free · valid for all of ${D.running_month}`));
-  s1.append(tableCard(P.entries, [
+  const s1b = sec('2','st-entry');
+  s1b.append(secHead('2', `Entry signals — ${P.signal_month || D.completed_month} month-end close`, `every qualifying stock, whether or not a slot was free · valid for all of ${D.running_month} · next signal set: ${D.running_month} month-end close`));
+  s1b.append(tableCard(P.entries, [
       {label:'#', key:'rank', desc:false}, {label:'Stock', left:true, key:'symbol'}, {label:'Status', key:'status', left:true}, {label:'Entry (close) ₹', key:'close'},
       {label:'LTP ₹', key:'ltp'}, {label:'vs entry', key:'from_entry_pct'}, {label:'Qty', key:'qty'}, {label:'Size ₹', key:'size'},
       {label:'Stop ₹ (−15%)', key:'stop'}, {label:'Target ₹ (+30%)', key:'target'}, {label:'%R(14)', key:'wr'}, {label:'Score', key:'score', title:'(EMA5−EMA50)/EMA50 ×100'},
@@ -776,13 +1000,16 @@ function renderPortfolio(P, M){
         td(fP(r.close)), td(fP(r.ltp)), pctCell(r.from_entry_pct), td(r.qty?inr.format(r.qty):'—'), td(fR(r.size)), td(fP(r.stop)), td(fP(r.target)),
         td(fP(r.wr)), td(fP(r.score)), td(fP(r.ema5)), td(fP(r.ema15)), td(fP(r.ema50))); return tr; },
     `No stock in this universe satisfied Armed + Trigger + Trend on the ${D.completed_month} close. Next signal set: ${D.running_month} month-end.`, 'rank', false));
+  M.append(s1b);
 
-  s1.append(el('h3', {}, `Open book — live stop levels (${pf.open_positions} of ${pf.slots} slots)`));
-  s1.append(openBookTable(P.open_positions, true));
-  M.append(s1);
+  const s1c = sec('3','st-book');
+  s1c.append(secHead('3', `Open book — ${pf.open_positions} of ${pf.slots} slots`, `live stop levels · sorted by distance to stop · ${lakh(pf.invested)} invested, ${lakh(pf.cash)} in the Nifty ETF`));
+  s1c.append(openBookTable(P.open_positions, true));
+  if(P.open_positions.length){ s1c.append(el('h3',{}, 'Live quotes — TradingView (real-time NSE) for the open book'), liveQuotes(P.open_positions.map(p=>p.symbol))); }
+  M.append(s1c);
 
-  const s2 = el('section');
-  s2.append(secHead('2', `Performance vs ${P.benchmark}`, `since ${P.inception} · ${pf.days} day${pf.days===1?'':'s'} · benchmark source: ${P.benchmark_source}`));
+  const s2 = sec('4','st-perf');
+  s2.append(secHead('4', `Performance vs ${P.benchmark}`, `since ${P.inception} · ${pf.days} day${pf.days===1?'':'s'} · benchmark source: ${P.benchmark_source}`));
   const kp = el('div', {class:'kpis'});
   kp.append(
     kpi(fR(pf.nav), 'Portfolio value', `on ₹${inr.format(P.capital)}`, 'amber'),
@@ -814,11 +1041,22 @@ function renderPortfolio(P, M){
       el('div',{}, el('span',{},'Ranking when signals > slots'), el('span',{}, P.ranking? 'ON — highest score first' : 'OFF — first-come (universe order)')),
     ));
   s2.append(grid);
-  { const mm = monthly(H); const rb = rets(mm.bench); s2.append(el('h3',{}, 'Monthly returns so far (%)'), el('div',{class:'two'}, el('div',{}, heatMonthly(mm.ym, rets(mm.nav))), el('div',{}, el('div',{class:'note', style:'margin:0 0 6px'}, `Out-performance vs ${P.benchmark} (%)`), heatMonthly(mm.ym, rets(mm.nav).map((v,i)=> (v==null||rb[i]==null)? null : v-rb[i]), {yearCol:false})))); }
+  { const mm = monthly(H); const rb = rets(mm.bench); s2.append(el('h3',{}, 'Monthly returns so far (%)'), el('div',{class:'two'}, el('div',{}, heatMonthly(mm.ym, rets(mm.nav))), el('div',{}, el('h3',{style:'margin-top:0'}, `Out-performance vs ${P.benchmark} (%)`), heatMonthly(mm.ym, rets(mm.nav).map((v,i)=> (v==null||rb[i]==null)? null : v-rb[i]), {yearCol:false})))); }
   M.append(s2);
 
-  const s3 = el('section');
-  s3.append(secHead('3', 'Watchlist', 'armed names one condition away from an entry, and holdings close to their stop or target'));
+  const s2b = sec('5','st-exits');
+  const CT = P.closed_trades || [];
+  s2b.append(secHead('5', `Exited trades — ${CT.length} closed position${CT.length===1?'':'s'} since inception`, `realised ${fR(pf.realised)} net of all charges · ${pf.wins} win${pf.wins===1?'':'s'} · exits: ${Object.entries(CT.reduce((a,t)=>{a[t.reason]=(a[t.reason]||0)+1; return a;},{})).map(([k,v])=>`${k} ${v}`).join(' · ') || '—'}`));
+  s2b.append(tableCard(CT, [
+      {label:'Stock', left:true, key:'symbol'}, {label:'Entry date', key:'entry_date'}, {label:'Entry ₹', key:'entry'}, {label:'Qty', key:'qty'}, {label:'Exit date', key:'exit_date'}, {label:'Exit ₹', key:'exit_price'},
+      {label:'Reason', key:'reason', left:true}, {label:'Scaled', key:'scaled'}, {label:'Days', key:'days'}, {label:'P&L %', key:'pnl_pct'}, {label:'Realised ₹ (net)', key:'realised'}, {label:'Charges ₹', key:'costs'}, {label:'Invested ₹', key:'buy_value'}, {label:'Rank', key:'rank'}],
+    r => { const tr=el('tr'); const rc = (r.reason||'').startsWith('SL') || (r.reason||'').startsWith('Stop') ? 'exit' : 'scale';
+      tr.append(symCell(r), td(r.entry_date), td(fP(r.entry)), td(inr.format(r.qty)), td(r.exit_date), td(fP(r.exit_price)), el('td',{class:'l'}, el('span',{class:'tag '+rc}, r.reason)), el('td',{}, r.scaled? el('span',{class:'tag scale'},'50% OUT'):'·'), td(r.days), pctCell(r.pnl_pct), td(fR(r.realised), cls(r.realised)), td(fR(r.costs)), td(fR(r.buy_value)), td(r.rank??'—')); return tr; },
+    'No position has been closed yet in this live book.', 'exit_date', true));
+  M.append(s2b);
+
+  const s3 = sec('6','st-watch');
+  s3.append(secHead('6', 'Watchlist', 'armed names one condition away from an entry, and holdings close to their stop or target'));
   s3.append(el('h3', {}, `Entry watchlist — armed (%R dipped below −40), waiting for the last condition · ${P.watch_entry.length}`));
   s3.append(tableCard(P.watch_entry, [
       {label:'Stock', left:true, key:'symbol'}, {label:'Waiting for', key:'waiting_for', left:true}, {label:'Would trigger if month closed today?', key:'would_trigger'},
@@ -837,8 +1075,8 @@ function renderPortfolio(P, M){
     'No holding is within 5% of its stop or target.', 'to_stop_pct', false));
   M.append(s3);
 
-  const s4 = el('section');
-  s4.append(secHead('4', `Universe — ${P.universe_label}`, `${P.universe_size} stocks · latest OHLC + monthly indicators (${D.completed_month} close; "now" = running month, provisional)`));
+  const s4 = sec('7','st-uni');
+  s4.append(secHead('7', `Universe — ${P.universe_label}`, `${P.universe_size} stocks · latest OHLC + monthly indicators (${D.completed_month} close; "now" = running month, provisional)`));
   const tb = el('div', {class:'toolbar'});
   const inp = el('input', {placeholder:'Filter symbol / name…', type:'search'});
   const states = ['ALL','HELD','ENTRY SIGNAL','ARMED + TREND','ARMED','IN CYCLE','—','NO DATA'];
@@ -886,27 +1124,36 @@ function openBookTable(rows, withWr){
     'No open positions.', 'to_stop_pct', false);
 }
 
+
+// TradingView market-quotes panel for a list of NSE symbols (real-time NSE cash prices, rendered in the browser)
+function liveQuotes(symbols){
+  const tv = s => 'NSE:' + String(s).replace(/[&\-]/g,'_');
+  const syms = [...new Set(symbols)].slice(0, 60).map(s=>({name:tv(s), displayName:s}));
+  const h = Math.min(760, 80 + 34*syms.length);
+  return tvWidget('embed-widget-market-quotes.js', {width:'100%', height:h, symbolsGroups:[{name:'Open positions', symbols:syms}], showSymbolLogo:false}, h);
+}
+
 // =============================================================== ANCHOR & SAIL — BACKTEST
-function renderBacktest(P, M){
-  M.replaceChildren();
+function renderBacktest(P, M, embed=false){
+  if(!embed) M.replaceChildren();
   const B = P.backtest, m = B.metrics, color = SCOL[P.name] || 'var(--s1)';
-  M.append(pageHead(P.display, `Anchor & Sail · ${P.universe_label} · ranking ${P.ranking?'ON':'OFF'} · benchmark ${P.benchmark} · yardstick ${DATA.bench2_short}`, [{text:P.display, color}, {text:P.name}, {text:'BACKTEST ' + B.start.slice(0,4) + ' → ' + B.as_of}]));
+  if(!embed) M.append(pageHead(P.display, `Anchor & Sail · ${P.universe_label} · ranking ${P.ranking?'ON':'OFF'} · benchmark ${P.benchmark} · yardstick ${DATA.bench2_short}`, [{text:P.display, color}, {text:P.name}, {text:'BACKTEST ' + B.start.slice(0,4) + ' → ' + B.as_of}]));
   M.append(el('div',{class:'hero'}, el('b',{}, `${P.display} · ${P.universe_label}`), ` — had this strategy been run from `, el('b',{}, B.start), ` with ₹${inr.format(B.capital)} (first entries on the ${B.first_signal_month} close), the same rules, ${DATA.strategy.slots} slots, ranking ${P.ranking?'ON':'OFF'} and every charge, the book would be worth `, el('b',{}, fR(m.final_value)), ` today (${B.as_of}), marked to market on live prices — a CAGR of `, el('b',{}, fPct(m.cagr_pct,false)), ` over ${B.years} years versus `, el('b',{}, m.bench_cagr_pct!=null? fPct(m.bench_cagr_pct,false):'n/a'), ` for the ${P.benchmark} and `, el('b',{}, m.bench2_cagr_pct!=null? fPct(m.bench2_cagr_pct,false):'n/a'), ` for the ${DATA.bench2_short}.`));
   btAnalytics(M, {name:P.display, color, capital:B.capital, benchName:P.benchmark, H:B.history, start:B.start, asOf:B.as_of,
     eng:{win_rate:m.win_rate_pct, wins:m.wins, trades:m.total_trades, profit_factor:m.profit_factor, avg_hold:m.avg_holding_months, realised:m.realised_pnl, unrealised:m.unrealised_pnl, final_value:m.final_value},
     charges:m.charges_paid, trades:B.trades.filter(t=>t.status==='closed').map(normAS),
     extraKpis:[kpi(fPct(m.avg_win_pct),'Avg win','per winning trade, net','green'), kpi(fPct(m.avg_loss_pct),'Avg loss','per losing trade, net','rose'), kpi(m.max_stocks_held,'Max stocks held',`avg ${fN(m.avg_stocks_held,1)} of ${DATA.strategy.slots}`,''), kpi(m.best_year||'—','Best year',`worst ${m.worst_year||'—'}`,'violet')],
     rightChart:(mm)=> lineChart({title:`Stocks held (of ${DATA.strategy.slots} slots)`, dates:mm.dates, series:[{name:'Held', color:'var(--cyan)', values:mm.n}], fmt:v=>String(Math.round(v)), area:true, base:0, minPts:2, height:260, yMax:DATA.strategy.slots, padBottom:false})});
-  const s6 = el('section'); s6.append(secHead('6','Year by year', 'calendar-year returns of the strategy book, its benchmark and the common yardstick'));
+  const s6 = sec('6','ov-bt6'); s6.append(secHead('6','Year by year', 'calendar-year returns of the strategy book, its benchmark and the common yardstick'));
   s6.append(tableCard(B.yearly, [
       {label:'Year', left:true, key:'year', desc:false}, {label:`${P.display}`, key:'port_pct'}, {label:P.benchmark, key:'bench_pct'}, {label:'Excess', key:'excess_pct'}, {label:DATA.bench2_short, key:'bench2_pct'},
       {label:'Book value at year end', key:'nav_end'}, {label:'Trades closed', key:'trades'}, {label:'Wins', key:'wins'}, {label:'Max held', key:'max_held'}],
     r => { const tr=el('tr'); tr.append(td(r.year,'l'), pctCell(r.port_pct), pctCell(r.bench_pct), pctCell(r.excess_pct), pctCell(r.bench2_pct), td(fR(r.nav_end)), td(r.trades), td(r.wins), td(r.max_held)); return tr; },
     'No yearly data.', 'year', false));
   M.append(s6);
-  const s7 = el('section'); s7.append(secHead('7','What the backtest holds today', `${B.open_positions.length} of ${DATA.strategy.slots} slots · stops as the strategy would have them now · ${lakh(m.invested_now)} invested, ${lakh(m.cash_now)} in the Nifty ETF · unrealised ${fR(m.unrealised_pnl)}`));
+  const s7 = sec('7','ov-bt7'); s7.append(secHead('7','What the backtest holds today', `${B.open_positions.length} of ${DATA.strategy.slots} slots · stops as the strategy would have them now · ${lakh(m.invested_now)} invested, ${lakh(m.cash_now)} in the Nifty ETF · unrealised ${fR(m.unrealised_pnl)}`));
   s7.append(openBookTable(B.open_positions, false)); M.append(s7);
-  const s8 = el('section'); s8.append(secHead('8','Trade log', `${B.trades.length} positions since ${B.first_signal_month} · exits: ${Object.entries(m.exit_reasons||{}).map(([k,v])=>`${k} ${v}`).join(' · ')} · realised ${fR(m.realised_pnl)}`));
+  const s8 = sec('8','ov-bt8'); s8.append(secHead('8','Trade log', `${B.trades.length} positions since ${B.first_signal_month} · exits: ${Object.entries(m.exit_reasons||{}).map(([k,v])=>`${k} ${v}`).join(' · ')} · realised ${fR(m.realised_pnl)}`));
   const tb = el('div',{class:'toolbar'}); const inp = el('input',{placeholder:'Filter symbol / name / reason…', type:'search'}); const holder = el('div'); let q='';
   const drawT = () => { const rows = B.trades.filter(t=>!q || t.symbol.toLowerCase().includes(q) || (t.name||'').toLowerCase().includes(q) || (t.reason||'').toLowerCase().includes(q));
     holder.replaceChildren(tableCard(rows, [
@@ -922,10 +1169,10 @@ function renderBacktest(P, M){
 }
 
 // =============================================================== MOMENTUM — BACKTEST
-function renderMomentumBacktest(Sx, U, M){
-  M.replaceChildren();
+function renderMomentumBacktest(Sx, U, M, embed=false){
+  if(!embed) M.replaceChildren();
   const D = DATA, B = U.backtest, m = B.metrics, isS4 = Sx.code==='S4PLUS', color = SCOL[Sx.code==='S1'?'S1':'S4PLUS'];
-  M.append(pageHead(Sx.name, `${Sx.style} · ${U.universe_label} · benchmark ${U.benchmark} · yardstick ${D.bench2_short}`, [{text:Sx.name, color}, {text:Sx.code}, {text:'BACKTEST ' + m.start.slice(0,4) + ' → ' + m.as_of}]));
+  if(!embed) M.append(pageHead(Sx.name, `${Sx.style} · ${U.universe_label} · benchmark ${U.benchmark} · yardstick ${D.bench2_short}`, [{text:Sx.name, color}, {text:Sx.code}, {text:'BACKTEST ' + m.start.slice(0,4) + ' → ' + m.as_of}]));
   M.append(el('div',{class:'hero'}, el('b',{}, `${Sx.name} · ${U.universe_label}`), ` — rebalanced monthly from `, el('b',{}, m.start), ` with ₹${inr.format(D.momentum.capital)}, the same rules and every charge, the book would be worth `, el('b',{}, fR(m.final_value)), ` today (${m.as_of}) — a CAGR of `, el('b',{}, fPct(m.cagr_pct,false)), ` over ${m.years} years versus `, el('b',{}, fPct(m.bench_cagr_pct,false)), ` for the ${U.benchmark} and `, el('b',{}, fPct(m.bench2_cagr_pct,false)), ` for the ${D.bench2_short}.`,
     B.published_cagr_pct!=null? el('span',{class:'mut'}, ` The FINSIGHTS package reported ${fPct(B.published_cagr_pct,false)} for this strategy/universe on its own (hand-typed) list and Yahoo sectors; this build uses NSE's official constituents and sector classification.`):null));
   const unreal = unrealisedOf(B.holdings);
@@ -934,15 +1181,15 @@ function renderMomentumBacktest(Sx, U, M){
     charges:m.charges_paid, interest:m.interest_earned, trades:B.trades.map(normMom),
     extraKpis:[kpi(fPct(m.avg_win_pct),'Avg win','per winning position, net','green'), kpi(fPct(m.avg_loss_pct),'Avg loss','per losing position, net','rose'), kpi(fPct(m.avg_exposure_pct,false),'Avg exposure',`${m.months_derisked} de-risked month${m.months_derisked===1?'':'s'}`,''), kpi(m.rebalances,'Rebalances',`${m.open_positions} positions open now`,'')],
     rightChart:(mm)=> lineChart({title: isS4? 'Target exposure at each rebalance (%)':'Stocks held', dates:mm.dates, series:[{name: isS4?'Exposure':'Held', color:'var(--cyan)', values: isS4? mm.exposure : mm.n}], fmt:v=> isS4? Math.round(v)+'%' : String(Math.round(v)), area:true, base:0, minPts:2, height:260, yMax: isS4?100:D.momentum.rules.hold, padBottom:false})});
-  const s6 = el('section'); s6.append(secHead('6','Year by year','calendar-year returns of the book, its benchmark and the common yardstick'));
+  const s6 = sec('6','ov-bt6'); s6.append(secHead('6','Year by year','calendar-year returns of the book, its benchmark and the common yardstick'));
   s6.append(tableCard(B.yearly, [{label:'Year', left:true, key:'year', desc:false}, {label:Sx.name, key:'port_pct'}, {label:U.benchmark, key:'bench_pct'}, {label:'Excess', key:'excess_pct'}, {label:D.bench2_short, key:'bench2_pct'}, {label:'Book value at year end', key:'nav_end'}, {label:'Positions closed', key:'trades'}, {label:'Wins', key:'wins'}, {label:'Avg exposure', key:'avg_exposure_pct'}],
     r => { const tr=el('tr'); tr.append(td(r.year,'l'), pctCell(r.port_pct), pctCell(r.bench_pct), pctCell(r.excess_pct), pctCell(r.bench2_pct), td(fR(r.nav_end)), td(r.trades), td(r.wins), td(fPct(r.avg_exposure_pct,false))); return tr; }, 'No yearly data.', 'year', false));
   M.append(s6);
-  const s7 = el('section'); s7.append(secHead('7','What the backtest holds today', `${B.holdings.length} stocks · ${lakh(m.invested_now)} invested · ${lakh(m.cash_now)} in the liquid fund · unrealised ${fR(unreal)}`));
+  const s7 = sec('7','ov-bt7'); s7.append(secHead('7','What the backtest holds today', `${B.holdings.length} stocks · ${lakh(m.invested_now)} invested · ${lakh(m.cash_now)} in the liquid fund · unrealised ${fR(unreal)}`));
   s7.append(tableCard(B.holdings, [{label:'Stock', left:true, key:'symbol'}, {label:'Sector', left:true, key:'industry'}, {label:'Shares', key:'shares'}, {label:'Avg entry ₹', key:'avg_entry'}, {label:'Since', key:'entry_date'}, {label:'LTP ₹', key:'ltp'}, {label:'Value ₹', key:'value'}, {label:'Weight', key:'weight_pct'}, {label:'P&L %', key:'pnl_pct'}, {label:'Unrealised ₹', key:'unrealised'}, {label:'Rank today', key:'rank_now', desc:false}],
     r => { const tr=el('tr'); tr.append(symCell(r), td(r.industry,'l'), td(inr.format(r.shares)), td(fP(r.avg_entry)), td(r.entry_date), td(fP(r.ltp)), td(fR(r.value)), td(fPct(r.weight_pct,false)), pctCell(r.pnl_pct), td(fR(r.unrealised), cls(r.unrealised)), td(r.rank_now ?? '—')); return tr; }, 'No holdings.', 'weight_pct', true));
   M.append(s7);
-  const s8 = el('section'); s8.append(secHead('8','Trade log', `${B.trades.length} closed positions since ${m.start} · realised ${fR(m.realised_pnl)}`));
+  const s8 = sec('8','ov-bt8'); s8.append(secHead('8','Trade log', `${B.trades.length} closed positions since ${m.start} · realised ${fR(m.realised_pnl)}`));
   const tb = el('div',{class:'toolbar'}); const inp = el('input',{placeholder:'Filter symbol / reason…', type:'search'}); const holder = el('div'); let q='';
   const draw = () => { const rows = B.trades.filter(t=>!q || t.symbol.toLowerCase().includes(q) || (t.reason||'').toLowerCase().includes(q));
     holder.replaceChildren(tableCard(rows, [{label:'Stock', left:true, key:'symbol'}, {label:'Entry', key:'entry_date'}, {label:'Avg entry ₹', key:'avg_entry'}, {label:'Exit', key:'exit_date'}, {label:'Avg exit ₹', key:'avg_exit'}, {label:'Shares', key:'shares'}, {label:'Invested ₹', key:'invested'}, {label:'Months', key:'months'}, {label:'Return %', key:'return_pct'}, {label:'Net P&L ₹', key:'net_pnl'}, {label:'Costs ₹', key:'costs'}, {label:'Reason', key:'reason', left:true}],
@@ -999,8 +1246,8 @@ function lineChart({title, dates, series, fmt, base, area=false, extra, minPts=2
   return card;
 }
 
-// ---------------------------------------------------------------- theme toggle (visual only — no data changes)
-function applyTheme(t){ document.documentElement.setAttribute('data-theme', t); $('#themeLabel').textContent = t==='light' ? 'Light' : 'Dark'; try{ localStorage.setItem('fs_theme', t); }catch(e){} }
+// ---------------------------------------------------------------- theme toggle (sun / moon) — visual only, data unchanged
+function applyTheme(t){ document.documentElement.setAttribute('data-theme', t); try{ localStorage.setItem('fs_theme', t); }catch(e){} renderTape(); }
 applyTheme((()=>{ try{ return localStorage.getItem('fs_theme') || localStorage.getItem('as_theme') || 'dark'; }catch(e){ return 'dark'; } })());
 $('#theme').addEventListener('click', ()=>{ applyTheme(document.documentElement.getAttribute('data-theme')==='light' ? 'dark' : 'light'); if(DATA){ const y=window.scrollY; render(); window.scrollTo(0,y); } });
 
@@ -1008,9 +1255,9 @@ $('#theme').addEventListener('click', ()=>{ applyTheme(document.documentElement.
 function nowIST(){ return new Date(Date.now() + 5.5*3600e3); }
 function nextBuildIST(){
   const n = nowIST(); const dow = n.getUTCDay(); const mins = n.getUTCHours()*60 + n.getUTCMinutes();
-  const slots = []; if(dow>=1 && dow<=5){ for(let m=9*60+30; m<=15*60+30; m+=15) slots.push(m); slots.push(15*60+45); } slots.push(18*60);
+  const slots = []; if(dow>=1 && dow<=5){ for(let m=9*60+30; m<=15*60+30; m+=15) slots.push(m); slots.push(15*60+45); } slots.push(18*60); for(let h=0;h<24;h++) slots.push(h*60+47); slots.sort((a,b)=>a-b);
   const nxt = slots.find(m=>m>mins); const d = new Date(n);
-  if(nxt==null){ d.setUTCDate(d.getUTCDate()+1); const dd=d.getUTCDay(); d.setUTCHours(dd>=1&&dd<=5?9:18, dd>=1&&dd<=5?30:0, 0, 0); } else d.setUTCHours(Math.floor(nxt/60), nxt%60, 0, 0);
+  if(nxt==null){ d.setUTCDate(d.getUTCDate()+1); d.setUTCHours(0, 47, 0, 0); } else d.setUTCHours(Math.floor(nxt/60), nxt%60, 0, 0);
   const pad = x=>String(x).padStart(2,'0'); return `${d.getUTCDate()===n.getUTCDate()?'today':'tomorrow'} ${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())} IST`;
 }
 let toastT; function toast(html){ const t=$('#toast'); t.innerHTML=html; t.style.display='block'; clearTimeout(toastT); toastT=setTimeout(()=>{ t.style.display='none'; }, 6000); }
@@ -1019,7 +1266,7 @@ async function refreshNow(){
   await load(); btn.disabled = false; btn.textContent = '↻ Refresh now'; if(!DATA) return;
   const built = DATA.generated_at_ist.slice(11,16);
   if(DATA.generated_at_utc !== before) toast(`<b>Updated.</b> Showing the build from <b>${built} IST</b> (${DATA.market_status}). Next scheduled build ≈ ${nextBuildIST()}.`);
-  else toast(`No newer build yet — latest is <b>${built} IST</b> (${DATA.market_status}). GitHub rebuilds every 15 min in market hours; next ≈ ${nextBuildIST()}. Prices come from Yahoo with a ~15 min delay.`);
+  else toast(`No newer build yet — latest is <b>${built} IST</b> (${DATA.market_status}). GitHub rebuilds every 15 min in market hours and hourly otherwise; next ≈ ${nextBuildIST()}. Prices come from Yahoo with a ~15 min delay.`);
   secs = 300;
 }
 $('#refresh').addEventListener('click', refreshNow);
